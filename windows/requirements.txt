@@ -1,0 +1,15 @@
+# Dependencias de la aplicación. Versión mínima con ">=" para recibir
+# correcciones; las exactas probadas se guardan con "entorno.bat congelar".
+wxPython>=4.2.2
+# Extracción de precios: HTML con el analizador de la biblioteca estándar (sin lxml).
+beautifulsoup4>=4.12
+soupsieve>=2.5
+# Descarga de páginas con sesión de cookies, compresión y certificados.
+requests>=2.32
+certifi>=2024.2.2
+# Verificación de la firma Ed25519 de las actualizaciones.
+cryptography>=42
+# Manual (F1) como página con encabezados que el lector recorre con H.
+markdown>=3.5
+# Opcional: voz directa (NVDA, JAWS o SAPI). Sin él, la aplicación funciona igual.
+accessible_output2>=0.17

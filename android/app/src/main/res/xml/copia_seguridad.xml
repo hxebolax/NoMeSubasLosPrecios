@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copia de seguridad automática de Android (hasta Android 11): base de datos y ajustes -->
+<full-backup-content>
+	<include domain="database" path="nomesubaslosprecios.db" />
+	<include domain="sharedpref" path="." />
+	<exclude domain="sharedpref" path="acciones_talkback.xml" />
+</full-backup-content>

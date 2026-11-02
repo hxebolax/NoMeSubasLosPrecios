@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ajustes con las claves de ESPECIFICACION.md (y solo_wifi, propio de Android) -->
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory app:title="@string/ajustes_comprobacion" app:iconSpaceReserved="false">
+		<ListPreference
+			app:key="intervalo_horas"
+			app:title="@string/ajuste_intervalo"
+			app:entries="@array/intervalos_nombres"
+			app:entryValues="@array/intervalos_valores"
+			app:defaultValue="6"
+			app:useSimpleSummaryProvider="true"
+			app:iconSpaceReserved="false" />
+		<SwitchPreferenceCompat
+			app:key="comprobar_al_iniciar"
+			app:title="@string/ajuste_comprobar_al_iniciar"
+			app:summary="@string/ajuste_comprobar_al_iniciar_resumen"
+			app:defaultValue="true"
+			app:iconSpaceReserved="false" />
+		<SwitchPreferenceCompat
+			app:key="solo_wifi"
+			app:title="@string/ajuste_solo_wifi"
+			app:summary="@string/ajuste_solo_wifi_resumen"
+			app:defaultValue="false"
+			app:iconSpaceReserved="false" />
+		<com.xebolax.nomesubaslosprecios.accesibilidad.DeslizadorAjuste
+			app:key="pausa_entre_peticiones"
+			app:title="@string/ajuste_pausa"
+			app:summary="@string/ajuste_pausa_resumen"
+			app:min="1"
+			android:max="30"
+			app:seekBarIncrement="1"
+			app:showSeekBarValue="true"
+			android:defaultValue="3"
+			app:iconSpaceReserved="false" />
+		<com.xebolax.nomesubaslosprecios.accesibilidad.DeslizadorAjuste
+			app:key="tiempo_espera"
+			app:title="@string/ajuste_tiempo_espera"
+			app:summary="@string/ajuste_tiempo_espera_resumen"
+			app:min="5"
+			android:max="60"
+			app:seekBarIncrement="5"
+			app:showSeekBarValue="true"
+			android:defaultValue="25"
+			app:iconSpaceReserved="false" />
+	</PreferenceCategory>
+
+	<PreferenceCategory app:title="@string/ajustes_avisos" app:iconSpaceReserved="false">
+		<SwitchPreferenceCompat app:key="avisar_bajadas" app:title="@string/ajuste_avisar_bajadas" app:defaultValue="true" app:iconSpaceReserved="false" />
+		<SwitchPreferenceCompat app:key="avisar_subidas" app:title="@string/ajuste_avisar_subidas" app:defaultValue="true" app:iconSpaceReserved="false" />
+		<SwitchPreferenceCompat app:key="avisar_objetivo" app:title="@string/ajuste_avisar_objetivo" app:defaultValue="true" app:iconSpaceReserved="false" />
+		<SwitchPreferenceCompat app:key="avisar_minimo" app:title="@string/ajuste_avisar_minimo" app:defaultValue="true" app:iconSpaceReserved="false" />
+		<SwitchPreferenceCompat app:key="avisar_disponible" app:title="@string/ajuste_avisar_disponible" app:defaultValue="true" app:iconSpaceReserved="false" />
+		<SwitchPreferenceCompat app:key="avisar_agotado" app:title="@string/ajuste_avisar_agotado" app:defaultValue="false" app:iconSpaceReserved="false" />
+		<SwitchPreferenceCompat
+			app:key="avisar_errores"
+			app:title="@string/ajuste_avisar_errores"
+			app:summary="@string/ajuste_avisar_errores_resumen"
+			app:defaultValue="false"
+			app:iconSpaceReserved="false" />
+		<EditTextPreference
+			app:key="cambio_minimo_porcentaje"
+			app:title="@string/ajuste_cambio_minimo"
+			app:dialogMessage="@string/ajuste_cambio_minimo_ayuda"
+			app:defaultValue="0"
+			app:iconSpaceReserved="false" />
+		<ListPreference
+			app:key="conservar_avisos_dias"
+			app:title="@string/ajuste_conservar_avisos"
+			app:entries="@array/conservar_nombres"
+			app:entryValues="@array/conservar_valores"
+			app:defaultValue="90"
+			app:useSimpleSummaryProvider="true"
+			app:iconSpaceReserved="false" />
+		<Preference
+			app:key="permiso_notificaciones"
+			app:title="@string/ajuste_permiso"
+			app:iconSpaceReserved="false" />
+		<Preference
+			app:key="notificacion_prueba"
+			app:title="@string/ajuste_notificacion_prueba"
+			app:summary="@string/ajuste_notificacion_prueba_resumen"
+			app:iconSpaceReserved="false" />
+		<Preference
+			app:key="bateria"
+			app:title="@string/ajuste_bateria"
+			app:summary="@string/ajuste_bateria_resumen"
+			app:iconSpaceReserved="false" />
+	</PreferenceCategory>
+
+	<PreferenceCategory app:title="@string/ajustes_accesibilidad" app:iconSpaceReserved="false">
+		<Preference
+			app:key="acciones_talkback"
+			app:title="@string/acciones_talkback"
+			app:summary="@string/ajuste_acciones_talkback_resumen"
+			app:iconSpaceReserved="false" />
+	</PreferenceCategory>
+
+	<PreferenceCategory app:title="@string/ajustes_actualizaciones" app:iconSpaceReserved="false">
+		<SwitchPreferenceCompat
+			app:key="buscar_actualizaciones"
+			app:title="@string/ajuste_buscar_actualizaciones"
+			app:summary="@string/ajuste_buscar_actualizaciones_resumen"
+			app:defaultValue="true"
+			app:iconSpaceReserved="false" />
+	</PreferenceCategory>
+</PreferenceScreen>

@@ -1,0 +1,3423 @@
+{
+  "_comentario": "Reglas de extracción por tienda que usan las dos apps (Windows y Android). Formato en compartido/ESPECIFICACION.md. Cada regla: css (selector CSS) y, opcional, atributo (leer ese atributo en vez del texto). Las reglas van en orden: se usa la primera que dé un importe válido. Si una tienda no está aquí, se usa la extracción genérica (JSON-LD, metadatos y microdatos), que funciona en la mayoría.",
+  "version": 1,
+  "actualizado": "2026-11-02",
+  "bloqueo_general": [
+    "/AtaVerifyCaptcha",
+    "/_sec/verify?provider=interstitial",
+    "/errors/validateCaptcha",
+    "/risk/challenge",
+    "Access Denied",
+    "AwsWafIntegration",
+    "Enable JavaScript and cookies to continue",
+    "Just a moment...",
+    "Pardon Our Interruption",
+    "Please enable JS and disable any ad blocker",
+    "Request forbidden by administrative rules",
+    "Un momento…",
+    "_Incapsula_Resource",
+    "awsWafCookieDomainList",
+    "awswaf",
+    "bm-verify=",
+    "captcha-delivery.com",
+    "captchacharacters",
+    "cf-browser-verification",
+    "cf_chl_opt",
+    "challenge-platform/h/",
+    "errors.edgesuite.net",
+    "gokuProps",
+    "px-captcha"
+  ],
+  "tiendas": [
+    {
+      "id": "abacus",
+      "nombre": "Abacus",
+      "dominios": [
+        "abacus.coop"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto (incluida la disponibilidad).",
+      "plataforma": "Salesforce Commerce Cloud (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 51.95 EUR (JSON-LD), OutOfStock. Respondió 200."
+    },
+    {
+      "id": "adidas",
+      "nombre": "adidas",
+      "dominios": [
+        "adidas.es",
+        "adidas.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "WAFfailoverassets",
+        "no hemos podido darte acceso"
+      ],
+      "notas": "403 con la página propia del cortafuegos: «Lamentablemente, no hemos podido darte acceso a la página en esta ocasión» y recursos /WAFfailoverassets/.",
+      "plataforma": "Propia tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "agapea",
+      "nombre": "Agapea",
+      "dominios": [
+        "agapea.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product+Book correcto, pero el name trae entidades HTML sin decodificar ('Cien a&ntilde;os de soledad'): mejor el h1.",
+      "plataforma": "Propia (nginx)",
+      "comprobado": "2026-11-02: genérica: 12.30 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "ahorramas",
+      "nombre": "Ahorramas",
+      "dominios": [
+        "ahorramas.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con Offer y availability. El precio visible está partido (entero y «,95€» por separado): no usar selector.",
+      "plataforma": "Salesforce Commerce Cloud",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "alcampo",
+      "nombre": "Alcampo",
+      "dominios": [],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con Offer y availability. Ojo: el HTML normal contiene el texto «awswaf» (script de AWS WAF), que está en bloqueo_general; solo importa si no se encuentra precio. Datos también en window.__INITIAL_STATE__. Misma plataforma que Bonpreu.",
+      "plataforma": "Ocado Smart Platform",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "aliexpress",
+      "nombre": "AliExpress",
+      "dominios": [
+        "aliexpress.com",
+        "aliexpress.us"
+      ],
+      "precio": [
+        {
+          "css": "span[class^=price-default--current]"
+        },
+        {
+          "css": "[class*=price--currentPriceText]"
+        },
+        {
+          "css": ".product-price-value"
+        },
+        {
+          "css": ".product-price-current"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1[data-pl=product-title]"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "punish",
+        "slide to verify",
+        "x5secdata"
+      ],
+      "notas": "Sin precio en el HTML: window._d_c_.isCSR = true y runParams vacío; no hay JSON-LD. Solo og:title. Los selectores actuales no casan nunca con la descarga simple. Respondió 200 sin verificación.",
+      "plataforma": "Alibaba (renderizado en el cliente)",
+      "comprobado": "2026-11-02: sin precio: la página se monta con JavaScript",
+      "navegador": true
+    },
+    {
+      "id": "alternate",
+      "nombre": "Alternate",
+      "dominios": [
+        "alternate.es"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto (availability 'OutOfStock' sin URL de schema.org, la genérica lo entiende). El name del JSON-LD no lleva la marca ('MX Master 3S, Ratón'): mejor el h1.",
+      "plataforma": "Propia (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 196.90 EUR (JSON-LD), OutOfStock. Respondió 200."
+    },
+    {
+      "id": "amazon",
+      "nombre": "Amazon",
+      "dominios": [
+        "amazon.es",
+        "amazon.com",
+        "amazon.co.uk",
+        "amazon.de",
+        "amazon.fr",
+        "amazon.it",
+        "amazon.nl",
+        "amazon.pl",
+        "amazon.se",
+        "amazon.com.mx",
+        "amazon.ca"
+      ],
+      "precio": [
+        {
+          "css": "#corePrice_feature_div .a-price:not(.a-text-price) .a-offscreen"
+        },
+        {
+          "css": "#twister-plus-price-data-price",
+          "atributo": "value"
+        },
+        {
+          "css": "#corePriceDisplay_desktop_feature_div .priceToPay .a-offscreen"
+        },
+        {
+          "css": "#corePriceDisplay_desktop_feature_div .a-price:not(.a-text-price) .a-offscreen"
+        },
+        {
+          "css": "#tp_price_block_total_price_ww .a-offscreen"
+        },
+        {
+          "css": "#apex_desktop .priceToPay .a-offscreen"
+        },
+        {
+          "css": "#priceblock_dealprice"
+        },
+        {
+          "css": "#priceblock_ourprice"
+        },
+        {
+          "css": "#priceblock_saleprice"
+        },
+        {
+          "css": "#price_inside_buybox"
+        },
+        {
+          "css": "#newBuyBoxPrice"
+        },
+        {
+          "css": "#kindle-price"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "#productTitle"
+        },
+        {
+          "css": "#title"
+        }
+      ],
+      "imagen": [
+        {
+          "css": "#landingImage",
+          "atributo": "data-old-hires"
+        },
+        {
+          "css": "#landingImage",
+          "atributo": "src"
+        },
+        {
+          "css": "#imgBlkFront",
+          "atributo": "src"
+        }
+      ],
+      "disponible": [
+        {
+          "css": "#availability",
+          "agotado": [
+            "no disponible",
+            "no está disponible",
+            "agotado",
+            "sin stock",
+            "currently unavailable",
+            "out of stock",
+            "nicht verfügbar",
+            "actuellement indisponible",
+            "non disponibile"
+          ]
+        },
+        {
+          "css": "#outOfStock",
+          "agotado": [
+            ""
+          ]
+        },
+        {
+          "css": "#add-to-cart-button",
+          "agotado": []
+        }
+      ],
+      "bloqueo": [
+        "/errors/validateCaptcha",
+        "Introduce los caracteres que ves",
+        "Type the characters you see",
+        "api-services-support@amazon.com",
+        "captchacharacters",
+        "awswaf"
+      ],
+      "notas": "No publica JSON-LD de producto ni metadatos de precio: hacen falta selectores. El bloque nuevo (priceToPay) parte el importe en a-price-whole y a-price-fraction y su .a-offscreen viene vacío; el texto completo está en .a-offscreen de #corePrice_feature_div y en el input oculto #twister-plus-price-data-price (formato de máquina). Se quitan '#apex_desktop .a-price:not(.a-text-price) .a-offscreen' (cogía 25,64 € de la financiación) e 'input#attach-base-product-price' (vale 0.0). Puede haber una segunda fila con el precio de segunda mano: las reglas cogen la primera (Comprar nuevo). Suele pedir captcha o AWS WAF a descargas repetidas.",
+      "plataforma": "Amazon (propia)",
+      "comprobado": "2026-11-02: selector: 99.99 EUR (regla #corePrice_feature_div; sin JSON-LD ni metadatos). Respondió 200 sin verificación."
+    },
+    {
+      "id": "animalear",
+      "nombre": "Animalear",
+      "dominios": [
+        "animalear.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El 2026-11-02 la web redirigía a /maintenance/construction (página de mantenimiento); no se probó página de producto.",
+      "plataforma": "desconocida",
+      "comprobado": "2026-11-02: web en mantenimiento"
+    },
+    {
+      "id": "apple",
+      "nombre": "Apple",
+      "dominios": [
+        "apple.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "MAL ANTES: '.rc-prices-fullprice' y '[data-autom=full-price]' no existen en esta ficha; el JSON-LD Product es correcto, así que la regla de precio queda vacía.",
+      "plataforma": "Propia",
+      "comprobado": "2026-11-02: genérica: 19.00 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "arenal",
+      "nombre": "Arenal",
+      "dominios": [
+        "arenal.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD ProductGroup con un Product por tamaño; la genérica toma el primero (30 ml, 44,95), que aquí coincide con product:price:amount.",
+      "plataforma": "Magento 2 (tema Hyvä, misma plantilla que Druni)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "asos",
+      "nombre": "ASOS",
+      "dominios": [
+        "asos.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "La petición se queda sin respuesta hasta agotar el tiempo (Akamai suele hacer esto con clientes que no parecen navegadores). La app lo verá como «tiempo agotado», no como bloqueo.",
+      "plataforma": "Propia tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (no responde: tiempo agotado a los 30 s)",
+      "navegador": true
+    },
+    {
+      "id": "atida",
+      "nombre": "Atida | Mifarma",
+      "dominios": [
+        "atida.com",
+        "mifarma.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "AtaVerifyCaptcha",
+        "<title>Captcha Page"
+      ],
+      "notas": "Portada y producto responden 403 con una página «Captcha Page» (reCAPTCHA, envía a /AtaVerifyCaptcha). No se pudo comprobar si la URL de producto existe.",
+      "plataforma": "propia (tras Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada 403",
+      "navegador": true
+    },
+    {
+      "id": "atmosferasport",
+      "nombre": "Atmósfera Sport",
+      "dominios": [
+        "atmosferasport.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD ProductGroup/Product con precio y disponibilidad, y product:price:amount.",
+      "plataforma": "PrestaShop",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "aussar",
+      "nombre": "Aussar",
+      "dominios": [
+        "aussar.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Just a moment...",
+        "Enable JavaScript and cookies to continue",
+        "cf_chl_opt"
+      ],
+      "notas": "Bloqueada: 403 desafío de Cloudflare.",
+      "plataforma": "Desconocida (Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada: 403 Cloudflare",
+      "navegador": true
+    },
+    {
+      "id": "backmarket",
+      "nombre": "Back Market",
+      "dominios": [
+        "backmarket.es",
+        "backmarket.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Just a moment...",
+        "Enable JavaScript and cookies to continue",
+        "cf_chl_opt",
+        "testchallengepage"
+      ],
+      "notas": "Bloqueada: redirige a /testchallengepage y responde 403 «Just a moment…».",
+      "plataforma": "Nuxt (Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada: 403 Cloudflare (redirige a /testchallengepage)",
+      "navegador": true
+    },
+    {
+      "id": "barrabes",
+      "nombre": "Barrabes",
+      "dominios": [
+        "barrabes.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con una oferta por talla, todas con el precio rebajado (120.49) y availability. Probada la ficha /en/ (precios en euros).",
+      "plataforma": "Propia (ASP.NET)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "bauhaus",
+      "nombre": "BAUHAUS",
+      "dominios": [
+        "bauhaus.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "<title>control de seguridad",
+        "cf_chl_opt",
+        "challenge-platform/h/",
+        "Just a moment..."
+      ],
+      "notas": "403 con desafío de Cloudflare titulado «control de seguridad» (cf_chl_opt).",
+      "plataforma": "Propia tras Cloudflare",
+      "comprobado": "2026-11-02: bloqueada (403 desafío Cloudflare)",
+      "navegador": true
+    },
+    {
+      "id": "beep",
+      "nombre": "Beep",
+      "dominios": [
+        "beep.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product y product:price:amount correctos.",
+      "plataforma": "Next.js (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 32.46 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "bershka",
+      "nombre": "Bershka",
+      "dominios": [
+        "bershka.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "bm-verify=",
+        "/_sec/verify?provider=interstitial",
+        "/interstitial/ic.html"
+      ],
+      "notas": "La descarga simple devuelve HTTP 200 con una página de unos 2 KB que solo contiene el desafío de Akamai Bot Manager (meta refresh con ?bm-verify=..., iframe /interstitial/ic.html y POST a /_sec/verify?provider=interstitial). No trae nombre, precio ni JSON-LD. La web real es una SPA que carga el producto por la API JSON de Inditex (/itxrest/2/catalog/store/{storeId}/{catalogId}/category/0/product/{productId}/detail?languageId=-5&appId=1; Zara además acepta ?ajax=true en la propia URL de producto), pero esas llamadas pasan por el mismo Akamai: la prueba de Zara con ?ajax=true devolvió el mismo desafío. Sin navegador no es viable.",
+      "plataforma": "Inditex (plataforma propia, SPA) tras Akamai Bot Manager",
+      "comprobado": "2026-11-02: bloqueada (HTTP 200 con desafío interstitial de Akamai, sin datos del producto)",
+      "navegador": true
+    },
+    {
+      "id": "bimbaylola",
+      "nombre": "Bimba y Lola",
+      "dominios": [
+        "bimbaylola.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con precio y disponibilidad; también itemprop=price. Las fichas antiguas devuelven 404 (el catálogo rota mucho).",
+      "plataforma": "Salesforce Commerce Cloud",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "bitiba",
+      "nombre": "Bitiba",
+      "dominios": [
+        "bitiba.es"
+      ],
+      "precio": [
+        {
+          "css": "[data-zta=SelectedArticleBox__TopSection] [data-zta=reducedPriceAmount]"
+        },
+        {
+          "css": "[data-zta=reducedPriceAmount]"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Misma plataforma que zooplus. En el producto probado JSON-LD y página coincidían (153,99), pero se pone el mismo selector que zooplus por si el JSON-LD lleva un cupón activable. El og:title acaba en « | bitiba.es %».",
+      "plataforma": "Next.js (propia, grupo zooplus)",
+      "comprobado": "2026-11-02: precio por selector"
+    },
+    {
+      "id": "bm",
+      "nombre": "BM Supermercados",
+      "dominios": [
+        "online.bmsupermercados.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El HTML es un armazón Angular sin datos. API pública por producto: de https://www.online.bmsupermercados.es/es/p/<slug>/<código> se pide https://www.online.bmsupermercados.es/api/rest/V1.0/catalog/product/code/<código>. Precio: priceData.prices[]: «PRICE» (1.15) y, si hay oferta, «OFFER_PRICE» (1.04), que es el que se paga; value.centAmount está en euros. Disponible: productData.availability == \"1\".",
+      "plataforma": "SPA Angular (Aktios «tol») + API JSON",
+      "comprobado": "2026-11-02: SPA: precio solo en API",
+      "api": {
+        "id_desde_url": "/p/[^/]+/(\\d+)",
+        "url": "https://online.bmsupermercados.es/api/rest/V1.0/catalog/product/code/{id}",
+        "precio": [
+          "priceData.prices[id=OFFER_PRICE].value.centAmount",
+          "priceData.prices[id=PRICE].value.centAmount"
+        ],
+        "nombre": [
+          "productData.name"
+        ],
+        "imagen": [
+          "productData.imageURL"
+        ],
+        "disponible": {
+          "ruta": "productData.availability",
+          "igual": "1"
+        }
+      }
+    },
+    {
+      "id": "bodybell",
+      "nombre": "Bodybell",
+      "dominios": [
+        "bodybell.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "La conexión a la portada agotó el tiempo (30 s) el 2026-11-02; no se probó página de producto. Puede que la tienda online haya cerrado o filtre por IP.",
+      "plataforma": "desconocida",
+      "comprobado": "2026-11-02: sin respuesta (tiempo agotado)"
+    },
+    {
+      "id": "bonpreu",
+      "nombre": "Bonpreu Esclat",
+      "dominios": [
+        "compraonline.bonpreuesclat.cat"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Igual que Alcampo: JSON-LD Product con Offer y availability; el HTML contiene «awswaf». Web en catalán.",
+      "plataforma": "Ocado Smart Platform",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "bricodepot",
+      "nombre": "Brico Depôt",
+      "dominios": [
+        "bricodepot.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product (49.95) y product:price:amount. En la página el precio va partido («49» y «95» en span.price-top) y hay otros importes de vendedores y productos relacionados (71,95; data-price-amount de otros), así que no conviene usar selectores.",
+      "plataforma": "Magento 2",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "bricomart",
+      "nombre": "Bricomart (ahora Obramat)",
+      "dominios": [
+        "bricomart.es",
+        "obramat.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "geo.captcha-delivery.com",
+        "Please enable JS and disable any ad blocker"
+      ],
+      "notas": "bricomart.es redirige a www.obramat.es (cambio de marca), que responde 403 con DataDome.",
+      "plataforma": "Propia tras DataDome",
+      "comprobado": "2026-11-02: bloqueada (403 DataDome)",
+      "navegador": true
+    },
+    {
+      "id": "calzedonia",
+      "nombre": "Calzedonia",
+      "dominios": [
+        "calzedonia.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product limpio (price numérico, availability, image como lista). Redirige a una URL canónica más corta. Intimissimi y Falconeri son del mismo grupo y plataforma.",
+      "plataforma": "Salesforce Commerce Cloud con front headless (React/Chakra)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "caprabo",
+      "nombre": "Caprabo",
+      "dominios": [
+        "capraboacasa.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Igual que Eroski: span.offer-now itemprop=price con texto «3,99». Precio por kg en productos al peso.",
+      "plataforma": "Apache Tapestry (misma plataforma que Eroski)",
+      "comprobado": "2026-11-02: precio por microdatos"
+    },
+    {
+      "id": "carrefour",
+      "nombre": "Carrefour",
+      "dominios": [
+        "carrefour.es"
+      ],
+      "precio": [
+        {
+          "css": ".buybox__price--current"
+        },
+        {
+          "css": ".buybox__price"
+        },
+        {
+          "css": ".product-card__price"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1.product-header__name"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Ya está en tiendas.json. Cloudflare responde 403 con el desafío «Just a moment...» en /supermercado/ y en producto. Reglas de precio de la web antigua (.buybox__price), sin poder comprobarlas por el bloqueo.",
+      "plataforma": "propia (tras Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada 403",
+      "navegador": true
+    },
+    {
+      "id": "casa",
+      "nombre": "CASA",
+      "dominios": [
+        "casashops.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "es.casashops.com no resuelve en DNS y casashops.com/es/productos/... devuelve 404 «Page Not Found»: la tienda online española parece cerrada.",
+      "plataforma": "Desconocida",
+      "comprobado": "2026-11-02: error (dominio sin resolver)"
+    },
+    {
+      "id": "casadellibro",
+      "nombre": "Casa del Libro",
+      "dominios": [
+        "casadellibro.com"
+      ],
+      "precio": [
+        {
+          "css": "#p-pf-f"
+        },
+        {
+          "css": ".product-prices.PDP .final"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1#t-p-f"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD de tipo Book (no Product) y con la clave 'Price' en mayúscula: la genérica no lo usa. #p-pf-f es el precio final (aria-label 'precio final 18,90 €'); hay otros precios de formatos (tapa blanda, ebook) más arriba.",
+      "plataforma": "Svelte propia",
+      "comprobado": "2026-11-02: selector: 18.90 EUR (#p-pf-f). La genérica no da precio. Respondió 200."
+    },
+    {
+      "id": "clarel",
+      "nombre": "Clarel",
+      "dominios": [
+        "clarel.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con price «2.00» y metas product:price:amount y og:availability. El precio visible se pinta sin decimales («2€»): no usar selector. Datos también en __NEXT_DATA__ (finalPrice).",
+      "plataforma": "Next.js con Magento sin cabeza (headless)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "condis",
+      "nombre": "Condis",
+      "dominios": [
+        "compraonline.condis.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "La portada y las páginas de ofertas cargan el catálogo con JavaScript; no aparece ninguna URL de producto en el HTML ni en buscadores, y el sitemap redirige a un inicio de sesión anónimo (/api/proxy/signin). Probablemente haga falta su API.",
+      "plataforma": "Next.js (SPA)",
+      "comprobado": "2026-11-02: sin probar (no se encontró URL de producto)"
+    },
+    {
+      "id": "conforama",
+      "nombre": "Conforama",
+      "dominios": [
+        "conforama.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con precio y availability «InStock» sin prefijo.",
+      "plataforma": "Propia (ASP.NET)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "consum",
+      "nombre": "Consum",
+      "dominios": [
+        "tienda.consum.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El HTML es un armazón Angular (<app-root>) sin datos y con el script _Incapsula_Resource (está en bloqueo_general, así que la app lo verá como bloqueo). API pública por producto: de https://tienda.consum.es/es/p/<slug>/<código> se toma <código> y se pide https://tienda.consum.es/api/rest/V1.0/catalog/product/code/<código>. Precio: priceData.prices[] (id «PRICE» y, si hay oferta, «OFFER_PRICE»); el importe está en value.centAmount (en euros, pese al nombre: 0.96). Nombre: productData.name; imagen: productData.imageURL; disponible: productData.availability == \"1\" y temporaryOutOfStock false. Misma plataforma que BM.",
+      "plataforma": "SPA Angular (Aktios «tol») + API JSON, tras Imperva/Incapsula",
+      "comprobado": "2026-11-02: SPA: precio solo en API",
+      "api": {
+        "id_desde_url": "/p/[^/]+/(\\d+)",
+        "url": "https://tienda.consum.es/api/rest/V1.0/catalog/product/code/{id}",
+        "precio": [
+          "priceData.prices[id=OFFER_PRICE].value.centAmount",
+          "priceData.prices[id=PRICE].value.centAmount"
+        ],
+        "nombre": [
+          "productData.name"
+        ],
+        "imagen": [
+          "productData.imageURL"
+        ],
+        "disponible": {
+          "ruta": "productData.availability",
+          "igual": "1"
+        }
+      }
+    },
+    {
+      "id": "converse",
+      "nombre": "Converse",
+      "dominios": [
+        "converse.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Access Denied",
+        "errors.edgesuite.net"
+      ],
+      "notas": "403 «Access Denied» de Akamai.",
+      "plataforma": "Salesforce Commerce Cloud tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "coolmod",
+      "nombre": "Coolmod",
+      "dominios": [
+        "coolmod.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto. El importe visible está partido (entero y decimales): no poner selectores de precio.",
+      "plataforma": "Propia (Tailwind)",
+      "comprobado": "2026-11-02: genérica: 144.95 EUR (JSON-LD), InStock. Respondió 200 a la primera."
+    },
+    {
+      "id": "cortefiel",
+      "nombre": "Cortefiel",
+      "dominios": [
+        "cortefiel.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con el precio rebajado (23.97; el tachado 39,95 solo está en .basePrice). og:price:amount = 0.0. Redirige a la URL con la categoría. Misma plataforma que Springfield, Women'secret y Pedro del Hierro.",
+      "plataforma": "Salesforce Commerce Cloud (Tendam)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "decathlon",
+      "nombre": "Decathlon",
+      "dominios": [
+        "decathlon.es",
+        "decathlon.com",
+        "decathlon.fr",
+        "decathlon.pt"
+      ],
+      "precio": [
+        {
+          "css": ".vtmn-price"
+        },
+        {
+          "css": "[data-testid=price]"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "cf_chl_opt",
+        "challenge-platform/h/",
+        "Just a moment..."
+      ],
+      "notas": "Ya la página de categoría responde 403 «Just a moment...» (desafío de Cloudflare, cf_chl_opt). Reglas conservadas del tiendas.json actual, sin comprobar.",
+      "plataforma": "Propia tras Cloudflare",
+      "comprobado": "2026-11-02: bloqueada (403 desafío Cloudflare)",
+      "navegador": true
+    },
+    {
+      "id": "deporvillage",
+      "nombre": "Deporvillage",
+      "dominios": [
+        "deporvillage.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Complete la verificación de seguridad",
+        "cf_chl_opt",
+        "challenge-platform/h/",
+        "Just a moment..."
+      ],
+      "notas": "403 con el desafío de Cloudflare en español: «Un paso más. Complete la verificación de seguridad para acceder a deporvillage.com».",
+      "plataforma": "Propia tras Cloudflare",
+      "comprobado": "2026-11-02: bloqueada (403 desafío Cloudflare)",
+      "navegador": true
+    },
+    {
+      "id": "desigual",
+      "nombre": "Desigual",
+      "dominios": [
+        "desigual.com"
+      ],
+      "precio": [
+        {
+          "css": ".product-detail .prices .sales meta[itemprop=price]",
+          "atributo": "content"
+        },
+        {
+          "css": ".product-detail .prices .sales"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1.product-name"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "No hay JSON-LD Product (solo Organization). El precio va en microdatos <meta itemprop=price>, pero en los artículos rebajados el primero es el tachado (dentro de .strike-through) y el segundo el rebajado (dentro de .sales), y hay muchos más de productos recomendados. Por eso se lee el meta de .sales dentro del bloque principal (.product-detail).",
+      "plataforma": "Salesforce Commerce Cloud",
+      "comprobado": "2026-11-02: precio por selector (microdatos ambiguos)"
+    },
+    {
+      "id": "dia",
+      "nombre": "Dia",
+      "dominios": [
+        "dia.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "errors.edgesuite.net"
+      ],
+      "notas": "Akamai responde 403 «Access Denied» en portada y producto. No se pudo verificar la URL de producto (formato /<categoría>/<subcategoría>/p/<id>).",
+      "plataforma": "propia (tras Akamai)",
+      "comprobado": "2026-11-02: bloqueada 403",
+      "navegador": true
+    },
+    {
+      "id": "dosfarma",
+      "nombre": "DosFarma",
+      "dominios": [
+        "dosfarma.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "AtaVerifyCaptcha",
+        "<title>Captcha Page"
+      ],
+      "notas": "Misma página de verificación que Atida («Captcha Page», /AtaVerifyCaptcha) en portada y producto.",
+      "plataforma": "propia (tras Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada 403",
+      "navegador": true
+    },
+    {
+      "id": "douglas",
+      "nombre": "Douglas",
+      "dominios": [
+        "douglas.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Request Too Long",
+        "The size of the request headers is too long"
+      ],
+      "notas": "Tanto la portada como la página de producto responden 400 «Bad Request - Request Too Long» (Akamai, cookie akavpau_VP-ES) a una descarga simple. Como 400 no está en la lista de estados de bloqueo, se añade el texto a «bloqueo». No se pudo comprobar la URL de producto (formato /es/p/<código>).",
+      "plataforma": "propia (headless, tras Akamai)",
+      "comprobado": "2026-11-02: bloqueada 400",
+      "navegador": true
+    },
+    {
+      "id": "druni",
+      "nombre": "Druni",
+      "dominios": [
+        "druni.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD ProductGroup con un Product por tamaño (hasVariant); la extracción genérica toma el primer Product (80 ml, 94,95) mientras que product:price:amount y la página muestran «Tan bajo como 51,95» (el tamaño más barato). Ambos son válidos; si se quiere un tamaño concreto el usuario debe poner selector propio. Misma plantilla que Arenal (cookie dr_jid).",
+      "plataforma": "Magento 2 (tema Hyvä)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "ebay",
+      "nombre": "eBay",
+      "dominios": [
+        "ebay.es",
+        "ebay.com",
+        "ebay.co.uk",
+        "ebay.de",
+        "ebay.fr",
+        "ebay.it"
+      ],
+      "precio": [
+        {
+          "css": ".x-price-primary .ux-textspans"
+        },
+        {
+          "css": "#prcIsum"
+        },
+        {
+          "css": "#mm-saleDscPrc"
+        },
+        {
+          "css": "[itemprop=price]",
+          "atributo": "content"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1.x-item-title__mainTitle .ux-textspans"
+        },
+        {
+          "css": "#itemTitle"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": ".d-quantity__availability, #qtySubTxt",
+          "agotado": [
+            "agotado",
+            "out of stock",
+            "no disponible"
+          ]
+        }
+      ],
+      "bloqueo": [
+        "Something went wrong on our end"
+      ],
+      "notas": "Bloqueada: 403 de Akamai Bot Manager (cookies bm_s/bm_so) con «Error Page | eBay – SORRY Something went wrong on our end». Reglas sin poder comprobar.",
+      "plataforma": "Propia (Akamai Bot Manager)",
+      "comprobado": "2026-11-02: bloqueada: 403 Akamai (Error Page)",
+      "navegador": true
+    },
+    {
+      "id": "elcorteingles",
+      "nombre": "El Corte Inglés",
+      "dominios": [
+        "elcorteingles.es"
+      ],
+      "precio": [
+        {
+          "css": ".price-sale"
+        },
+        {
+          "css": ".js-price-sale"
+        },
+        {
+          "css": "[data-synth=LOCATOR_PRECIO_OFERTA]"
+        },
+        {
+          "css": "[data-synth=LOCATOR_PRECIO_ACTUAL]"
+        },
+        {
+          "css": ".price._big"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1.product_detail-title"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": ".product_detail-add_to_cart, .js-add-to-cart",
+          "agotado": [
+            "agotado",
+            "no disponible"
+          ]
+        }
+      ],
+      "bloqueo": [
+        "Access Denied",
+        "errors.edgesuite.net"
+      ],
+      "notas": "Bloqueada: 403 de Akamai («Access Denied … errors.edgesuite.net»). Reglas sin poder comprobar. Mismo dominio que la entrada «elcorteingles» que ya existe en tiendas.json: no añadir como tienda aparte (solo se anota el resultado). Akamai responde 403 «Access Denied» en /supermercado/.",
+      "plataforma": "Propia (Akamai)",
+      "comprobado": "2026-11-02: bloqueada: 403 Akamai Access Denied",
+      "navegador": true
+    },
+    {
+      "id": "elganso",
+      "nombre": "El Ganso",
+      "dominios": [
+        "elganso.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "awsWafCookieDomainList",
+        "gokuProps"
+      ],
+      "notas": "Ya la página de categoría responde HTTP 202 con el desafío JavaScript de AWS WAF (window.awsWafCookieDomainList, window.gokuProps), sin contenido.",
+      "plataforma": "Magento 2 tras AWS WAF",
+      "comprobado": "2026-11-02: bloqueada (202 desafío AWS WAF)",
+      "navegador": true
+    },
+    {
+      "id": "electrocosto",
+      "nombre": "Electrocosto",
+      "dominios": [
+        "electrocosto.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1.product-name"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto. OJO: una ficha retirada redirige a la categoría (200) y su ItemList trae Product con precio: la genérica devuelve el precio de otro artículo (pasó con samsung-ue55cu7172 -> 511,07 de un LG). Conviene que la app avise si la URL final cambia a una categoría.",
+      "plataforma": "Propia (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 511.07 EUR (JSON-LD), InStock. Respondió 200. Las fichas de los buscadores redirigían a la categoría o daban 404."
+    },
+    {
+      "id": "eneba",
+      "nombre": "Eneba",
+      "dominios": [
+        "eneba.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD con AggregateOffer (lowPrice y ofertas de vendedores): la genérica coge la más barata, que es la que muestra la web.",
+      "plataforma": "React/Apollo (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 31.64 EUR (JSON-LD AggregateOffer, la oferta más barata), InStock. Respondió 200."
+    },
+    {
+      "id": "eroski",
+      "nombre": "Eroski",
+      "dominios": [
+        "supermercado.eroski.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD ni metas de precio; hay un único span.offer-now con itemprop=price y texto «0,95» (sin atributo content), que basta para la extracción genérica (microdatos). Nombre en h1.description-title. Sin dato de disponibilidad. Misma plataforma que Caprabo.",
+      "plataforma": "Apache Tapestry (propia)",
+      "comprobado": "2026-11-02: precio por microdatos"
+    },
+    {
+      "id": "euronics",
+      "nombre": "Euronics",
+      "dominios": [
+        "euronics.es"
+      ],
+      "precio": [
+        {
+          "css": "span.unit_price"
+        },
+        {
+          "css": "input#cartPrice",
+          "atributo": "value"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "span.availability",
+          "agotado": [
+            "outofstock",
+            "soldout",
+            "discontinued"
+          ]
+        },
+        {
+          "css": "h2.aviso",
+          "agotado": [
+            "sin stock"
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Con stock trae JSON-LD Product correcto y los span ocultos unit_price/availability. Una ficha antigua sin stock (samsung-ue43tu7105kxxc) no trae precio en ningún sitio y avisa con h2.aviso 'Producto sin stock…'. El <title> lleva '| Compra en Euronics.es' pegado: mejor el h1.",
+      "plataforma": "Sinersis E-Commerce",
+      "comprobado": "2026-11-02: selector/genérica: 609.00 EUR (span.unit_price = JSON-LD), inStock. Respondió 200."
+    },
+    {
+      "id": "expert",
+      "nombre": "Expert",
+      "dominios": [
+        "expert.es"
+      ],
+      "precio": [
+        {
+          "css": "span.gtag-precio[data-precio]",
+          "atributo": "data-precio"
+        },
+        {
+          "css": ".ex-precio"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "h1",
+          "agotado": [
+            "producto no disponible"
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD Product ni metadatos de precio. span.gtag-precio lleva data-precio='488.00'. Una ficha retirada muestra h1 'Producto no disponible' (y la palabra captcha del reCAPTCHA hace que la app la tome por bloqueo).",
+      "plataforma": "Propia (PHP, UIkit)",
+      "comprobado": "2026-11-02: selector: 488.00 EUR (span.gtag-precio data-precio). La genérica no da nada y además marca bloqueo por la palabra 'captcha' (script de reCAPTCHA)."
+    },
+    {
+      "id": "farmaciabarata",
+      "nombre": "Farmacia Barata",
+      "dominios": [
+        "farmaciabarata.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product, product:price:amount y og:availability. Variable global prestashop = {...} también trae el precio.",
+      "plataforma": "PrestaShop 1.7",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "farmaciaencasa",
+      "nombre": "Farmacia en casa",
+      "dominios": [
+        "farmaciaencasaonline.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product y product:price:amount.",
+      "plataforma": "PrestaShop (Elementor)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "farmaciasdirect",
+      "nombre": "Farmaciasdirect",
+      "dominios": [
+        "farmaciasdirect.es",
+        "farmaciasdirect.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "farmaciasdirect.com redirige a farmaciasdirect.es. JSON-LD Product con price como texto «19.5». Al ser Shopify, también vale <url>.js o <url>.json (precio en céntimos).",
+      "plataforma": "Shopify",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "farmavazquez",
+      "nombre": "Farmavazquez",
+      "dominios": [
+        "farmavazquez.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "#availability_value",
+          "agotado": [
+            "agotado",
+            "no disponible",
+            "sin stock",
+            "fuera de stock",
+            "ya no está en stock",
+            "no está disponible"
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD de producto: el precio sale de product:price:amount (39.00) y de meta itemprop=price. La disponibilidad solo está en microdatos (link itemprop=availability) y en #availability_value (vacío si hay stock), de ahí la regla.",
+      "plataforma": "PrestaShop 1.6",
+      "comprobado": "2026-11-02: precio por metadatos"
+    },
+    {
+      "id": "feuvert",
+      "nombre": "Feu Vert",
+      "dominios": [
+        "feuvert.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "captcha-delivery.com",
+        "Please enable JS and disable any ad blocker"
+      ],
+      "notas": "Bloqueada: 403 de DataDome («Please enable JS and disable any ad blocker»).",
+      "plataforma": "Propia (DataDome)",
+      "comprobado": "2026-11-02: bloqueada: 403 DataDome",
+      "navegador": true
+    },
+    {
+      "id": "fnac",
+      "nombre": "Fnac",
+      "dominios": [
+        "fnac.es",
+        "fnac.com",
+        "fnac.pt"
+      ],
+      "precio": [
+        {
+          "css": "span.f-faPriceBox__price"
+        },
+        {
+          "css": ".f-faPriceBox__price.userPrice"
+        },
+        {
+          "css": ".userPrice"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1.f-productHeader__heading"
+        },
+        {
+          "css": "h1.f-productHeader-Title"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "FNAC DARTY - Maintenance",
+        "no está disponible actualmente"
+      ],
+      "notas": "Bloqueada: 403 de Akamai con una página «FNAC DARTY - Maintenance / Lo sentimos, Fnac.es no está disponible actualmente» (también en la ficha de libro). Reglas sin poder comprobar.",
+      "plataforma": "Propia (Akamai)",
+      "comprobado": "2026-11-02: bloqueada: 403 Akamai (página de 'Maintenance')",
+      "navegador": true
+    },
+    {
+      "id": "footlocker",
+      "nombre": "Foot Locker",
+      "dominios": [
+        "footlocker.es",
+        "footlocker.com",
+        "footlocker.eu"
+      ],
+      "precio": [
+        {
+          "css": ".ProductDetails-form__price [data-testid=Sale] span[aria-hidden=true]"
+        },
+        {
+          "css": ".ProductDetails-form__price [data-testid=ProductPrice] > span.font-medium"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1#pageTitle"
+        }
+      ],
+      "imagen": [
+        {
+          "css": "img[data-id=ProductImage]",
+          "atributo": "src"
+        }
+      ],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El JSON-LD es un ProductGroup con TODOS los colores del modelo como variantes, y la primera no es la de la URL (aquí 314101995604 frente a 314101996404). Comprobado con otra ficha rebajada (314102199404): el JSON-LD daba 119,99 y la página cobra 100,00. Por eso se lee el precio pintado: en rebaja va en [data-testid=Sale] span[aria-hidden=true] («€ 100,00»), si no en span.font-medium («€ 119,99»). La imagen del JSON-LD también es de otro color: se toma la de la galería.",
+      "plataforma": "SAP Commerce (Hybris) con front React",
+      "comprobado": "2026-11-02: precio por selector (el JSON-LD mezcla colores)"
+    },
+    {
+      "id": "forumsport",
+      "nombre": "Forum Sport",
+      "dominios": [
+        "forumsport.com"
+      ],
+      "precio": [
+        {
+          "css": ".price-tag-big .price-content span.price"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1.model"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El JSON-LD es un ProductGroup (57.61) cuya primera variante Product trae otro precio (40.19), y product:price:amount es el precio tachado (66.99). El precio que se paga está en .price-tag-big .price-content span.price («57,61 €»; el tachado en span.previous-price). El nombre de la variante es solo «BARREDA», por eso se usa h1.model («adidas BARREDA»). Usa sala de espera de Cloudflare en picos (cookie __cfwaitingroom_fs).",
+      "plataforma": "SAP Commerce (Hybris)",
+      "comprobado": "2026-11-02: precio por selector (JSON-LD y metadatos engañosos)"
+    },
+    {
+      "id": "gadis",
+      "nombre": "Gadis",
+      "dominios": [
+        "gadisline.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con price «1.99» pero sin availability (se da por disponible si hay precio). La página no tiene h1; el nombre sale del JSON-LD.",
+      "plataforma": "Next.js",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "game",
+      "nombre": "GAME",
+      "dominios": [
+        "game.es"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "MAL ANTES: '.buy--price' y '.product-price' ya no existen (web nueva en Next.js); no hacían daño porque se caía al JSON-LD. El JSON-LD da el precio de nuevo (81,99); el 'Desde 54,99€' visible es el seminuevo.",
+      "plataforma": "Next.js propia",
+      "comprobado": "2026-11-02: genérica: 81.99 EUR (JSON-LD), InStock. Redirigió a /mando-inalambrico-dualsense-sterling-silver/224122."
+    },
+    {
+      "id": "hm",
+      "nombre": "H&M (incluye H&M Home)",
+      "dominios": [
+        "hm.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Access Denied",
+        "errors.edgesuite.net"
+      ],
+      "notas": "Responde 403 «Access Denied - You don't have permission to access ... Reference #... errors.edgesuite.net» (Akamai). Igual con H&M Home (probado https://www2.hm.com/es_es/productpage.1198888001.html, mismo dominio y mismo 403).",
+      "plataforma": "Propia tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "hipercor",
+      "nombre": "Hipercor",
+      "dominios": [
+        "hipercor.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "errors.edgesuite.net"
+      ],
+      "notas": "Akamai responde 403 «Access Denied» en portada y producto.",
+      "plataforma": "propia (El Corte Inglés, tras Akamai)",
+      "comprobado": "2026-11-02: bloqueada 403",
+      "navegador": true
+    },
+    {
+      "id": "ikea",
+      "nombre": "IKEA",
+      "dominios": [
+        "ikea.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1 .pip-header-section__title--big"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Publica JSON-LD de producto con el precio completo: no se ponen selectores de precio porque irían antes que el JSON-LD y la web parte el importe (entero y decimales por separado, .pipcom-price__integer). El h1 ya no tiene .pip-header-section__title--big (ahora usa clases pipcom-*), así que el título cae en «h1», que funciona.",
+      "plataforma": "Propia",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "imaginarium",
+      "nombre": "Imaginarium",
+      "dominios": [
+        "imaginarium.es"
+      ],
+      "precio": [
+        {
+          "css": "#our_price_display",
+          "atributo": "content"
+        },
+        {
+          "css": "#our_price_display"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "imaginarium.es redirige a juguettos.com (la marca la vende ahora Juguettos). Probada una ficha de Imaginarium en Juguettos (https://juguettos.com/peluches/96254-imaginarium-pinkinico-peluche-20-cm-personalizado-9982723900021.html): hay <meta itemprop=price content=\"0\"> de otros productos, por eso se lee #our_price_display (19,99 €). Si la app aplica las reglas por el dominio final, valen las de Juguettos.",
+      "plataforma": "PrestaShop 1.6 (Juguettos)",
+      "comprobado": "2026-11-02: precio por selector (redirige a Juguettos)"
+    },
+    {
+      "id": "instantgaming",
+      "nombre": "Instant Gaming",
+      "dominios": [
+        "instant-gaming.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1.game-title"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "meta[itemprop=availability][content$=OutOfStock], meta[itemprop=availability][content$=outOfStock], link[itemprop=availability][href$=OutOfStock]",
+          "agotado": [
+            ""
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD Product; meta itemprop=price '40.29' y availability. El precio visible se pinta con Vue (plantillas %% … %%). og:title añade 'Comprar' y la región.",
+      "plataforma": "Propia (Vue, Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 40.29 EUR (meta itemprop=price), disponible. Respondió 200."
+    },
+    {
+      "id": "intersport",
+      "nombre": "Intersport",
+      "dominios": [
+        "intersport.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Descarga bien, pero el JSON-LD Product no tiene offers y los datos de PrestaShop incrustados dicen price 0 e is_catalog true; el navegador pide el precio después a https://www.intersport.es/module/approsearch/price. Sin navegador no hay precio.",
+      "plataforma": "PrestaShop",
+      "comprobado": "2026-11-02: sin precio en el HTML (se carga con JavaScript)",
+      "navegador": true
+    },
+    {
+      "id": "izarmicro",
+      "nombre": "IzarMicro",
+      "dominios": [
+        "izarmicro.net"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "La web sirve un certificado caducado: la descarga falla antes de llegar al HTML. No es un bloqueo.",
+      "plataforma": "Desconocida",
+      "comprobado": "2026-11-02: error: certificado TLS caducado (CERTIFICATE_VERIFY_FAILED)"
+    },
+    {
+      "id": "jdsports",
+      "nombre": "JD Sports",
+      "dominios": [
+        "jdsports.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con precio (número) y disponibilidad. HTML grande (1,6 MB).",
+      "plataforma": "Propia headless con Next.js",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "juguetilandia",
+      "nombre": "Juguetilandia",
+      "dominios": [
+        "juguetilandia.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "meta[itemprop=availability][content$=OutOfStock], meta[itemprop=availability][content$=outOfStock], link[itemprop=availability][href$=OutOfStock]",
+          "agotado": [
+            ""
+          ]
+        },
+        {
+          "css": ".fa-no-disponible",
+          "agotado": [
+            "agotado"
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD; microdatos con meta itemprop=price '54.99' y availability 'OutOfStock'. La genérica no lee itemprop=availability y daría 'disponible': por eso la regla. También muestra '.fa-no-disponible' con 'Agotado'. El precio visible está partido ('54, 99').",
+      "plataforma": "Propia (Vue)",
+      "comprobado": "2026-11-02: genérica: 54.99 EUR (meta itemprop=price); agotado solo con la regla 'disponible'. Respondió 200."
+    },
+    {
+      "id": "juguettos",
+      "nombre": "Juguettos",
+      "dominios": [
+        "juguettos.com"
+      ],
+      "precio": [
+        {
+          "css": "#our_price_display",
+          "atributo": "content"
+        },
+        {
+          "css": "#our_price_display"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD Product. El precio está en span#our_price_display itemprop=price content=\"15.99\" y la disponibilidad en link itemprop=availability. En otras fichas aparecen antes <meta itemprop=price content=\"0\"> de productos relacionados, así que se fija #our_price_display.",
+      "plataforma": "PrestaShop 1.6",
+      "comprobado": "2026-11-02: precio por microdatos (con selector de refuerzo)"
+    },
+    {
+      "id": "jysk",
+      "nombre": "JYSK",
+      "dominios": [
+        "jysk.es"
+      ],
+      "precio": [
+        {
+          "css": ".theme-product-price-value"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1 .inline.text-lg"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Las fichas que ya no existen redirigen a su categoría (no es un bloqueo; pasó con dos URL del buscador). El JSON-LD es un ProductGroup con offers propio y variantes de otros colores: la primera variante («- Gris») puede no ser la de la página, así que se lee el precio pintado (span.theme-product-price-value, «70,00 €») y el nombre del h1 sin la marca repetida.",
+      "plataforma": "Propia con Next.js",
+      "comprobado": "2026-11-02: precio por selector (el JSON-LD lleva variantes)"
+    },
+    {
+      "id": "kavehome",
+      "nombre": "Kave Home",
+      "dominios": [
+        "kavehome.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product (repetido dos veces) con precio, availability y priceSpecification RegularPrice.",
+      "plataforma": "Propia con Next.js (Vercel)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "kiabi",
+      "nombre": "Kiabi",
+      "dominios": [
+        "kiabi.es",
+        "kiabi.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "geo.captcha-delivery.com",
+        "Please enable JS and disable any ad blocker"
+      ],
+      "notas": "403 con la página de DataDome («Please enable JS and disable any ad blocker», script con host geo.captcha-delivery.com).",
+      "plataforma": "Propia tras DataDome",
+      "comprobado": "2026-11-02: bloqueada (403 DataDome)",
+      "navegador": true
+    },
+    {
+      "id": "kiko",
+      "nombre": "KIKO Milano",
+      "dominios": [
+        "kikocosmetics.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con Offer (precio y availability; el tono probado venía OutOfStock). Cookies __uzma… (ShieldSquare/Radware) pero no bloqueó.",
+      "plataforma": "Next.js (propia)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "kinguin",
+      "nombre": "Kinguin",
+      "dominios": [
+        "kinguin.net"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Access Denied",
+        "errors.edgesuite.net"
+      ],
+      "notas": "Bloqueada: 403 «Access Denied … errors.edgesuite.net».",
+      "plataforma": "Propia (Akamai)",
+      "comprobado": "2026-11-02: bloqueada: 403 Akamai Access Denied",
+      "navegador": true
+    },
+    {
+      "id": "kiwoko",
+      "nombre": "Kiwoko",
+      "dominios": [
+        "kiwoko.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Igual que Tiendanimal: ProductGroup con un Product por talla; la genérica toma el primero (12,59).",
+      "plataforma": "Salesforce Commerce Cloud",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "kompymascotas",
+      "nombre": "Kompy Mascotas (antes Piensos y Mascotas)",
+      "dominios": [
+        "kompymascotas.com",
+        "piensoymascotas.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "piensoymascotas.com redirige a kompymascotas.com. JSON-LD Product con la combinación de la URL (15 kg, 45,89) y product:price:amount.",
+      "plataforma": "PrestaShop",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "lacentral",
+      "nombre": "La Central",
+      "dominios": [
+        "lacentral.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1#libro__titulo"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD con @type ['Book','Product'] correcto; el name trae entidades ('a&#xF1;os'): mejor el h1.",
+      "plataforma": "Propia (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 12.95 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "ldlc",
+      "nombre": "LDLC",
+      "dominios": [
+        "ldlc.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto. El precio visible es '109€<sup>95</sup>' (texto '109€ 95' -> 109): no poner selectores de precio. Las fichas de segunda mano retiradas (p. ej. PB00713675) no traen Product ni precio.",
+      "plataforma": "Propia",
+      "comprobado": "2026-11-02: genérica: 109.95 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "lefties",
+      "nombre": "Lefties",
+      "dominios": [
+        "lefties.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "bm-verify=",
+        "/_sec/verify?provider=interstitial",
+        "/interstitial/ic.html"
+      ],
+      "notas": "La descarga simple devuelve HTTP 200 con una página de unos 2 KB que solo contiene el desafío de Akamai Bot Manager (meta refresh con ?bm-verify=..., iframe /interstitial/ic.html y POST a /_sec/verify?provider=interstitial). No trae nombre, precio ni JSON-LD. La web real es una SPA que carga el producto por la API JSON de Inditex (/itxrest/2/catalog/store/{storeId}/{catalogId}/category/0/product/{productId}/detail?languageId=-5&appId=1; Zara además acepta ?ajax=true en la propia URL de producto), pero esas llamadas pasan por el mismo Akamai: la prueba de Zara con ?ajax=true devolvió el mismo desafío. Sin navegador no es viable.",
+      "plataforma": "Inditex (plataforma propia, SPA) tras Akamai Bot Manager",
+      "comprobado": "2026-11-02: bloqueada (HTTP 200 con desafío interstitial de Akamai, sin datos del producto)",
+      "navegador": true
+    },
+    {
+      "id": "leroymerlin",
+      "nombre": "Leroy Merlin",
+      "dominios": [
+        "leroymerlin.es"
+      ],
+      "precio": [
+        {
+          "css": "[data-testid=price-value]"
+        },
+        {
+          "css": ".m-price__amount"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "geo.captcha-delivery.com",
+        "Please enable JS and disable any ad blocker"
+      ],
+      "notas": "403 con la página de DataDome (geo.captcha-delivery.com). Reglas conservadas del tiendas.json actual, sin comprobar.",
+      "plataforma": "Propia tras DataDome",
+      "comprobado": "2026-11-02: bloqueada (403 DataDome)",
+      "navegador": true
+    },
+    {
+      "id": "levis",
+      "nombre": "Levi's",
+      "dominios": [
+        "levi.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Access Denied",
+        "errors.edgesuite.net"
+      ],
+      "notas": "403 «Access Denied» de Akamai (errors.edgesuite.net).",
+      "plataforma": "SAP Commerce (Hybris) tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "lidl",
+      "nombre": "Lidl",
+      "dominios": [
+        "lidl.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Ya está en tiendas.json. JSON-LD Product con price numérico y availability «OnlineOnly» (sin URL de schema.org). La tienda online de Lidl España vende sobre todo bazar, no alimentación.",
+      "plataforma": "SAP Commerce + Nuxt",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "lolahome",
+      "nombre": "LOLAhome (ahora Casa Selección)",
+      "dominios": [
+        "lolahome.es",
+        "casaseleccion.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "lolahome.es redirige a https://www.casaseleccion.es/ (cambio de marca; la ficha antigua ya no existe) y esa tienda Shopify responde 429 «Too many requests» a la primera petición.",
+      "plataforma": "Shopify",
+      "comprobado": "2026-11-02: bloqueada (429)",
+      "navegador": true
+    },
+    {
+      "id": "lookfantastic",
+      "nombre": "Lookfantastic",
+      "dominios": [
+        "lookfantastic.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD ProductGroup con un Product por tono; la genérica toma el primero. Cloudflare no bloqueó la descarga simple.",
+      "plataforma": "THG Ingenuity (Astro, tras Cloudflare)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "maisonsdumonde",
+      "nombre": "Maisons du Monde",
+      "dominios": [
+        "maisonsdumonde.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "geo.captcha-delivery.com",
+        "Please enable JS and disable any ad blocker"
+      ],
+      "notas": "403 con la página de DataDome.",
+      "plataforma": "Propia tras DataDome",
+      "comprobado": "2026-11-02: bloqueada (403 DataDome)",
+      "navegador": true
+    },
+    {
+      "id": "mango",
+      "nombre": "Mango",
+      "dominios": [
+        "mango.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "No publica JSON-LD de producto, pero sí <meta itemprop=\"price\" content=\"129.99\"> (precio actual) y og:image, así que la extracción genérica basta. El og:title lleva el sufijo « | MANGO España (Península y Baleares)», por eso el nombre se lee del h1. No hay disponibilidad en metadatos: se da por disponible si hay precio.",
+      "plataforma": "Propia con Next.js (servida desde Vercel), renderizada en servidor",
+      "comprobado": "2026-11-02: precio por microdatos (meta itemprop=price)"
+    },
+    {
+      "id": "manomano",
+      "nombre": "ManoMano",
+      "dominios": [
+        "manomano.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "cf_chl_opt",
+        "challenge-platform/h/",
+        "Just a moment..."
+      ],
+      "notas": "403 «Just a moment...» (desafío de Cloudflare).",
+      "plataforma": "Propia tras Cloudflare",
+      "comprobado": "2026-11-02: bloqueada (403 desafío Cloudflare)",
+      "navegador": true
+    },
+    {
+      "id": "maquillalia",
+      "nombre": "Maquillalia",
+      "dominios": [
+        "maquillalia.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con Offer, precio y disponibilidad. También div.product-sheet__prices-wrapper[data-price].",
+      "plataforma": "osCommerce (propia)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "marvimundo",
+      "nombre": "Marvimundo",
+      "dominios": [
+        "marvimundo.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con una Offer por tamaño; la genérica toma la más barata (= «Desde 39,29»). Ojo: los span[data-price-amount] incluyen el precio antiguo (data-price-type=oldPrice) antes que el final.",
+      "plataforma": "Magento 2",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "mascotaplanet",
+      "nombre": "Mascota Planet",
+      "dominios": [
+        "mascotaplanet.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "#product-availability",
+          "agotado": [
+            "agotado",
+            "no disponible",
+            "sin stock",
+            "fuera de stock",
+            "no hay suficientes"
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "El JSON-LD de Product está mal formado (carácter de control sin escapar dentro de un texto) y se ignora; el precio sale bien de product:price:amount (24.95). Ojo: un span itemprop=price tiene content=\"24\" (sin decimales) y hay meta itemprop=price de otros productos; los metadatos product:price van antes y son correctos. La regla de disponibilidad usa #product-availability (vacío si hay stock).",
+      "plataforma": "PrestaShop 1.7",
+      "comprobado": "2026-11-02: precio por metadatos (JSON-LD mal formado)"
+    },
+    {
+      "id": "massimodutti",
+      "nombre": "Massimo Dutti",
+      "dominios": [
+        "massimodutti.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "bm-verify=",
+        "/_sec/verify?provider=interstitial",
+        "/interstitial/ic.html"
+      ],
+      "notas": "La descarga simple devuelve HTTP 200 con una página de unos 2 KB que solo contiene el desafío de Akamai Bot Manager (meta refresh con ?bm-verify=..., iframe /interstitial/ic.html y POST a /_sec/verify?provider=interstitial). No trae nombre, precio ni JSON-LD. La web real es una SPA que carga el producto por la API JSON de Inditex (/itxrest/2/catalog/store/{storeId}/{catalogId}/category/0/product/{productId}/detail?languageId=-5&appId=1; Zara además acepta ?ajax=true en la propia URL de producto), pero esas llamadas pasan por el mismo Akamai: la prueba de Zara con ?ajax=true devolvió el mismo desafío. Sin navegador no es viable.",
+      "plataforma": "Inditex (plataforma propia, SPA) tras Akamai Bot Manager",
+      "comprobado": "2026-11-02: bloqueada (HTTP 200 con desafío interstitial de Akamai, sin datos del producto)",
+      "navegador": true
+    },
+    {
+      "id": "mediamarkt",
+      "nombre": "MediaMarkt",
+      "dominios": [
+        "mediamarkt.es",
+        "mediamarkt.de",
+        "mediamarkt.it",
+        "mediamarkt.pt",
+        "mediamarkt.nl"
+      ],
+      "precio": [
+        {
+          "css": "[data-test=mms-product-price] [data-test~=mms-branded-price] > div > div > span:not([aria-hidden])"
+        },
+        {
+          "css": "[data-test~=mms-price]"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El JSON-LD es BuyAction.object = ProductGroup con offers propios (115,38, lo que se ve) y hasVariant con Product (99,99, el de MediaMarkt): la genérica solo mira Product y se queda con la variante. El importe visible está partido en branded-price-whole-value '115,' y decimal '38' (texto '115, 38 €' -> 115), pero al lado hay un span para lectores de pantalla con '115,38€' completo: es el que leen estas reglas. El h1[data-test=mms-select-details-header] ya no existe.",
+      "plataforma": "Next.js propia (Cloudflare)",
+      "comprobado": "2026-11-02: selector: 115.38 EUR (el precio que se ve; vendedor externo). La genérica da 99.99 (una variante de hasVariant). Respondió 200; la URL redirigió a otra ficha (98939819)."
+    },
+    {
+      "id": "mercadona",
+      "nombre": "Mercadona",
+      "dominios": [
+        "tienda.mercadona.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El HTML solo trae <title> y og:title/og:image (sin precio). API pública por producto: de https://tienda.mercadona.es/product/<id>/<slug> se saca <id> y se pide https://tienda.mercadona.es/api/products/<id>/ (JSON, sin autenticación). Precio a pagar: price_instructions.unit_price (texto «16.75», precio de la unidad/envase); price_instructions.bulk_price es el precio por kg/l (reference_format) y previous_unit_price el anterior (con espacios delante). Nombre: display_name; imagen: photos[0].regular; disponible si published es true y unavailable_from es null. El precio depende del almacén (código postal); sin cookie se usa el almacén por defecto. Cookies de Akamai Bot Manager (_abck) pero no bloqueó.",
+      "plataforma": "SPA React + API JSON",
+      "comprobado": "2026-11-02: SPA: precio solo en API",
+      "api": {
+        "id_desde_url": "/product/(\\d+)",
+        "url": "https://tienda.mercadona.es/api/products/{id}/",
+        "precio": [
+          "price_instructions.unit_price"
+        ],
+        "nombre": [
+          "display_name"
+        ],
+        "imagen": [
+          "photos.0.regular"
+        ],
+        "disponible": {
+          "ruta": "published",
+          "igual": true
+        }
+      }
+    },
+    {
+      "id": "milar",
+      "nombre": "Milar",
+      "dominios": [
+        "milar.es"
+      ],
+      "precio": [
+        {
+          "css": "span.unit_price"
+        },
+        {
+          "css": "input#cartPrice",
+          "atributo": "value"
+        }
+      ],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "span.availability",
+          "agotado": [
+            "outofstock",
+            "soldout",
+            "discontinued"
+          ]
+        },
+        {
+          "css": "h2.aviso",
+          "agotado": [
+            "sin stock"
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Misma plataforma que Euronics y Tien 21. Precio visible '676€' sin decimales. El h1 incluye también la línea de características: el nombre sale mejor del JSON-LD.",
+      "plataforma": "Sinersis E-Commerce",
+      "comprobado": "2026-11-02: selector/genérica: 676.00 EUR (span.unit_price = JSON-LD), inStock. Respondió 200."
+    },
+    {
+      "id": "miravia",
+      "nombre": "Miravia",
+      "dominios": [
+        "miravia.es"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "punish",
+        "x5secdata"
+      ],
+      "notas": "MAL ANTES: '[class*=price--current]' y '.pdp-price' no existen; el JSON-LD Product es correcto. El name del JSON-LD termina en ' | Miravia': mejor el h1.",
+      "plataforma": "Lazada/Alibaba (Tengine)",
+      "comprobado": "2026-11-02: genérica: 68.49 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "miscota",
+      "nombre": "Miscota",
+      "dominios": [
+        "miscota.es"
+      ],
+      "precio": [
+        {
+          "css": "#products-variations li:not(.no-stock) [itemprop=price]",
+          "atributo": "content"
+        },
+        {
+          "css": "#products-variations li:not(.no-stock) .variation-price"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1.product-name"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "#products-variations li:not(.no-stock)",
+          "agotado": []
+        },
+        {
+          "css": "#products-variations li.no-stock",
+          "agotado": [
+            ""
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD. Hay microdatos Offer por formato (li[itemprop=offers]) y el primero puede estar sin stock con un precio sin sentido (300 g: 2,46, «Consultar stock»), que es lo que cogería la genérica (meta itemprop=price). El selector toma el primer formato con stock (1,5 kg: 13,69).",
+      "plataforma": "propia (PHP, tras Cloudflare)",
+      "comprobado": "2026-11-02: precio por selector"
+    },
+    {
+      "id": "motocard",
+      "nombre": "Motocard",
+      "dominios": [
+        "motocard.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Just a moment...",
+        "Enable JavaScript and cookies to continue",
+        "cf_chl_opt"
+      ],
+      "notas": "Bloqueada: 403 desafío de Cloudflare.",
+      "plataforma": "Propia (Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada: 403 Cloudflare",
+      "navegador": true
+    },
+    {
+      "id": "musicopolix",
+      "nombre": "Musicopolix",
+      "dominios": [
+        "musicopolix.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "«Musicopolis» (musicopolis.es) es una revista musical sin tienda; la tienda de instrumentos es Musicopolix. JSON-LD y product:price:amount correctos.",
+      "plataforma": "PrestaShop (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 925.00 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "mustang",
+      "nombre": "Mustang (MTNG)",
+      "dominios": [
+        "mustang.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "La conexión HTTPS falla con «certificate verify failed: self-signed certificate». La app dará error de conexión (no se debe desactivar la comprobación del certificado). Volver a probar más adelante.",
+      "plataforma": "Desconocida",
+      "comprobado": "2026-11-02: error (certificado TLS no válido)"
+    },
+    {
+      "id": "neobyte",
+      "nombre": "Neobyte",
+      "dominios": [
+        "neobyte.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Just a moment...",
+        "Enable JavaScript and cookies to continue",
+        "cf_chl_opt"
+      ],
+      "notas": "Bloqueada: 403 desafío de Cloudflare («Just a moment…»).",
+      "plataforma": "Desconocida (Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada: 403 Cloudflare",
+      "navegador": true
+    },
+    {
+      "id": "newbalance",
+      "nombre": "New Balance",
+      "dominios": [
+        "newbalance.es",
+        "newbalance.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "403 de Akamai con una página mínima titulada «New Balance Shoes & Apparel | Official New Balance® Site».",
+      "plataforma": "Salesforce Commerce Cloud tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "nike",
+      "nombre": "Nike",
+      "dominios": [
+        "nike.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1#pdp_product_title"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Descarga bien (redirige a la URL canónica). El JSON-LD es una lista con un ProductGroup cuyas variantes (un Product por talla del mismo color) llevan el precio; las tallas agotadas vienen sin offers y no hay availability (se da por disponible si hay precio). El name de la primera variante incluye «- Blanco/Blanco - Size 3.5», por eso el nombre sale del h1. El precio pintado está en [data-testid=currentPrice-container] y en __NEXT_DATA__ (prices.currentPrice).",
+      "plataforma": "Propia con Next.js (__NEXT_DATA__)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "norauto",
+      "nombre": "Norauto",
+      "dominios": [
+        "norauto.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "captcha-delivery.com",
+        "Please enable JS and disable any ad blocker"
+      ],
+      "notas": "Bloqueada: 403 de DataDome («Please enable JS and disable any ad blocker», geo.captcha-delivery.com).",
+      "plataforma": "Propia (DataDome + Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada: 403 DataDome",
+      "navegador": true
+    },
+    {
+      "id": "notino",
+      "nombre": "Notino",
+      "dominios": [
+        "notino.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Cloudflare responde 403 con el desafío «Just a moment...» (cf_chl_opt) en portada y producto. Los textos ya están en bloqueo_general.",
+      "plataforma": "propia (tras Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada 403",
+      "navegador": true
+    },
+    {
+      "id": "nutritienda",
+      "nombre": "Nutritienda",
+      "dominios": [
+        "nutritienda.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con AggregateOffer (lowPrice 17,99 = precio grande de la página, highPrice 169,99) y una Offer por sabor/formato; la genérica toma la más barata. El name del JSON-LD y el <title> son de otro producto («Pack Batidora…»), por eso se pone h1 como título.",
+      "plataforma": "Nuxt (propia)",
+      "comprobado": "2026-11-02: precio por JSON-LD (nombre por selector)"
+    },
+    {
+      "id": "okfarma",
+      "nombre": "OKFarma",
+      "dominios": [
+        "okfarma.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product y product:price:amount; también span.price_product[data-price].",
+      "plataforma": "PrestaShop",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "oscaro",
+      "nombre": "Oscaro",
+      "dominios": [
+        "oscaro.es"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1.product-details-title"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto. El name del JSON-LD es corto ('Aceite de motor CASTROL 15F7E7'); el h1 es más descriptivo.",
+      "plataforma": "Propia (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 75.47 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "oysho",
+      "nombre": "Oysho",
+      "dominios": [
+        "oysho.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "bm-verify=",
+        "/_sec/verify?provider=interstitial",
+        "/interstitial/ic.html"
+      ],
+      "notas": "La descarga simple devuelve HTTP 200 con una página de unos 2 KB que solo contiene el desafío de Akamai Bot Manager (meta refresh con ?bm-verify=..., iframe /interstitial/ic.html y POST a /_sec/verify?provider=interstitial). No trae nombre, precio ni JSON-LD. La web real es una SPA que carga el producto por la API JSON de Inditex (/itxrest/2/catalog/store/{storeId}/{catalogId}/category/0/product/{productId}/detail?languageId=-5&appId=1; Zara además acepta ?ajax=true en la propia URL de producto), pero esas llamadas pasan por el mismo Akamai: la prueba de Zara con ?ajax=true devolvió el mismo desafío. Sin navegador no es viable.",
+      "plataforma": "Inditex (plataforma propia, SPA) tras Akamai Bot Manager",
+      "comprobado": "2026-11-02: bloqueada (HTTP 200 con desafío interstitial de Akamai, sin datos del producto)",
+      "navegador": true
+    },
+    {
+      "id": "parfois",
+      "nombre": "Parfois",
+      "dominios": [
+        "parfois.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD ProductGroup y Product con precio y disponibilidad. Más abajo hay otro JSON-LD ItemList con productos recomendados: el extractor debe quedarse con el primer Product (el de la ficha), como ya hace.",
+      "plataforma": "Salesforce Commerce Cloud",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "pccomponentes",
+      "nombre": "PcComponentes",
+      "dominios": [
+        "pccomponentes.com",
+        "pccomponentes.pt",
+        "pccomponentes.it",
+        "pccomponentes.fr",
+        "pccomponentes.de"
+      ],
+      "precio": [
+        {
+          "css": "[data-product-list=pdp-comparator-table][data-product-index='0'][data-product-price]",
+          "atributo": "data-product-price"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "#pdp-title"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "#pdp-add-to-cart, #btnsWishAddBuy",
+          "agotado": [
+            "avísame",
+            "agotado",
+            "sin fecha"
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "MAL ANTES: #pdp-price-current-integer contiene '74<span>,99€</span>' y el texto queda '74 , 99 €' -> 74. El JSON-LD bueno usa \"@type\":\"product\" en minúsculas (la extracción genérica lo ignora porque compara 'Product' exacto) y otro bloque ProductGroup trae hasVariant con packs: la genérica coge el primero (232,99). Arreglo de fondo: comparar @type sin distinguir mayúsculas y entonces dejar 'precio' vacío. Mientras, se lee el data-product-price de la columna 0 de la tabla comparativa (es el propio producto); si una ficha no tiene comparativa, no hay regla y se cae a la genérica.",
+      "plataforma": "Next.js propia (Cloudflare)",
+      "comprobado": "2026-11-02: selector (provisional): 74.99 EUR. Con las reglas actuales sale 74.0 (solo la parte entera) y con la genérica 232.99 (un pack de otra variante). Respondió 200."
+    },
+    {
+      "id": "perfumeriasif",
+      "nombre": "Perfumerías If",
+      "dominios": [
+        "perfumeriasif.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "La conexión agotó el tiempo; If fue comprada por Douglas y puede que ya no tenga tienda online. No se probó página de producto.",
+      "plataforma": "desconocida",
+      "comprobado": "2026-11-02: sin respuesta (tiempo agotado)"
+    },
+    {
+      "id": "perfumesclub",
+      "nombre": "Perfumes Club",
+      "dominios": [
+        "perfumesclub.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con una Offer por formato (30/50/100/200 ml, algunas OutOfStock); la genérica toma la más barata (39,95, 30 ml). Los precios visibles van en div.contPrecioNuevo por formato. og:title incluye « | Perfume's Club»; el nombre sale bien del JSON-LD.",
+      "plataforma": "propia",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "phonehouse",
+      "nombre": "Phone House",
+      "dominios": [
+        "phonehouse.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "VTEX: el precio no está en el HTML visible, solo en JSON-LD (AggregateOffer con ofertas de varios SKU/colores y vendedores del marketplace) y en el estado de Apollo. La genérica toma la más barata de todas (518,68 de un vendedor externo; Phone House la vende a 529 sin stock). Aceptable, pero puede no coincidir con el color elegido.",
+      "plataforma": "VTEX (CloudFront)",
+      "comprobado": "2026-11-02: genérica: 518.68 EUR (JSON-LD, la oferta más barata). Redirigió a /samsung-galaxy-a56-5g-8gb-256gb-dualsim-8e3b0702/p."
+    },
+    {
+      "id": "pikolinos",
+      "nombre": "Pikolinos",
+      "dominios": [
+        "pikolinos.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD ProductGroup con hasVariant (un Product por talla) con precio y disponibilidad; todas las tallas al mismo precio. Probada la versión es-en (euros); la es-es tiene la misma plantilla.",
+      "plataforma": "Salesforce Commerce Cloud",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "primaprix",
+      "nombre": "Primaprix",
+      "dominios": [
+        "primaprix.eu",
+        "primaprix.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "primaprix.es redirige a primaprix.eu. JSON-LD Product con availability InStoreOnly (cuenta como disponible). Droguería/perfumería de saldos.",
+      "plataforma": "WordPress (plantilla propia)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "primark",
+      "nombre": "Primark",
+      "dominios": [
+        "primark.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "let you access Primark.com",
+        "Site Unavailable"
+      ],
+      "notas": "Responde 403 con una página titulada «Planned maintenance» / «Site Unavailable» que dice «Oops, sorry we didn’t let you access Primark.com today» y un código de referencia de Akamai. No es mantenimiento real: es el bloqueo. Primark no vende online en España (solo muestra precio y stock en tienda).",
+      "plataforma": "Propia tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "primor",
+      "nombre": "Primor",
+      "dominios": [
+        "primor.eu"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con una Offer por tamaño (ml); la extracción genérica toma la más barata (51,95 = «Tan bajo como»), que coincide con product:price:amount e itemprop=price. La URL antigua redirige a otra con distinto número. Los precios visibles (span.price) llevan primero el precio antiguo: no usar como selector.",
+      "plataforma": "Magento 2",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "promofarma",
+      "nombre": "PromoFarma",
+      "dominios": [
+        "promofarma.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con Offer numérica y availability. La URL se normaliza (redirección) a otra con el slug corregido; el identificador es p-<número>.",
+      "plataforma": "Next.js (propia, DocMorris)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "pullandbear",
+      "nombre": "Pull&Bear",
+      "dominios": [
+        "pullandbear.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "bm-verify=",
+        "/_sec/verify?provider=interstitial",
+        "/interstitial/ic.html"
+      ],
+      "notas": "La descarga simple devuelve HTTP 200 con una página de unos 2 KB que solo contiene el desafío de Akamai Bot Manager (meta refresh con ?bm-verify=..., iframe /interstitial/ic.html y POST a /_sec/verify?provider=interstitial). No trae nombre, precio ni JSON-LD. La web real es una SPA que carga el producto por la API JSON de Inditex (/itxrest/2/catalog/store/{storeId}/{catalogId}/category/0/product/{productId}/detail?languageId=-5&appId=1; Zara además acepta ?ajax=true en la propia URL de producto), pero esas llamadas pasan por el mismo Akamai: la prueba de Zara con ?ajax=true devolvió el mismo desafío. Sin navegador no es viable.",
+      "plataforma": "Inditex (plataforma propia, SPA) tras Akamai Bot Manager",
+      "comprobado": "2026-11-02: bloqueada (HTTP 200 con desafío interstitial de Akamai, sin datos del producto)",
+      "navegador": true
+    },
+    {
+      "id": "puma",
+      "nombre": "PUMA",
+      "dominios": [
+        "puma.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Dos JSON-LD: un Product con el precio del color mostrado y un ProductGroup con todas las variantes. El primero ya da precio y disponibilidad.",
+      "plataforma": "Propia headless con Next.js (Google Cloud)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "redcomputer",
+      "nombre": "Red Computer",
+      "dominios": [
+        "redcomputer.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product y product:price:amount correctos.",
+      "plataforma": "PrestaShop (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 36.91 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "samsung",
+      "nombre": "Samsung",
+      "dominios": [
+        "samsung.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto (price '149', availability 'inStock' sin URL). Coincide con globalShopInfo.promotionPrice.",
+      "plataforma": "SAP Hybris (Akamai)",
+      "comprobado": "2026-11-02: genérica: 149.00 EUR (JSON-LD, precio promocional), disponible. Respondió 200."
+    },
+    {
+      "id": "scalpers",
+      "nombre": "Scalpers",
+      "dominios": [
+        "scalperscompany.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Ya la página de colección responde 429 «Too many requests» (página estándar de Shopify) a la primera petición. En Shopify la ficha suele tener JSON-LD y existe /products/<handle>.js (precio en céntimos), pero aquí el propio Shopify corta al cliente.",
+      "plataforma": "Shopify",
+      "comprobado": "2026-11-02: bloqueada (429)",
+      "navegador": true
+    },
+    {
+      "id": "sephora",
+      "nombre": "Sephora",
+      "dominios": [
+        "sephora.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "errors.edgesuite.net"
+      ],
+      "notas": "Akamai responde 403 «Access Denied» (referencia en errors.edgesuite.net) a una descarga simple.",
+      "plataforma": "Salesforce Commerce Cloud (tras Akamai)",
+      "comprobado": "2026-11-02: bloqueada 403",
+      "navegador": true
+    },
+    {
+      "id": "sfera",
+      "nombre": "Sfera",
+      "dominios": [
+        "sfera.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Access Denied",
+        "errors.edgesuite.net"
+      ],
+      "notas": "403 «Access Denied» de Akamai, igual que El Corte Inglés.",
+      "plataforma": "Propia (El Corte Inglés) tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "shein",
+      "nombre": "SHEIN",
+      "dominios": [
+        "shein.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "/risk/challenge",
+        "captcha_type"
+      ],
+      "notas": "Responde 200 pero redirige a la página de riesgo (/risk/challenge?captcha_type=903). La app lo detecta por la palabra captcha.",
+      "plataforma": "Propia (Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada: 200 con redirección a /risk/challenge?captcha_type=903",
+      "navegador": true
+    },
+    {
+      "id": "skechers",
+      "nombre": "Skechers",
+      "dominios": [
+        "skechers.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con precio y disponibilidad, y además product:price:amount y og:price:amount correctos.",
+      "plataforma": "Salesforce Commerce Cloud",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "sklum",
+      "nombre": "SKLUM",
+      "dominios": [
+        "sklum.com"
+      ],
+      "precio": [
+        {
+          "css": ".c-product-detail-price .c-product-detail-price__current"
+        }
+      ],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El JSON-LD Product trae una oferta por combinación de color con precios distintos (94.95 la mostrada, 46.95 otra) y la regla «la de menor precio» daría la equivocada. Se lee .c-product-detail-price__current («94,95 €»; el tachado va en .c-product-detail-price__old). El name del JSON-LD lleva espacios de sobra (se normalizan).",
+      "plataforma": "PrestaShop",
+      "comprobado": "2026-11-02: precio por selector (JSON-LD con todas las combinaciones)"
+    },
+    {
+      "id": "snipes",
+      "nombre": "SNIPES",
+      "dominios": [
+        "snipes.com",
+        "snipes.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con precio y disponibilidad (detrás vienen Products de recomendados sin oferta y un bloque ld+json vacío, que se ignora).",
+      "plataforma": "Propia (front Angular)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "springfield",
+      "nombre": "Springfield",
+      "dominios": [
+        "myspringfield.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con offers.price (el precio que se paga) y availability sin prefijo («OutOfStock»/«InStock»). og:price:amount vale 0.0, así que nunca debe ir antes que el JSON-LD. El HTML contiene la palabra «captcha» (script de formularios) aunque la página es normal.",
+      "plataforma": "Salesforce Commerce Cloud (Tendam)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "sprinter",
+      "nombre": "Sprinter",
+      "dominios": [
+        "sprinter.es",
+        "sprintersports.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Access Denied",
+        "errors.edgesuite.net"
+      ],
+      "notas": "sprinter.es redirige a www.sprintersports.com, que responde 403 «Access Denied» de Akamai.",
+      "plataforma": "Propia (grupo JD) tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "stradivarius",
+      "nombre": "Stradivarius",
+      "dominios": [
+        "stradivarius.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "bm-verify=",
+        "/_sec/verify?provider=interstitial",
+        "/interstitial/ic.html"
+      ],
+      "notas": "La descarga simple devuelve HTTP 200 con una página de unos 2 KB que solo contiene el desafío de Akamai Bot Manager (meta refresh con ?bm-verify=..., iframe /interstitial/ic.html y POST a /_sec/verify?provider=interstitial). No trae nombre, precio ni JSON-LD. La web real es una SPA que carga el producto por la API JSON de Inditex (/itxrest/2/catalog/store/{storeId}/{catalogId}/category/0/product/{productId}/detail?languageId=-5&appId=1; Zara además acepta ?ajax=true en la propia URL de producto), pero esas llamadas pasan por el mismo Akamai: la prueba de Zara con ?ajax=true devolvió el mismo desafío. Sin navegador no es viable.",
+      "plataforma": "Inditex (plataforma propia, SPA) tras Akamai Bot Manager",
+      "comprobado": "2026-11-02: bloqueada (HTTP 200 con desafío interstitial de Akamai, sin datos del producto)",
+      "navegador": true
+    },
+    {
+      "id": "temu",
+      "nombre": "Temu",
+      "dominios": [
+        "temu.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Solo og:title/og:type=product; el precio llega por JavaScript.",
+      "plataforma": "Propia (Cloudflare, renderizado en el cliente)",
+      "comprobado": "2026-11-02: sin precio: no hay JSON-LD ni precio en el HTML. Respondió 200.",
+      "navegador": true
+    },
+    {
+      "id": "tezenis",
+      "nombre": "Tezenis",
+      "dominios": [
+        "tezenis.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1.product-name"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD con precio y disponibilidad, pero el name viene con entidades HTML sin decodificar («Algod&oacute;n Org&aacute;nico»): el nombre se lee del h1. También hay itemprop=price con content correcto.",
+      "plataforma": "Salesforce Commerce Cloud (grupo Calzedonia)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "thebodyshop",
+      "nombre": "The Body Shop",
+      "dominios": [
+        "thebodyshop.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "La tienda española es thebodyshop.es (thebodyshop.com/es-es da 404; thebodyshop.com es Shopify internacional). JSON-LD Product y product:price:amount.",
+      "plataforma": "OpenCart",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "thomann",
+      "nombre": "Thomann",
+      "dominios": [
+        "thomann.es",
+        "thomann.de"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "meta[itemprop=availability][content$=OutOfStock], meta[itemprop=availability][content$=outOfStock], link[itemprop=availability][href$=OutOfStock]",
+          "agotado": [
+            ""
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD; microdatos meta itemprop=price '89' y link itemprop=availability. og:title empieza por un emoji ('🎸 Harley Benton…'): mejor el h1.",
+      "plataforma": "Propia (React, Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 89.00 EUR (meta itemprop=price), disponible. Respondió 200."
+    },
+    {
+      "id": "tien21",
+      "nombre": "Tien 21",
+      "dominios": [
+        "tien21.es"
+      ],
+      "precio": [
+        {
+          "css": "span.unit_price"
+        },
+        {
+          "css": "input#cartPrice",
+          "atributo": "value"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "span.availability",
+          "agotado": [
+            "outofstock",
+            "soldout",
+            "discontinued"
+          ]
+        },
+        {
+          "css": "h2.aviso",
+          "agotado": [
+            "sin stock"
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Sin stock el bloque JSON-LD de producto sale vacío (cuenta como mal formado). La plataforma deja siempre unos span ocultos con el precio en formato de máquina (span.unit_price '659.00') y la disponibilidad (span.availability 'OutOfStock'/'inStock'), y un input#cartPrice.",
+      "plataforma": "Sinersis E-Commerce (la misma de Euronics y Milar)",
+      "comprobado": "2026-11-02: selector: 659.00 EUR (span.unit_price), agotado por la regla 'disponible'. La genérica no da nada."
+    },
+    {
+      "id": "tiendanimal",
+      "nombre": "Tiendanimal",
+      "dominios": [
+        "tiendanimal.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD ProductGroup (AggregateOffer sin precio) con un Product por talla/pack; la genérica toma el primero (37,99). También meta itemprop=price por variante. Misma plantilla que Kiwoko (grupo Iskaypet).",
+      "plataforma": "Salesforce Commerce Cloud",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "todostuslibros",
+      "nombre": "Todos tus libros",
+      "dominios": [
+        "todostuslibros.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Request forbidden by administrative rules"
+      ],
+      "notas": "Bloqueada: 403 con «403 Forbidden – Request forbidden by administrative rules».",
+      "plataforma": "Desconocida",
+      "comprobado": "2026-11-02: bloqueada: 403 'Request forbidden by administrative rules' (94 bytes)",
+      "navegador": true
+    },
+    {
+      "id": "toyplanet",
+      "nombre": "Toy Planet",
+      "dominios": [
+        "toyplanet.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Shopify: JSON-LD Product y og:price:amount ('84,99') correctos.",
+      "plataforma": "Shopify (Cloudflare)",
+      "comprobado": "2026-11-02: genérica: 84.99 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "toysrus",
+      "nombre": "Toys \"R\" Us",
+      "dominios": [
+        "toysrus.es"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1.pdp__title"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD ni og:image. El precio rebajado está en <meta itemprop=price content=\"39.99\"> dentro de .pdp__price (el tachado 49,99 va en .striked-price sin microdatos), así que la extracción genérica basta. El título genérico saldría con « | Lego Bloques Y Bases | Toys\"R\"Us España», por eso se lee h1.pdp__title. La imagen se carga con JavaScript (no está en el HTML).",
+      "plataforma": "SAP Commerce (Hybris)",
+      "comprobado": "2026-11-02: precio por microdatos (meta itemprop=price)"
+    },
+    {
+      "id": "tradeinn",
+      "nombre": "Tradeinn (Trekkinn, Bikeinn, Runnerinn…)",
+      "dominios": [
+        "tradeinn.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD ProductGroup con variantes Product (precio y disponibilidad). Redirige al slug en español. Probada también Bikeinn (https://www.tradeinn.com/bikeinn/es/p2r-rodeo-helmet/140516397/p, 55.49 €): mismo dominio y misma estructura. Pone las cookies ip e id_pais: el precio depende del país detectado. El precio se pide por JavaScript según el país (cookie id_pais). Vale para todas las tiendas de Tradeinn (bikeinn, diveinn…).",
+      "plataforma": "Propia",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "uniqlo",
+      "nombre": "Uniqlo",
+      "dominios": [
+        "uniqlo.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Descarga bien (200), con h1 y og:image, pero sin JSON-LD, sin metadatos de precio y sin el precio pintado. El precio solo está en el JSON de window.__PRELOADED_STATE__: \"prices\":{\"base\":{\"currency\":{\"code\":\"EUR\",...},\"value\":19.9},\"promo\":null,...} (con promoción, promo.value es lo que se paga). Un selector CSS no puede leerlo; haría falta que el extractor sepa buscar ese patrón en los scripts. Hasta entonces la app dirá «no se encontró el precio».",
+      "plataforma": "Propia (React renderizado en servidor) tras Akamai, sin bloqueo",
+      "comprobado": "2026-11-02: sin precio en el HTML visible (solo en datos embebidos)",
+      "navegador": true
+    },
+    {
+      "id": "vans",
+      "nombre": "Vans",
+      "dominios": [
+        "vans.es",
+        "vans.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Access Denied",
+        "errors.edgesuite.net"
+      ],
+      "notas": "403 «Access Denied» de Akamai.",
+      "plataforma": "Propia (VF Corp) tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "venca",
+      "nombre": "Venca",
+      "dominios": [
+        "venca.es",
+        "venca.com",
+        "venca.shop"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "venca.es redirige a https://venca.shop/password: tienda Shopify cerrada con contraseña («New Venca is coming soon»). No hay fichas de producto que seguir.",
+      "plataforma": "Shopify (tienda cerrada)",
+      "comprobado": "2026-11-02: sin tienda activa"
+    },
+    {
+      "id": "vsgamers",
+      "nombre": "VSGamers",
+      "dominios": [
+        "vsgamers.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [
+        {
+          "css": "meta[itemprop=availability][content$=OutOfStock], meta[itemprop=availability][content$=outOfStock], link[itemprop=availability][href$=OutOfStock]",
+          "agotado": [
+            ""
+          ]
+        }
+      ],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD Product; microdatos con meta itemprop=price y availability ('inStock'). La genérica no lee itemprop=availability: la regla 'disponible' marca agotado si el meta dice OutOfStock. El h1 solo trae el modelo ('Klever'); og:title es mejor nombre.",
+      "plataforma": "Propia",
+      "comprobado": "2026-11-02: genérica: 29.90 EUR (meta itemprop=price). Respondió 200. Dos fichas de los buscadores ya no existían (una redirige a la categoría, otra 404)."
+    },
+    {
+      "id": "westwing",
+      "nombre": "Westwing",
+      "dominios": [
+        "westwing.es"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product con precio y disponibilidad.",
+      "plataforma": "Shopify (front propio)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "wipoid",
+      "nombre": "Wipoid",
+      "dominios": [
+        "wipoid.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Dos fichas distintas devolvieron 404 con la misma página mínima de nginx: o han cambiado todas las URL o la web está caída. Sin datos de extracción.",
+      "plataforma": "Desconocida (nginx)",
+      "comprobado": "2026-11-02: error: 404 'Server Error' de 808 bytes en dos fichas sacadas de buscadores"
+    },
+    {
+      "id": "womensecret",
+      "nombre": "Women'secret",
+      "dominios": [
+        "womensecret.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Igual que Springfield y Cortefiel: JSON-LD con precio y disponibilidad. Una primera ficha (3132151) ya no existía y dio un 404 normal.",
+      "plataforma": "Salesforce Commerce Cloud (Tendam)",
+      "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "worten",
+      "nombre": "Worten",
+      "dominios": [
+        "worten.es",
+        "worten.pt"
+      ],
+      "precio": [
+        {
+          "css": ".product-price-info .value",
+          "atributo": "content"
+        },
+        {
+          "css": ".raised-price .value"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "Just a moment...",
+        "Enable JavaScript and cookies to continue",
+        "cf_chl_opt"
+      ],
+      "notas": "Bloqueada: 403 desafío de Cloudflare («Just a moment… Enable JavaScript and cookies to continue»). Reglas sin poder comprobar.",
+      "plataforma": "Propia (Cloudflare)",
+      "comprobado": "2026-11-02: bloqueada: 403 Cloudflare",
+      "navegador": true
+    },
+    {
+      "id": "xiaomi",
+      "nombre": "Xiaomi",
+      "dominios": [
+        "mi.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "No se puede leer sin navegador: Product sin offers y el bloque de precio vale 0,00 hasta que lo rellena el JavaScript.",
+      "plataforma": "Propia (Akamai, __PRELOADED_STATE__)",
+      "comprobado": "2026-11-02: sin precio: el HTML trae 0,00 € y el JSON-LD Product no tiene offers; el precio llega por JavaScript. Respondió 200.",
+      "navegador": true
+    },
+    {
+      "id": "xtralife",
+      "nombre": "xtralife",
+      "dominios": [
+        "xtralife.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product y metas product:price:amount correctos.",
+      "plataforma": "Angular SSR (CloudFront)",
+      "comprobado": "2026-11-02: genérica: 76.95 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "zalando",
+      "nombre": "Zalando",
+      "dominios": [
+        "zalando.es",
+        "zalando.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "No se puede acceder a la web en este momento"
+      ],
+      "notas": "Ya la página de categoría responde 403 con «No se puede acceder a la web en este momento. Intenta actualizar la página en uno o dos minutos» (Akamai). No se probó ficha porque bloquea el dominio entero.",
+      "plataforma": "Propia tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "zara",
+      "nombre": "Zara",
+      "dominios": [
+        "zara.com"
+      ],
+      "precio": [
+        {
+          "css": ".money-amount__main"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1.product-detail-info__header-name"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "bm-verify=",
+        "/_sec/verify?provider=interstitial",
+        "/interstitial/ic.html"
+      ],
+      "notas": "La descarga simple devuelve HTTP 200 con una página de unos 2 KB que solo contiene el desafío de Akamai Bot Manager (meta refresh con ?bm-verify=..., iframe /interstitial/ic.html y POST a /_sec/verify?provider=interstitial). No trae nombre, precio ni JSON-LD. La web real es una SPA que carga el producto por la API JSON de Inditex (/itxrest/2/catalog/store/{storeId}/{catalogId}/category/0/product/{productId}/detail?languageId=-5&appId=1; Zara además acepta ?ajax=true en la propia URL de producto), pero esas llamadas pasan por el mismo Akamai: la prueba de Zara con ?ajax=true devolvió el mismo desafío. Sin navegador no es viable. Las reglas de precio y título se conservan del tiendas.json actual pero no se han podido comprobar.",
+      "plataforma": "Inditex (plataforma propia, SPA) tras Akamai Bot Manager",
+      "comprobado": "2026-11-02: bloqueada (HTTP 200 con desafío interstitial de Akamai; también la URL con ?ajax=true)",
+      "navegador": true
+    },
+    {
+      "id": "zarahome",
+      "nombre": "Zara Home",
+      "dominios": [
+        "zarahome.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "HTTP Error 403. The service is unavailable",
+        "bm-verify=",
+        "/_sec/verify?provider=interstitial",
+        "/interstitial/ic.html"
+      ],
+      "notas": "Responde 403 con una página mínima de Akamai: «Service Unavailable - HTTP Error 403. The service is unavailable. Reference #...». Misma plataforma y misma API itxrest que el resto de Inditex.",
+      "plataforma": "Inditex (plataforma propia, SPA) tras Akamai",
+      "comprobado": "2026-11-02: bloqueada (403)",
+      "navegador": true
+    },
+    {
+      "id": "zooplus",
+      "nombre": "zooplus",
+      "dominios": [
+        "zooplus.es"
+      ],
+      "precio": [
+        {
+          "css": "[data-zta=SelectedArticleBox__TopSection] [data-zta=reducedPriceAmount]"
+        },
+        {
+          "css": "[data-zta=reducedPriceAmount]"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El JSON-LD da como price el precio con un cupón que hay que activar («Activar cupón - Descuento -15%»: 25,15) y como StrikethroughPrice el precio normal (29,59), que es el precio grande de la página. El selector toma el precio grande del artículo seleccionado. Misma plataforma que Bitiba.",
+      "plataforma": "Next.js (propia)",
+      "comprobado": "2026-11-02: precio por selector"
+    }
+  ]
+}

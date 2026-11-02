@@ -1,0 +1,141 @@
+{
+  "_comentario": "Vectores de analizar_importe / analizarImporte. 'valor' nulo = sin importe. Las dos apps deben dar exactamente estos valores (redondeados a 2 decimales).",
+  "importes": [
+    {
+      "texto": "1.299,99 €",
+      "valor": 1299.99
+    },
+    {
+      "texto": "1,299.99",
+      "valor": 1299.99
+    },
+    {
+      "texto": "€1,299.99",
+      "valor": 1299.99
+    },
+    {
+      "texto": "129,99 €",
+      "valor": 129.99
+    },
+    {
+      "texto": "129.99",
+      "valor": 129.99
+    },
+    {
+      "texto": "1.299",
+      "valor": 1299.0
+    },
+    {
+      "texto": "1,299",
+      "valor": 1299.0
+    },
+    {
+      "texto": "12,5",
+      "valor": 12.5
+    },
+    {
+      "texto": "1.299.000",
+      "valor": 1299000.0
+    },
+    {
+      "texto": "1 299,99 €",
+      "valor": 1299.99
+    },
+    {
+      "texto": "1 299,99 €",
+      "valor": 1299.99
+    },
+    {
+      "texto": "1 299,99 €",
+      "valor": 1299.99
+    },
+    {
+      "texto": "1'299.50 CHF",
+      "valor": 1299.5
+    },
+    {
+      "texto": "Precio: 49,95€ IVA incluido",
+      "valor": 49.95
+    },
+    {
+      "texto": "0,00 €",
+      "valor": null
+    },
+    {
+      "texto": "Gratis",
+      "valor": null
+    },
+    {
+      "texto": "",
+      "valor": null
+    },
+    {
+      "texto": "19,999",
+      "valor": 19999.0
+    },
+    {
+      "texto": "5",
+      "valor": 5.0
+    },
+    {
+      "texto": "  7,0 ",
+      "valor": 7.0
+    },
+    {
+      "texto": "1.234,5",
+      "valor": 1234.5
+    },
+    {
+      "texto": "PVP 2.499 €",
+      "valor": 2499.0
+    },
+    {
+      "texto": "39,95 € - 49,95 €",
+      "valor": 39.95
+    },
+    {
+      "texto": "12.345.678,90",
+      "valor": 12345678.9
+    },
+    {
+      "texto": "0.99",
+      "valor": 0.99
+    },
+    {
+      "texto": "1,5",
+      "valor": 1.5
+    },
+    {
+      "texto": "Precio 129,99.",
+      "valor": 129.99
+    },
+    {
+      "texto": "Pack 2 30,00 €",
+      "valor": 2.0
+    },
+    {
+      "texto": "$ 24.99",
+      "valor": 24.99
+    },
+    {
+      "texto": "£1,049.00",
+      "valor": 1049.0
+    },
+    {
+      "texto": "9,999 €",
+      "valor": 9999.0
+    },
+    {
+      "texto": "1.999,999",
+      "valor": 2000.0
+    },
+    {
+      "texto": "10,555",
+      "valor": 10555.0
+    },
+    {
+      "texto": "3,456",
+      "valor": 3456.0
+    }
+  ]
+}

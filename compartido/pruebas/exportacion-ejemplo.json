@@ -1,0 +1,169 @@
+{
+  "formato": "NoMeSubasLosPrecios",
+  "version_formato": 1,
+  "app": "windows",
+  "version_app": "1.0.0",
+  "exportado": "2026-11-02T20:15:00Z",
+  "categorias": [
+    {
+      "uuid": "6f1c2a8e-0b1d-4c55-9a3e-5d2f7c1b9e01",
+      "nombre": "Electrónica",
+      "descripcion": "Aparatos y accesorios",
+      "orden": 0
+    },
+    {
+      "uuid": "6f1c2a8e-0b1d-4c55-9a3e-5d2f7c1b9e02",
+      "nombre": "Hogar",
+      "descripcion": null,
+      "orden": 1
+    }
+  ],
+  "tiendas": [
+    {
+      "uuid": "a3b9d0c2-7e4f-4a1b-8c6d-2e9f0a1b3c01",
+      "nombre": "Amazon",
+      "dominio": "amazon.es",
+      "selector_precio": null,
+      "selector_titulo": null,
+      "selector_disponible": null,
+      "notas": null
+    },
+    {
+      "uuid": "a3b9d0c2-7e4f-4a1b-8c6d-2e9f0a1b3c02",
+      "nombre": "PcComponentes",
+      "dominio": "pccomponentes.com",
+      "selector_precio": null,
+      "selector_titulo": null,
+      "selector_disponible": null,
+      "notas": "Revisar si cambia el diseño"
+    }
+  ],
+  "productos": [
+    {
+      "uuid": "d4e5f6a7-b8c9-4d0e-9f1a-2b3c4d5e6f01",
+      "nombre": "Robot Aspirador Ejemplo R5",
+      "url": "https://www.amazon.es/dp/B0EJEMPLO1",
+      "tienda": "a3b9d0c2-7e4f-4a1b-8c6d-2e9f0a1b3c01",
+      "categoria": "6f1c2a8e-0b1d-4c55-9a3e-5d2f7c1b9e02",
+      "grupo": "Robot R5",
+      "moneda": "EUR",
+      "precio_actual": 349.9,
+      "precio_inicial": 399.0,
+      "precio_minimo": 339.0,
+      "precio_maximo": 399.0,
+      "precio_anterior": 369.0,
+      "precio_objetivo": 320.0,
+      "fecha_minimo": "2026-10-20T08:00:00Z",
+      "fecha_maximo": "2026-10-01T10:00:00Z",
+      "fecha_cambio": "2026-11-01T14:00:00Z",
+      "fecha_alta": "2026-10-01T10:00:00Z",
+      "ultima_comprobacion": "2026-11-02T18:00:00Z",
+      "disponible": true,
+      "avisar_disponible": true,
+      "favorito": true,
+      "activo": true,
+      "alerta_porcentaje": 0,
+      "selector_precio": null,
+      "imagen_url": "https://m.media-amazon.com/images/I/ejemplo.jpg",
+      "notas": "Esperar al Black Friday",
+      "ultimo_error": null,
+      "errores_seguidos": 0,
+      "historial": [
+        {"fecha": "2026-10-01T10:00:00Z", "precio": 399.0, "disponible": true},
+        {"fecha": "2026-10-20T08:00:00Z", "precio": 339.0, "disponible": true},
+        {"fecha": "2026-10-25T08:00:00Z", "precio": 369.0, "disponible": true},
+        {"fecha": "2026-11-01T14:00:00Z", "precio": 349.9, "disponible": true}
+      ]
+    },
+    {
+      "uuid": "d4e5f6a7-b8c9-4d0e-9f1a-2b3c4d5e6f02",
+      "nombre": "Robot Aspirador Ejemplo R5 (PcComponentes)",
+      "url": "https://www.pccomponentes.com/robot-aspirador-ejemplo-r5",
+      "tienda": "a3b9d0c2-7e4f-4a1b-8c6d-2e9f0a1b3c02",
+      "categoria": "6f1c2a8e-0b1d-4c55-9a3e-5d2f7c1b9e02",
+      "grupo": "Robot R5",
+      "moneda": "EUR",
+      "precio_actual": 359.0,
+      "precio_inicial": 359.0,
+      "precio_minimo": 359.0,
+      "precio_maximo": 359.0,
+      "precio_anterior": null,
+      "precio_objetivo": null,
+      "fecha_minimo": "2026-10-05T09:00:00Z",
+      "fecha_maximo": "2026-10-05T09:00:00Z",
+      "fecha_cambio": null,
+      "fecha_alta": "2026-10-05T09:00:00Z",
+      "ultima_comprobacion": "2026-11-02T18:00:00Z",
+      "disponible": true,
+      "avisar_disponible": true,
+      "favorito": false,
+      "activo": true,
+      "alerta_porcentaje": 5,
+      "selector_precio": null,
+      "imagen_url": null,
+      "notas": null,
+      "ultimo_error": null,
+      "errores_seguidos": 0,
+      "historial": [
+        {"fecha": "2026-10-05T09:00:00Z", "precio": 359.0, "disponible": true}
+      ]
+    },
+    {
+      "uuid": "d4e5f6a7-b8c9-4d0e-9f1a-2b3c4d5e6f03",
+      "nombre": "Consola Ejemplo Pro",
+      "url": "https://www.amazon.es/dp/B0EJEMPLO2",
+      "tienda": "a3b9d0c2-7e4f-4a1b-8c6d-2e9f0a1b3c01",
+      "categoria": "6f1c2a8e-0b1d-4c55-9a3e-5d2f7c1b9e01",
+      "grupo": null,
+      "moneda": "EUR",
+      "precio_actual": 499.99,
+      "precio_inicial": 549.99,
+      "precio_minimo": 499.99,
+      "precio_maximo": 549.99,
+      "precio_anterior": 549.99,
+      "precio_objetivo": 450.0,
+      "fecha_minimo": "2026-10-28T12:00:00Z",
+      "fecha_maximo": "2026-09-15T12:00:00Z",
+      "fecha_cambio": "2026-10-28T12:00:00Z",
+      "fecha_alta": "2026-09-15T12:00:00Z",
+      "ultima_comprobacion": "2026-11-02T18:00:00Z",
+      "disponible": false,
+      "avisar_disponible": true,
+      "favorito": false,
+      "activo": true,
+      "alerta_porcentaje": 0,
+      "selector_precio": null,
+      "imagen_url": null,
+      "notas": null,
+      "ultimo_error": null,
+      "errores_seguidos": 0,
+      "historial": [
+        {"fecha": "2026-09-15T12:00:00Z", "precio": 549.99, "disponible": true},
+        {"fecha": "2026-10-28T12:00:00Z", "precio": 499.99, "disponible": true},
+        {"fecha": "2026-11-01T09:00:00Z", "precio": 499.99, "disponible": false}
+      ]
+    }
+  ],
+  "avisos": [
+    {
+      "producto": "d4e5f6a7-b8c9-4d0e-9f1a-2b3c4d5e6f01",
+      "fecha": "2026-11-01T14:00:00Z",
+      "tipo": "bajada",
+      "titulo": "Ha bajado de precio",
+      "mensaje": "Robot Aspirador Ejemplo R5: de 369,00 € a 349,90 € en Amazon (−19,10 €, −5,2 %).",
+      "leido": false
+    },
+    {
+      "producto": "d4e5f6a7-b8c9-4d0e-9f1a-2b3c4d5e6f03",
+      "fecha": "2026-11-01T09:00:00Z",
+      "tipo": "agotado",
+      "titulo": "Agotado",
+      "mensaje": "Consola Ejemplo Pro se ha agotado en Amazon.",
+      "leido": true
+    }
+  ],
+  "ajustes": {
+    "intervalo_horas": 6,
+    "avisar_subidas": true
+  }
+}

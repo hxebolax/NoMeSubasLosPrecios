@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">No Me Subas Los Precios</string>
+
+	<!-- Secciones (destinos del menú lateral) -->
+	<string name="seccion_todos">Todos los productos</string>
+	<string name="seccion_categorias">Categorías</string>
+	<string name="seccion_tiendas">Tiendas</string>
+	<string name="seccion_ofertas">Ofertas</string>
+	<string name="seccion_favoritos">Favoritos</string>
+	<string name="seccion_comparar">Comparar</string>
+	<string name="seccion_avisos">Avisos</string>
+	<string name="seccion_de">Sección %1$s</string>
+	<string name="titulo_categoria">Categoría: %1$s</string>
+	<string name="titulo_tienda">Tienda: %1$s</string>
+	<string name="titulo_grupo">Comparar: %1$s</string>
+
+	<!-- Acciones generales (tras el divisor del menú lateral) -->
+	<string name="importar_exportar">Importar y exportar</string>
+	<string name="gestionar_categorias">Gestionar categorías</string>
+	<string name="gestionar_tiendas">Gestionar tiendas</string>
+	<string name="ajustes">Ajustes</string>
+	<string name="manual">Manual</string>
+	<string name="buscar_actualizaciones">Buscar actualizaciones</string>
+	<string name="acerca_de">Acerca de</string>
+	<string name="acerca_de_texto">No Me Subas Los Precios, versión %1$s.\n\nSigue el precio de los productos de las tiendas online y te avisa cuando bajan, suben, llegan al precio que quieres o vuelven a estar disponibles.\n\nAutor: Héctor J. Benítez Corredera.\n\nLicencias de terceros:\n- Jsoup, de Jonathan Hedley: licencia MIT.\n- OkHttp, de Square: licencia Apache 2.0.\n- AndroidX, WorkManager y Material Components, de Google: licencia Apache 2.0.\n- Kotlin y kotlinx.coroutines, de JetBrains: licencia Apache 2.0.</string>
+	<string name="novedades_version">Novedades</string>
+	<string name="error_manual">No se pudo leer el texto.</string>
+
+	<!-- Barra de la pantalla principal -->
+	<string name="anadir_producto">Añadir producto</string>
+	<string name="buscar_productos">Buscar productos</string>
+	<string name="comprobar_todos_ahora">Comprobar todos ahora</string>
+	<string name="detener_comprobacion">Detener la comprobación</string>
+	<string name="ordenar">Ordenar</string>
+	<string name="filtrar">Filtrar</string>
+	<string name="aplicar">Aplicar</string>
+	<string name="marcar_todos_leidos">Marcar todos los avisos como leídos</string>
+	<string name="borrar_todos_avisos">Borrar todos los avisos</string>
+	<string name="confirmar_borrar_avisos">¿Borrar todos los avisos? Los productos y su historial no se tocan.</string>
+	<string name="avisos_marcados_leidos">Todos los avisos están marcados como leídos.</string>
+	<string name="avisos_borrados">Avisos borrados.</string>
+	<string name="aviso_borrado">Aviso borrado.</string>
+	<string name="orden_nombre">Nombre</string>
+	<string name="orden_precio">Precio, de menor a mayor</string>
+	<string name="orden_bajada">Mayor bajada</string>
+	<string name="orden_cambio">Último cambio</string>
+	<string name="orden_alta">Fecha de alta</string>
+	<string name="orden_tienda">Tienda</string>
+	<string name="ordenado_por">Ordenado por: %1$s.</string>
+	<string name="filtro_activos">Solo activos (sin los que están en pausa)</string>
+	<string name="filtro_error">Solo con problemas en la última comprobación</string>
+	<string name="filtro_agotados">Solo agotados</string>
+
+	<!-- Listas vacías: dicen qué hacer -->
+	<string name="vacio_productos">No hay productos. Pulsa Añadir producto o comparte una página de producto desde el navegador.</string>
+	<string name="vacio_busqueda">Ningún producto coincide con la búsqueda o los filtros.</string>
+	<string name="vacio_ofertas">Ahora no hay ofertas: ningún producto ha bajado en los últimos 7 días ni está en su mínimo o en el precio que quieres.</string>
+	<string name="vacio_favoritos">No hay favoritos. Marca un producto con Añadir a favoritos desde sus acciones.</string>
+	<string name="vacio_comparar">No hay grupos para comparar. Escribe el mismo nombre en «Grupo para comparar» en productos de varias tiendas.</string>
+	<string name="vacio_avisos">No hay avisos.</string>
+	<string name="vacio_tiendas">No hay tiendas. Se crean solas al añadir el primer producto de cada una.</string>
+	<string name="vacio_categorias">No hay categorías. Pulsa Añadir categoría para crear una.</string>
+
+	<!-- Filas -->
+	<string name="sin_categoria">Sin categoría</string>
+	<string name="sin_precio_leido">sin precio</string>
+	<string name="estado_en_pausa">En pausa</string>
+	<string name="estado_agotado">Agotado</string>
+	<string name="estado_disponible">Disponible</string>
+	<string name="estado_en_oferta">En oferta</string>
+	<string name="estado_error">Error</string>
+	<string name="estado_sin_precio">Sin precio</string>
+	<string name="estado_bloqueada">Bloqueado por la tienda</string>
+	<string name="estado_sin_conexion">Sin conexión</string>
+	<string name="estado_correcta">Correcta</string>
+	<string name="estado_sin_comprobar">Sin comprobar todavía</string>
+	<string name="cambio_bajo">bajó %1$s (%2$s %%)</string>
+	<string name="cambio_subio">subió %1$s (%2$s %%)</string>
+	<string name="cambio_sin_cambios">sin cambios</string>
+	<string name="objetivo_alcanzado_corto">precio deseado alcanzado</string>
+	<string name="el_mas_barato">el más barato</string>
+	<string name="mas_que_el_mas_barato">%1$s más que el más barato</string>
+	<string name="desde">desde %1$s</string>
+	<string name="no_leido">No leído</string>
+	<string name="mas_opciones">Más opciones</string>
+	<string name="ver_productos">Ver productos</string>
+	<string name="posicion_de">%1$d de %2$d</string>
+	<plurals name="n_productos">
+		<item quantity="one">%1$d producto</item>
+		<item quantity="many">%1$d productos</item>
+		<item quantity="other">%1$d productos</item>
+	</plurals>
+	<plurals name="n_categorias">
+		<item quantity="one">%1$d categoría</item>
+		<item quantity="many">%1$d categorías</item>
+		<item quantity="other">%1$d categorías</item>
+	</plurals>
+	<plurals name="n_tiendas">
+		<item quantity="one">%1$d tienda</item>
+		<item quantity="many">%1$d tiendas</item>
+		<item quantity="other">%1$d tiendas</item>
+	</plurals>
+	<plurals name="productos_encontrados">
+		<item quantity="one">%1$d producto.</item>
+		<item quantity="many">%1$d productos.</item>
+		<item quantity="other">%1$d productos.</item>
+	</plurals>
+
+	<!-- Acciones sobre un producto (las de TalkBack dicen lo que harán ahora) -->
+	<string name="ver_detalles">Ver detalles</string>
+	<string name="abrir_en_la_tienda">Abrir en la tienda</string>
+	<string name="comprobar_ahora">Comprobar ahora</string>
+	<string name="editar">Editar</string>
+	<string name="mover_a_categoria">Mover a categoría</string>
+	<string name="anadir_a_favoritos">Añadir a favoritos</string>
+	<string name="quitar_de_favoritos">Quitar de favoritos</string>
+	<string name="pausar">Pausar</string>
+	<string name="reanudar">Reanudar</string>
+	<string name="compartir_enlace">Compartir enlace</string>
+	<string name="copiar_enlace">Copiar enlace</string>
+	<string name="eliminar_x">Eliminar %1$s</string>
+	<string name="eliminado_x">Eliminado: %1$s</string>
+	<string name="anadido_a_favoritos">Añadido a favoritos</string>
+	<string name="quitado_de_favoritos">Quitado de favoritos</string>
+	<string name="pausado">En pausa: no se comprobará hasta que lo reanudes</string>
+	<string name="reanudado">Reanudado</string>
+	<string name="movido_a">Movido a %1$s</string>
+	<string name="nueva_categoria">Nueva categoría…</string>
+	<string name="nombre_categoria">Nombre de la categoría</string>
+	<string name="comprobando_precio">Comprobando el precio</string>
+	<string name="comprobado_sin_cambios">Comprobado: %1$s, sin cambios.</string>
+	<string name="comprobado_con_cambio">Comprobado: ahora %1$s.</string>
+	<string name="comprobado_con_error">No se pudo leer el precio: %1$s</string>
+	<string name="error_inesperado">Ha ocurrido un error inesperado. Inténtalo de nuevo; si sigue pasando, avisa al autor.</string>
+	<string name="sin_navegador">No hay ningún navegador para abrir la página.</string>
+
+	<!-- Avisos -->
+	<string name="marcar_leido">Marcar como leído</string>
+	<string name="marcar_no_leido">Marcar como no leído</string>
+	<string name="ver_producto">Ver el producto</string>
+	<string name="borrar_aviso">Borrar el aviso</string>
+
+	<!-- Comprobación de todos -->
+	<string name="comprobando_precios">Comprobando precios</string>
+	<string name="progreso_comprobacion">%1$d de %2$d productos</string>
+	<string name="progreso_comprobacion_pantalla">Comprobando precios: %1$d de %2$d productos…</string>
+	<string name="comprobacion_en_curso">Ya hay una comprobación en curso.</string>
+	<string name="comprobacion_detenida">Comprobación detenida.</string>
+	<string name="nada_que_comprobar">No hay productos activos que comprobar.</string>
+	<plurals name="comprobacion_terminada">
+		<item quantity="one">Comprobación terminada: %1$d producto.</item>
+		<item quantity="many">Comprobación terminada: %1$d productos.</item>
+		<item quantity="other">Comprobación terminada: %1$d productos.</item>
+	</plurals>
+	<plurals name="cambios_de_precio">
+		<item quantity="one">%1$d con cambios.</item>
+		<item quantity="many">%1$d con cambios.</item>
+		<item quantity="other">%1$d con cambios.</item>
+	</plurals>
+	<plurals name="con_problemas">
+		<item quantity="one">%1$d con problemas.</item>
+		<item quantity="many">%1$d con problemas.</item>
+		<item quantity="other">%1$d con problemas.</item>
+	</plurals>
+
+	<!-- Detalles -->
+	<string name="detalles">Detalles del producto</string>
+	<string name="detalles_de">Detalles de %1$s</string>
+	<string name="acciones">Acciones</string>
+	<string name="datos">Datos</string>
+	<string name="historial">Historial de precios</string>
+	<string name="historial_vacio">Todavía no hay historial: se guarda una fila cada vez que cambia el precio o la disponibilidad.</string>
+	<string name="primera_lectura">primera lectura</string>
+	<string name="volvio_disponible">volvió a estar disponible</string>
+	<string name="se_agoto">se agotó</string>
+	<string name="resumen_sin_precio">Todavía no se ha podido leer el precio.</string>
+	<string name="resumen_ahora">Ahora %1$s.</string>
+	<string name="resumen_agotado">Está agotado.</string>
+	<string name="resumen_minimo">Mínimo %1$s.</string>
+	<string name="resumen_minimo_fecha">Mínimo %1$s el %2$s.</string>
+	<string name="resumen_maximo">Máximo %1$s.</string>
+	<string name="resumen_en_minimo">Está en su mínimo histórico.</string>
+	<string name="resumen_sobre_minimo">Está un %1$s %% por encima del mínimo.</string>
+	<string name="resumen_objetivo">Precio deseado alcanzado.</string>
+	<string name="dato_estado">Estado: %1$s</string>
+	<string name="dato_precio_actual">Precio actual: %1$s</string>
+	<string name="dato_disponible">Disponible: %1$s</string>
+	<string name="dato_tienda">Tienda: %1$s</string>
+	<string name="dato_categoria">Categoría: %1$s</string>
+	<string name="dato_grupo">Grupo para comparar: %1$s</string>
+	<string name="dato_objetivo">Precio deseado: %1$s</string>
+	<string name="dato_alerta">Alerta por bajada: %1$s</string>
+	<string name="dato_inicial">Precio inicial: %1$s</string>
+	<string name="dato_minimo">Mínimo: %1$s, el %2$s</string>
+	<string name="dato_maximo">Máximo: %1$s, el %2$s</string>
+	<string name="dato_media">Media del historial: %1$s</string>
+	<string name="dato_en_minimo">Está en su mínimo histórico.</string>
+	<string name="dato_sobre_minimo">Diferencia con el mínimo: %1$s (%2$s %%)</string>
+	<string name="dato_ultima">Última comprobación: %1$s</string>
+	<string name="dato_resultado">Resultado de la última comprobación: %1$s</string>
+	<string name="dato_error">Último error: %1$s</string>
+	<string name="dato_origen">Precio leído de: %1$s</string>
+	<string name="dato_alta">Añadido el %1$s</string>
+	<string name="dato_notas">Notas: %1$s</string>
+	<string name="dato_direccion">Dirección: %1$s</string>
+	<string name="ninguno">ninguno</string>
+	<string name="cualquier_bajada">cualquier bajada</string>
+	<string name="nunca">nunca</string>
+	<string name="si">sí</string>
+	<string name="no">no</string>
+
+	<!-- Añadir y editar -->
+	<string name="editar_producto">Editar producto</string>
+	<string name="campo_direccion">Dirección del producto</string>
+	<string name="ayuda_direccion">La página del producto en la tienda (https://…).</string>
+	<string name="campo_nombre">Nombre (opcional)</string>
+	<string name="ayuda_nombre">Si lo dejas vacío, se usa el de la página.</string>
+	<string name="campo_categoria">Categoría: %1$s</string>
+	<string name="elegir_categoria">Elegir categoría</string>
+	<string name="campo_grupo">Grupo para comparar (opcional)</string>
+	<string name="ayuda_grupo">El mismo nombre en productos de varias tiendas para compararlos.</string>
+	<string name="campo_objetivo">Precio deseado en euros (opcional)</string>
+	<string name="ayuda_objetivo">Te avisa cuando el precio sea este o menos.</string>
+	<string name="campo_alerta">Alerta por bajada en % (opcional)</string>
+	<string name="ayuda_alerta">Vacío o 0: cualquier bajada. Por ejemplo, 10: solo bajadas de al menos el 10 %.</string>
+	<string name="campo_avisar_disponible">Avisar si vuelve a estar disponible</string>
+	<string name="campo_selector">Selector CSS del precio (avanzado, opcional)</string>
+	<string name="ayuda_selector">Solo si no se encuentra el precio: el selector CSS del elemento que lo contiene.</string>
+	<string name="campo_notas">Notas (opcional)</string>
+	<string name="comprobar_y_guardar">Comprobar y guardar</string>
+	<string name="guardar_cambios">Guardar cambios</string>
+	<string name="guardar">Guardar</string>
+	<string name="cambios_guardados">Cambios guardados</string>
+	<string name="error_direccion">Escribe la dirección completa de la página del producto, por ejemplo https://www.tienda.es/producto.</string>
+	<string name="error_objetivo">Escribe un importe, por ejemplo 99,95.</string>
+	<string name="error_alerta">Escribe un porcentaje entre 0 y 99, por ejemplo 10.</string>
+	<string name="ya_existe_titulo">Ya sigues este producto</string>
+	<string name="ya_existe_texto">Esta dirección ya está guardada como «%1$s».</string>
+	<string name="abrir_producto">Abrir el producto</string>
+	<string name="comprobando_producto">Comprobando el producto</string>
+	<string name="comprobando_producto_texto">Descargando la página de la tienda…</string>
+	<string name="producto_encontrado">Producto encontrado</string>
+	<string name="encontrado_guardar">Encontrado: %1$s, %2$s, %3$s. ¿Guardar?</string>
+	<string name="disponible">Disponible</string>
+	<string name="no_se_encontro_precio">No se encontró el precio</string>
+	<string name="no_se_pudo_comprobar">No se pudo comprobar la página</string>
+	<string name="guardar_igualmente_texto">%1$s\n\nPuedes guardarlo igualmente (se volverá a intentar en cada comprobación) o escribir un selector CSS propio.</string>
+	<string name="guardar_igualmente">Guardar igualmente</string>
+	<string name="editar_selector">Editar el selector</string>
+	<string name="producto_guardado">Producto guardado</string>
+
+	<!-- Permiso de notificaciones (en contexto) -->
+	<string name="permiso_titulo">Avisos de precios</string>
+	<string name="permiso_explicacion">Para avisarte cuando un precio baje, suba, llegue al que quieres o el producto vuelva a estar disponible, la app necesita permiso para mostrar notificaciones. Si no lo das, la app funciona igual y la sección Avisos lo sigue registrando todo.</string>
+	<string name="permitir_avisos">Permitir avisos</string>
+	<string name="ahora_no">Ahora no</string>
+	<string name="permiso_denegado">Sin permiso de notificaciones: los avisos se guardarán en la sección Avisos.</string>
+
+	<!-- Categorías -->
+	<string name="anadir_categoria">Añadir categoría</string>
+	<string name="renombrar_categoria">Renombrar categoría</string>
+	<string name="descripcion_opcional">Descripción (opcional)</string>
+	<string name="error_nombre_vacio">Escribe un nombre.</string>
+	<string name="error_categoria_existe">Ya hay una categoría con ese nombre. Escribe otro.</string>
+	<string name="categoria_creada">Categoría %1$s creada.</string>
+	<string name="categoria_guardada">Categoría %1$s guardada.</string>
+	<string name="categoria_borrada">Categoría %1$s borrada.</string>
+	<string name="categoria_subida">%1$s ha subido un puesto.</string>
+	<string name="categoria_bajada">%1$s ha bajado un puesto.</string>
+	<string name="confirmar_borrar_categoria_vacia">¿Borrar la categoría %1$s?</string>
+	<plurals name="confirmar_borrar_categoria">
+		<item quantity="one">¿Borrar la categoría %1$s? Su %2$d producto pasará a «Sin categoría».</item>
+		<item quantity="many">¿Borrar la categoría %1$s? Sus %2$d productos pasarán a «Sin categoría».</item>
+		<item quantity="other">¿Borrar la categoría %1$s? Sus %2$d productos pasarán a «Sin categoría».</item>
+	</plurals>
+	<string name="borrar">Borrar</string>
+
+	<!-- Tiendas -->
+	<string name="editar_tienda">Editar tienda</string>
+	<string name="editar_tienda_x">Tienda %1$s</string>
+	<string name="dominio_y_productos">Dominio: %1$s. %2$s.</string>
+	<string name="notas_de_la_tienda">Nota sobre esta tienda: %1$s</string>
+	<string name="campo_nombre_tienda">Nombre de la tienda</string>
+	<string name="campo_selector_precio">Selector CSS del precio (opcional)</string>
+	<string name="ayuda_selector_tienda">Gana a las reglas incluidas en la app. Vacío: reglas incluidas y extracción automática.</string>
+	<string name="campo_selector_titulo">Selector CSS del nombre (opcional)</string>
+	<string name="campo_selector_disponible">Selector CSS de la disponibilidad (opcional)</string>
+	<string name="ayuda_selector_disponible">Si el elemento dice «agotado», «no disponible» o «sin stock», se marca agotado.</string>
+	<string name="probar_selectores">Probar los selectores</string>
+	<string name="probando_selectores">Probando los selectores</string>
+	<string name="elegir_producto_prueba">Elegir un producto para probar</string>
+	<string name="resultado_prueba">Resultado de la prueba</string>
+	<string name="prueba_precio">Precio: %1$s.</string>
+	<string name="prueba_origen">Sacado de: %1$s.</string>
+	<string name="prueba_nombre">Nombre: %1$s.</string>
+	<string name="prueba_disponible">Disponibilidad: %1$s.</string>
+	<string name="no_encontrado">no encontrado</string>
+	<string name="no_se_sabe">no se sabe</string>
+	<string name="borrar_tienda">Borrar la tienda</string>
+	<string name="confirmar_borrar_tienda">¿Borrar la tienda %1$s?</string>
+	<string name="tienda_borrada">Tienda %1$s borrada.</string>
+	<string name="tienda_con_productos">No se puede borrar: la tienda tiene productos.</string>
+	<string name="con_selectores_propios">con selectores propios</string>
+
+	<!-- Importar y exportar -->
+	<string name="exportar">Exportar</string>
+	<string name="exportar_explicacion">Guarda todos los productos, con su historial, las categorías, las tiendas y los avisos en un archivo que puedes llevar a la app de Windows o a otro móvil.</string>
+	<string name="incluir_ajustes">Incluir también los ajustes</string>
+	<string name="exportar_todo">Exportar todo a un archivo</string>
+	<string name="exportar_csv">Exportar a CSV para hojas de cálculo</string>
+	<string name="importar">Importar</string>
+	<string name="importar_explicacion">Lee un archivo exportado desde esta app o desde la de Windows. Antes de cambiar nada verás un resumen y podrás elegir entre combinar o reemplazar todo.</string>
+	<string name="importar_archivo">Importar desde un archivo</string>
+	<string name="exportando">Exportando</string>
+	<string name="importando">Importando</string>
+	<string name="leyendo_archivo">Leyendo el archivo</string>
+	<string name="resumen_importacion">El archivo tiene %1$s, %2$s y %3$s. %4$s y %5$s.</string>
+	<plurals name="se_anadiran">
+		<item quantity="one">Se añadirá %1$d producto</item>
+		<item quantity="many">Se añadirán %1$d productos</item>
+		<item quantity="other">Se añadirán %1$d productos</item>
+	</plurals>
+	<plurals name="se_actualizaran">
+		<item quantity="one">se actualizará %1$d</item>
+		<item quantity="many">se actualizarán %1$d</item>
+		<item quantity="other">se actualizarán %1$d</item>
+	</plurals>
+	<plurals name="no_validos">
+		<item quantity="one">%1$d producto no es válido (sin dirección o sin identificador) y se saltará.</item>
+		<item quantity="many">%1$d productos no son válidos (sin dirección o sin identificador) y se saltarán.</item>
+		<item quantity="other">%1$d productos no son válidos (sin dirección o sin identificador) y se saltarán.</item>
+	</plurals>
+	<string name="aplicar_ajustes_archivo">Aplicar también los ajustes del archivo</string>
+	<string name="combinar">Combinar</string>
+	<string name="reemplazar_todo">Reemplazar todo</string>
+	<string name="confirmar_reemplazar">Se borrarán todos los productos, categorías, tiendas y avisos de este móvil y se cargará el archivo. Antes se guarda una copia de seguridad en la app. ¿Reemplazar todo?</string>
+	<string name="importacion_hecha">Importación terminada. %1$s</string>
+	<string name="error_archivo">No se pudo leer o escribir el archivo: %1$s</string>
+	<plurals name="exportados">
+		<item quantity="one">Exportado: %1$d producto.</item>
+		<item quantity="many">Exportados: %1$d productos.</item>
+		<item quantity="other">Exportados: %1$d productos.</item>
+	</plurals>
+	<plurals name="exportados_csv">
+		<item quantity="one">CSV guardado con %1$d producto.</item>
+		<item quantity="many">CSV guardado con %1$d productos.</item>
+		<item quantity="other">CSV guardado con %1$d productos.</item>
+	</plurals>
+
+	<!-- Ajustes -->
+	<string name="ajustes_comprobacion">Comprobación</string>
+	<string name="ajustes_avisos">Avisos</string>
+	<string name="ajustes_actualizaciones">Actualizaciones</string>
+	<string name="ajuste_intervalo">Cada cuánto se comprueban los precios</string>
+	<string name="ajuste_comprobar_al_iniciar">Comprobar al abrir la app</string>
+	<string name="ajuste_comprobar_al_iniciar_resumen">Si la última comprobación es más vieja que el intervalo.</string>
+	<string name="ajuste_solo_wifi">Solo con wifi</string>
+	<string name="ajuste_solo_wifi_resumen">Las comprobaciones automáticas solo se hacen en redes sin límite de datos.</string>
+	<string name="ajuste_pausa">Pausa entre páginas de la misma tienda</string>
+	<string name="ajuste_pausa_resumen">Más pausa hace menos probable que la tienda pida comprobar que no eres un robot.</string>
+	<string name="ajuste_tiempo_espera">Tiempo máximo por página</string>
+	<string name="ajuste_tiempo_espera_resumen">Si la tienda tarda más, se da por fallida y se reintenta más tarde.</string>
+	<string name="ajuste_avisar_bajadas">Avisar de las bajadas</string>
+	<string name="ajuste_avisar_subidas">Avisar de las subidas</string>
+	<string name="ajuste_avisar_objetivo">Avisar al llegar al precio deseado</string>
+	<string name="ajuste_avisar_minimo">Avisar de un nuevo mínimo histórico</string>
+	<string name="ajuste_avisar_disponible">Avisar cuando vuelva a estar disponible</string>
+	<string name="ajuste_avisar_agotado">Avisar cuando se agote</string>
+	<string name="ajuste_avisar_errores">Avisar de los problemas</string>
+	<string name="ajuste_avisar_errores_resumen">Tras 3 comprobaciones fallidas seguidas del mismo producto.</string>
+	<string name="ajuste_cambio_minimo">Ignorar cambios pequeños</string>
+	<string name="ajuste_cambio_minimo_ayuda">Bajadas y subidas menores que este porcentaje se guardan pero no avisan. 0 para avisar de todas.</string>
+	<string name="ajuste_cambio_minimo_todos">Se avisa de todos los cambios</string>
+	<string name="ajuste_cambio_minimo_valor">Solo cambios de al menos el %1$s %%</string>
+	<string name="error_porcentaje">Escribe un porcentaje entre 0 y 99.</string>
+	<string name="ajuste_conservar_avisos">Conservar los avisos</string>
+	<string name="ajuste_permiso">Permiso de notificaciones</string>
+	<string name="ajuste_permiso_si">Las notificaciones están permitidas.</string>
+	<string name="ajuste_permiso_no">Sin permiso: los avisos solo se guardan en la sección Avisos. Pulsa para permitirlas.</string>
+	<string name="ajuste_notificacion_prueba">Enviar una notificación de prueba</string>
+	<string name="ajuste_notificacion_prueba_resumen">Para comprobar que las notificaciones llegan.</string>
+	<string name="notificaciones_desactivadas">Las notificaciones están desactivadas para esta app. Actívalas en Permiso de notificaciones.</string>
+	<string name="ajuste_bateria">Optimización de batería</string>
+	<string name="ajuste_bateria_resumen">Algunos fabricantes retrasan o cortan las comprobaciones en segundo plano. Si no llegan los avisos, abre esta pantalla y quita la optimización para la app. En dontkillmyapp.com se explica cómo hacerlo en cada marca.</string>
+	<string name="ajuste_buscar_actualizaciones">Buscar actualizaciones al abrir</string>
+	<string name="ajuste_buscar_actualizaciones_resumen">Como mucho una vez al día.</string>
+
+	<!-- Notificaciones -->
+	<string name="canal_bajadas">Bajadas y ofertas</string>
+	<string name="canal_bajadas_descripcion">Bajadas de precio, mínimos históricos y precio deseado alcanzado.</string>
+	<string name="canal_subidas">Subidas de precio</string>
+	<string name="canal_subidas_descripcion">Cuando te suben el precio de un producto.</string>
+	<string name="canal_disponibilidad">Disponibilidad</string>
+	<string name="canal_disponibilidad_descripcion">Productos que vuelven a estar disponibles o se agotan.</string>
+	<string name="canal_problemas">Problemas</string>
+	<string name="canal_problemas_descripcion">Productos cuyo precio no se puede leer.</string>
+	<string name="canal_progreso">Comprobación en curso</string>
+	<string name="canal_progreso_descripcion">Progreso de «Comprobar todos ahora».</string>
+	<string name="resumen_notificacion_texto">Toca para ver los avisos.</string>
+	<string name="notificacion_prueba_titulo">Notificación de prueba</string>
+	<string name="notificacion_prueba_texto">Si ves esto, los avisos de precios te llegarán.</string>
+
+	<!-- Actualizaciones (como YouTubeRO) -->
+	<string name="actualizacion">Actualización</string>
+	<string name="actualizacion_sin_permiso">Sin ese permiso no se puede instalar la actualización. Puedes intentarlo de nuevo desde el menú, Buscar actualizaciones.</string>
+	<string name="actualizada_a">No Me Subas Los Precios se ha actualizado a la versión %1$s.</string>
+	<string name="buscando_actualizaciones">Buscando actualizaciones…</string>
+	<string name="sin_actualizaciones">Tienes la última versión (%1$s).</string>
+	<string name="error_comprobar_actualizacion">No se pudo comprobar si hay actualizaciones: %1$s</string>
+	<string name="actualizacion_texto">Tienes la versión %1$s y ya está disponible la %2$s.</string>
+	<string name="actualizacion_tamano">La descarga ocupa %1$s.</string>
+	<string name="novedades">Novedades:</string>
+	<string name="actualizacion_disponible">Nueva versión de No Me Subas Los Precios: %1$s</string>
+	<string name="actualizar">Actualizar</string>
+	<string name="mas_tarde">Más tarde</string>
+	<string name="omitir_version">Omitir esta versión</string>
+	<string name="descargando_actualizacion_inicio">Conectando con el servidor…</string>
+	<string name="descargando_version">Descargando la versión %1$s</string>
+	<string name="descargando_actualizacion">%1$d %% (%2$s de %3$s)</string>
+	<string name="actualizacion_descargada">Descarga completada. Se abre el instalador.</string>
+	<string name="actualizacion_cancelada">Descarga de la actualización cancelada.</string>
+	<string name="error_descargar_actualizacion">No se pudo actualizar: %1$s</string>
+	<string name="actualizacion_pedir_permiso">Para instalar la actualización, Android necesita que permitas a No Me Subas Los Precios instalar aplicaciones. Pulsa Abrir ajustes, activa «Permitir de esta fuente» y vuelve atrás: la instalación seguirá sola.</string>
+	<string name="abrir_ajustes">Abrir ajustes</string>
+
+	<!-- Extracción ampliada: elegir el precio, variantes y navegador integrado -->
+	<string name="elegir_precio">Elegir el precio en la página</string>
+	<string name="descargando_pagina">Descargando la página</string>
+	<string name="elegir_precio_explicacion">No he encontrado el precio con seguridad. Elige el correcto:</string>
+	<string name="elegir_precio_con_automatico">Ahora se lee %1$s automáticamente. Si no es el precio correcto, elige otro:</string>
+	<string name="elegir_precio_sin_candidatos">No hay importes en la página. Puedes escribir un selector CSS o abrir la tienda en la app.</string>
+	<string name="elegir_precio_api">Esta tienda da el precio por su API: no hace falta elegirlo en la página.</string>
+	<string name="usar_este_precio">Usar este precio</string>
+	<string name="usar_para_la_tienda">Usar también para todos los productos de esta tienda</string>
+	<string name="ninguno_es_el_precio">Ninguno es el precio</string>
+	<string name="escribir_selector">Escribir un selector</string>
+	<string name="selector_no_valido">No se pudo crear una posición fiable para ese importe en la página. Elige otro o escribe un selector.</string>
+	<string name="precio_guardado_posicion">Precio guardado: %1$s. Se usará esta posición de la página en las próximas comprobaciones.</string>
+	<string name="no_seguro_elige">No he encontrado el precio con seguridad. Guárdalo y elige el correcto entre los importes de la página.</string>
+	<string name="elegir_variante">Elegir variante</string>
+	<string name="buscando_variantes">Buscando las variantes</string>
+	<string name="sin_variantes">No se encontraron variantes en la página. Puedes pegar en Editar la dirección de la variante que quieres.</string>
+	<string name="variante_elegida">Variante elegida: %1$s.</string>
+	<string name="tiene_variantes">El producto tiene variantes (talla, color…) con precios distintos: se guarda el menor como «desde». Puedes elegir una variante.</string>
+	<string name="guardar_y_elegir_variante">Guardar y elegir variante</string>
+	<string name="dato_confianza">Confianza del precio: %1$s</string>
+	<string name="dato_variante">Variante: %1$s</string>
+	<string name="abrir_tienda_en_la_app">Abrir la tienda en la app</string>
+	<string name="tienda_en_la_app">Tienda en la app: %1$s</string>
+	<string name="navegador_explicacion">Si la tienda pide comprobar que no eres un robot o aceptar las cookies, hazlo aquí. Pulsa Atrás para volver: las cookies se quedan para las comprobaciones.</string>
+	<string name="navegador_cargada">Página cargada: %1$s</string>
+	<string name="modo_descarga">Modo de descarga</string>
+	<string name="modo_descarga_x">Modo de descarga: %1$s</string>
+	<string name="modo_auto">Automático</string>
+	<string name="modo_directo">Descarga directa</string>
+	<string name="modo_navegador">Navegador integrado</string>
+
+	<!-- Acciones de TalkBack por zona (Ajustes) -->
+	<string name="ajustes_accesibilidad">Accesibilidad</string>
+	<string name="acciones_talkback">Acciones de TalkBack</string>
+	<string name="ajuste_acciones_talkback_resumen">Elige qué acciones salen en las acciones rápidas de TalkBack de cada lista y en qué orden. La pulsación larga muestra siempre todas.</string>
+	<string name="acciones_de_zona">Acciones de TalkBack: %1$s</string>
+	<string name="abrir">Abrir</string>
+	<string name="en_acciones_rapidas">en las acciones rápidas</string>
+	<string name="fuera_de_acciones_rapidas">fuera de las acciones rápidas</string>
+	<string name="poner_en_rapidas">Poner en las acciones rápidas</string>
+	<string name="quitar_de_rapidas">Quitar de las acciones rápidas</string>
+	<string name="accion_subida">%1$s ha subido un puesto.</string>
+	<string name="accion_bajada">%1$s ha bajado un puesto.</string>
+	<string name="restablecer">Restablecer</string>
+	<string name="confirmar_restablecer">¿Volver a las acciones rápidas de fábrica en %1$s?</string>
+	<string name="acciones_restablecidas">Acciones restablecidas.</string>
+	<plurals name="n_acciones_rapidas">
+		<item quantity="one">%1$d acción rápida</item>
+		<item quantity="many">%1$d acciones rápidas</item>
+		<item quantity="other">%1$d acciones rápidas</item>
+	</plurals>
+
+	<!-- Compartir desde el navegador -->
+	<string name="seguir_precio">Seguir el precio</string>
+</resources>

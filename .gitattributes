@@ -1,0 +1,16 @@
+# Finales de línea coherentes en cualquier equipo (y al clonar desde GitHub)
+* text=auto
+# cmd y PowerShell 5.1 necesitan CRLF: con LF, los goto y las etiquetas fallan
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+# Binarios
+*.png binary
+*.jpg binary
+*.ico binary
+*.wav binary
+*.ogg binary
+*.jar binary
+*.jks binary
+*.apk binary
+*.zip binary

@@ -1,0 +1,14 @@
+{
+ "https://complementosparaaves.com/gb/dogs-and-cats/3992-food-for-adult-dogs-mini-size-chicken-and-rice-arquivet-3-kg.html": {"precio": 21.95, "nota": "PrestaShop con Creative Elements. El dataLayer da 19.95 (sin IVA); el precio con IVA es 21,95."},
+ "https://www.primor.eu/es_es/saponificio-set-peony-garden-scented-soap-149041.html": {"precio": 3.99, "nota": "Magento 2 con plantilla Hyvä (Tailwind, sin data-price-amount en el bloque principal)."},
+ "https://mentta.com/products/evoo-in-rama": {"precio": 9.0, "nota": "Plataforma propia; el precio visible lo pinta JavaScript; está en var scopeProduct y en JSON-LD. Agotado."},
+ "https://www.obramat.es/productos/alambre-recocido-atar-1-3mm-5kg-25147617.html": {"precio": 11.29, "nota": "Precio partido (11 + ,29 €) y precio sin IVA 9,33 al lado."},
+ "https://www.espressocoffeeshop.com/es/comprar-cafe-online/162-laboratorio-di-torrefazione-giamaica-caffe--afribon-caffe--in-grani-0-5-kg-7.html": {"precio": 25.0, "nota": "PrestaShop con plantilla propia; h1 dentro de un <header> de sección."},
+ "https://www.veganmilker.com/producto/vegan-milker-classic/": {"precio": 39.99, "nota": "WooCommerce SIN JSON-LD Product (Yoast sin WooCommerce SEO). Tachado 47,05. twitter:data1 = «4 minutos» (tiempo de lectura)."},
+ "https://ferreteriadosil.es/product/set-de-puntas-de-atornillar-bosch/": {"precio": 17.85, "nota": "WooCommerce en oferta: tachado 22,78."},
+ "https://www.hawkersco.com/collaborations-luca-marini-ss25.html": {"precio": null, "nota": "Página de colección (SFCC), no de producto: no debe dar precio."},
+ "https://cafesgranell.es/es/daily-blends/260-gran-luxe.html": {"precio": 7.5, "nota": "PrestaShop 1.7 con miniaturas de otros productos con su propio formulario de compra."},
+ "https://cafelab.es/producto/cafe-de-especialidad-guatemala-blue-ayarza/": {"precio": 12.0, "nota": "WooCommerce variable: rango 12,00 a 48,00; se espera el «desde» (el usuario debería elegir variante)."},
+ "https://riovet.es/producto/natural-trainer-adulto-maxi-pollo-pienso-perros": {"precio": 44.78, "nota": "WooCommerce con megamenú lleno de productos ANTES del h1 y precios por cantidad (44,34 / 43,89 / 43,44)."},
+ "https://www.alcaiceria.com/alcaiceria/compras/detalle.php?SKU=07851": {"precio": 1.8, "nota": "PÁGINA RESERVADA (no usada para ajustar). PHP propio, sin h1, sin JSON-LD ni metas: solo «P.V.P.: 1,80 €» junto al botón. Antes de añadir la regla de candidato único, el prototipo se abstenía (preguntaba al usuario)."}
+}

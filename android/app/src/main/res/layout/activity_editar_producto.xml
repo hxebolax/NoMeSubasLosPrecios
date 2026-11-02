@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Añadir o editar un producto. Cada campo con su etiqueta (hint del TextInputLayout), nunca contentDescription -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/raiz"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="?android:attr/colorBackground"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/barra"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize" />
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingHorizontal="16dp"
+			android:paddingBottom="24dp">
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_url"
+				style="@style/Campo"
+				android:hint="@string/campo_direccion"
+				app:helperText="@string/ayuda_direccion">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/url"
+					style="@style/Campo.Texto"
+					android:inputType="textUri" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_nombre"
+				style="@style/Campo"
+				android:hint="@string/campo_nombre"
+				app:helperText="@string/ayuda_nombre">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/nombre"
+					style="@style/Campo.Texto"
+					android:inputType="textCapSentences" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/categoria"
+				style="@style/Boton.Accion"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp" />
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_grupo"
+				style="@style/Campo"
+				android:hint="@string/campo_grupo"
+				app:helperText="@string/ayuda_grupo">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/grupo"
+					style="@style/Campo.Texto"
+					android:inputType="textCapSentences" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_objetivo"
+				style="@style/Campo"
+				android:hint="@string/campo_objetivo"
+				app:helperText="@string/ayuda_objetivo">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/objetivo"
+					style="@style/Campo.Texto"
+					android:digits="0123456789.,"
+					android:inputType="numberDecimal" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_alerta"
+				style="@style/Campo"
+				android:hint="@string/campo_alerta"
+				app:helperText="@string/ayuda_alerta">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/alerta"
+					style="@style/Campo.Texto"
+					android:digits="0123456789.,"
+					android:inputType="numberDecimal" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/avisar_disponible"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:checked="true"
+				android:minHeight="48dp"
+				android:text="@string/campo_avisar_disponible" />
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_selector"
+				style="@style/Campo"
+				android:hint="@string/campo_selector"
+				app:helperText="@string/ayuda_selector">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/selector"
+					style="@style/Campo.Texto"
+					android:inputType="text" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/elegir_precio"
+				style="@style/Boton.Accion"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/elegir_precio"
+				android:visibility="gone" />
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_notas"
+				style="@style/Campo"
+				android:hint="@string/campo_notas">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/notas"
+					style="@style/Campo.Texto"
+					android:inputType="textMultiLine|textCapSentences"
+					android:minLines="2" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/guardar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:minHeight="48dp" />
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+</LinearLayout>

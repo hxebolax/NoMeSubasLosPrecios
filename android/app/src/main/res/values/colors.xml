@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Colores del tema claro (verde: precios que bajan). Pares de Material con contraste de 4,5:1 o más -->
+<resources>
+	<color name="primario">#1B6B3A</color>
+	<color name="sobre_primario">#FFFFFF</color>
+	<color name="primario_contenedor">#A4F4B4</color>
+	<color name="sobre_primario_contenedor">#00210C</color>
+	<color name="secundario">#4F6352</color>
+	<color name="fondo">#F6FBF3</color>
+	<color name="sobre_fondo">#181D18</color>
+	<color name="superficie_variante">#DDE5DA</color>
+	<!-- Bordes de los campos de texto: 3:1 como mínimo (aquí más de 5:1) -->
+	<color name="contorno">#5F6A5E</color>
+	<color name="sobre_superficie_variante">#414941</color>
+	<color name="icono_fondo">#1B6B3A</color>
+	<color name="icono_frente">#FFFFFF</color>
+</resources>

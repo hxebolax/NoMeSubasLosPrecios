@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Importar y exportar con el selector de archivos del sistema -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/raiz"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="?android:attr/colorBackground"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/barra"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize" />
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingHorizontal="16dp"
+			android:paddingBottom="24dp">
+
+			<TextView
+				android:id="@+id/estado"
+				style="@style/Texto.Estado"
+				android:paddingHorizontal="0dp"
+				android:accessibilityLiveRegion="polite"
+				android:visibility="gone" />
+
+			<TextView
+				style="@style/Texto.Encabezado"
+				android:accessibilityHeading="true"
+				android:text="@string/exportar" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/exportar_explicacion"
+				android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+			<com.google.android.material.checkbox.MaterialCheckBox
+				android:id="@+id/con_ajustes"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:minHeight="48dp"
+				android:text="@string/incluir_ajustes" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/exportar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:minHeight="48dp"
+				android:text="@string/exportar_todo" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/exportar_csv"
+				style="@style/Boton.Accion"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/exportar_csv" />
+
+			<TextView
+				style="@style/Texto.Encabezado"
+				android:accessibilityHeading="true"
+				android:text="@string/importar" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/importar_explicacion"
+				android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/importar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:minHeight="48dp"
+				android:text="@string/importar_archivo" />
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+</LinearLayout>

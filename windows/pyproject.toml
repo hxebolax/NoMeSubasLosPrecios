@@ -1,0 +1,46 @@
+# Metadatos, ruff y pytest. La compilación NO usa este archivo: la hace setup_cx.py.
+
+[project]
+name = "no-me-subas-los-precios"
+# Debe coincidir con APP_VERSION de app/core/version.py (lo comprueba una prueba).
+version = "1.0.0"
+description = "Seguimiento accesible de precios de tiendas online para Windows (wxPython)."
+# Versión mínima de Python del proyecto: ajústela a la elegida al crearlo.
+requires-python = ">=3.13"
+
+[tool.ruff]
+# La función de traducción _ puede instalarla gettext como builtin global.
+builtins = ["_"]
+line-length = 140
+# Debe coincidir con la versión mínima de requires-python.
+target-version = "py313"
+extend-exclude = ["build", "data", "dist"]
+
+[tool.ruff.format]
+indent-style = "tab"
+
+[tool.ruff.lint]
+# Errores reales, excepciones silenciadas y llamadas de registro mal formadas.
+select = ["E9", "F", "B", "BLE", "S110", "LOG", "G"]
+
+[tool.ruff.lint.per-file-ignores]
+# Las fixtures de pytest se importan y se reciben como parámetro con el mismo nombre.
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+norecursedirs = [".*", "venv", "build", "dist", "data", "__pycache__", "htmlcov"]
+pythonpath = ["."]
+addopts = ["-ra", "--strict-markers", "-m", "not red and not interfaz"]
+markers = [
+	"lento: prueba lenta (más de un segundo); se excluye con -m 'not lento'",
+	"red: necesita Internet; no se ejecuta por defecto (usa -m red)",
+	"interfaz: muestra ventanas o envía teclas reales; no se ejecuta por defecto (usa -m interfaz)",
+]
+xfail_strict = true
+filterwarnings = [
+	"error::pytest.PytestUnhandledThreadExceptionWarning",
+	"error::pytest.PytestUnraisableExceptionWarning",
+	"default::DeprecationWarning",
+]
+log_level = "DEBUG"

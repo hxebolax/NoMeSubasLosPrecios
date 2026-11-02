@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Editar una tienda: nombre, selectores propios (ganan a tiendas.json), notas, probar y borrar -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/raiz"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="?android:attr/colorBackground"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/barra"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize" />
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingHorizontal="16dp"
+			android:paddingBottom="24dp">
+
+			<TextView
+				android:id="@+id/dominio"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="12dp"
+				android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+			<TextView
+				android:id="@+id/notas_reglas"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="8dp"
+				android:textAppearance="?attr/textAppearanceBodyMedium"
+				android:visibility="gone" />
+
+			<TextView
+				android:id="@+id/estado"
+				style="@style/Texto.Estado"
+				android:paddingHorizontal="0dp"
+				android:accessibilityLiveRegion="polite"
+				android:visibility="gone" />
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_nombre"
+				style="@style/Campo"
+				android:hint="@string/campo_nombre_tienda">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/nombre"
+					style="@style/Campo.Texto"
+					android:inputType="textCapWords" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_precio"
+				style="@style/Campo"
+				android:hint="@string/campo_selector_precio"
+				app:helperText="@string/ayuda_selector_tienda">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/selector_precio"
+					style="@style/Campo.Texto"
+					android:inputType="text" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_titulo"
+				style="@style/Campo"
+				android:hint="@string/campo_selector_titulo">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/selector_titulo"
+					style="@style/Campo.Texto"
+					android:inputType="text" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_disponible"
+				style="@style/Campo"
+				android:hint="@string/campo_selector_disponible"
+				app:helperText="@string/ayuda_selector_disponible">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/selector_disponible"
+					style="@style/Campo.Texto"
+					android:inputType="text" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/campo_notas"
+				style="@style/Campo"
+				android:hint="@string/campo_notas">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/notas"
+					style="@style/Campo.Texto"
+					android:inputType="textMultiLine|textCapSentences"
+					android:minLines="2" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/modo"
+				style="@style/Boton.Accion"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="12dp" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/guardar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:minHeight="48dp"
+				android:text="@string/guardar_cambios" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/probar"
+				style="@style/Boton.Accion"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/probar_selectores" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/abrir_en_app"
+				style="@style/Boton.Accion"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/abrir_tienda_en_la_app" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/borrar"
+				style="@style/Boton.Accion"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/borrar_tienda"
+				android:visibility="gone" />
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+</LinearLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Detalles del producto: resumen hablado, acciones, datos, gráfica (decorativa) e historial -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/raiz"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="?android:attr/colorBackground"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/barra"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize" />
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/desplazable"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
+
+		<LinearLayout
+			android:id="@+id/contenido"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingHorizontal="16dp"
+			android:paddingBottom="24dp">
+
+			<TextView
+				android:id="@+id/resumen"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="12dp"
+				android:textAppearance="?attr/textAppearanceTitleMedium"
+				android:textColor="?attr/colorOnSurface" />
+
+			<TextView
+				android:id="@+id/estado"
+				style="@style/Texto.Estado"
+				android:paddingHorizontal="0dp"
+				android:accessibilityLiveRegion="polite"
+				android:visibility="gone" />
+
+			<TextView
+				style="@style/Texto.Encabezado"
+				android:accessibilityHeading="true"
+				android:text="@string/acciones" />
+
+			<LinearLayout
+				android:id="@+id/botones"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical" />
+
+			<TextView
+				style="@style/Texto.Encabezado"
+				android:accessibilityHeading="true"
+				android:text="@string/datos" />
+
+			<LinearLayout
+				android:id="@+id/datos"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical" />
+
+			<com.xebolax.nomesubaslosprecios.ui.GraficaPrecios
+				android:id="@+id/grafica"
+				android:layout_width="match_parent"
+				android:layout_height="200dp"
+				android:layout_marginTop="16dp"
+				android:importantForAccessibility="no" />
+
+			<TextView
+				style="@style/Texto.Encabezado"
+				android:accessibilityHeading="true"
+				android:text="@string/historial" />
+
+			<LinearLayout
+				android:id="@+id/historial"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical" />
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+</LinearLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+	<style name="Tema.NoMeSubas" parent="Theme.Material3.DayNight.NoActionBar">
+		<item name="colorPrimary">@color/primario</item>
+		<item name="colorOnPrimary">@color/sobre_primario</item>
+		<item name="colorPrimaryContainer">@color/primario_contenedor</item>
+		<item name="colorOnPrimaryContainer">@color/sobre_primario_contenedor</item>
+		<item name="colorSecondary">@color/secundario</item>
+		<item name="android:colorBackground">@color/fondo</item>
+		<item name="colorOnBackground">@color/sobre_fondo</item>
+		<item name="colorSurfaceVariant">@color/superficie_variante</item>
+		<item name="colorOnSurfaceVariant">@color/sobre_superficie_variante</item>
+		<item name="colorOutline">@color/contorno</item>
+		<item name="android:windowLightStatusBar" tools:targetApi="m">?attr/isLightTheme</item>
+		<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+	</style>
+
+	<!-- Botones con área táctil cómoda (mínimo 48 dp) -->
+	<style name="Boton.Accion" parent="Widget.Material3.Button.TonalButton">
+		<item name="android:minHeight">48dp</item>
+		<item name="android:layout_marginTop">4dp</item>
+	</style>
+
+	<!-- Texto de estado bajo la barra (resultado de una acción, progreso) -->
+	<style name="Texto.Estado" parent="">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:paddingHorizontal">16dp</item>
+		<item name="android:paddingVertical">8dp</item>
+		<item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
+		<item name="android:textColor">?attr/colorOnSurface</item>
+	</style>
+
+	<!-- Lista vacía: explica qué hacer -->
+	<style name="Texto.Vacio" parent="">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:padding">24dp</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
+		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+	</style>
+
+	<!-- Encabezado de un apartado (navegable por encabezados con TalkBack) -->
+	<style name="Texto.Encabezado" parent="">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:paddingTop">20dp</item>
+		<item name="android:paddingBottom">4dp</item>
+		<item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+		<item name="android:textColor">?attr/colorPrimary</item>
+	</style>
+
+	<!-- Campo de formulario: la etiqueta es el hint del TextInputLayout -->
+	<style name="Campo" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_marginTop">12dp</item>
+	</style>
+
+	<style name="Campo.Texto" parent="">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:minHeight">56dp</item>
+	</style>
+</resources>

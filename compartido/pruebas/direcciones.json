@@ -1,0 +1,35 @@
+{
+  "_comentario": "limpiar_url / limpiarUrl y dominio_de / dominioDe. El host se pasa a minúsculas; la ruta y los parámetros que quedan, no.",
+  "direcciones": [
+    {
+      "entrada": "https://www.amazon.es/Robot-Aspirador-Ejemplo/dp/B0EJEMPLO1/ref=sr_1_3?crid=2X&keywords=robot&qid=1730000000&sr=8-3&th=1",
+      "limpia": "https://www.amazon.es/dp/B0EJEMPLO1",
+      "dominio": "amazon.es"
+    },
+    {
+      "entrada": "amazon.es/gp/product/B0EJEMPLO2?psc=1",
+      "limpia": "https://www.amazon.es/dp/B0EJEMPLO2",
+      "dominio": "amazon.es"
+    },
+    {
+      "entrada": "https://www.amazon.com/gp/aw/d/B0EJEMPLO3/",
+      "limpia": "https://www.amazon.com/dp/B0EJEMPLO3",
+      "dominio": "amazon.com"
+    },
+    {
+      "entrada": "  https://www.pccomponentes.com/portatil-ejemplo-15?utm_source=google&utm_medium=cpc&gclid=abc#opiniones ",
+      "limpia": "https://www.pccomponentes.com/portatil-ejemplo-15",
+      "dominio": "pccomponentes.com"
+    },
+    {
+      "entrada": "https://m.tiendaejemplo.es/p/1?color=rojo&utm_campaign=x&srsltid=zz",
+      "limpia": "https://m.tiendaejemplo.es/p/1?color=rojo",
+      "dominio": "tiendaejemplo.es"
+    },
+    {
+      "entrada": "https://WWW.MediaMarkt.es/es/product/_robot-1234.html",
+      "limpia": "https://www.mediamarkt.es/es/product/_robot-1234.html",
+      "dominio": "mediamarkt.es"
+    }
+  ]
+}

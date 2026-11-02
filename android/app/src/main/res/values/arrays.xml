@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="intervalos_nombres">
+		<item>Cada hora</item>
+		<item>Cada 2 horas</item>
+		<item>Cada 3 horas</item>
+		<item>Cada 6 horas</item>
+		<item>Cada 12 horas</item>
+		<item>Una vez al día</item>
+	</string-array>
+	<string-array name="intervalos_valores" translatable="false">
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>6</item>
+		<item>12</item>
+		<item>24</item>
+	</string-array>
+	<string-array name="conservar_nombres">
+		<item>30 días</item>
+		<item>90 días</item>
+		<item>180 días</item>
+		<item>Un año</item>
+		<item>Siempre</item>
+	</string-array>
+	<string-array name="conservar_valores" translatable="false">
+		<item>30</item>
+		<item>90</item>
+		<item>180</item>
+		<item>365</item>
+		<item>0</item>
+	</string-array>
+</resources>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<!-- Volver a programar la comprobación al encender el teléfono -->
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<!-- Instalar las actualizaciones descargadas del servidor (lo confirma el usuario) -->
+	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+	<application
+		android:name=".NoMeSubasApp"
+		android:allowBackup="true"
+		android:dataExtractionRules="@xml/reglas_extraccion_datos"
+		android:enableOnBackInvokedCallback="true"
+		android:fullBackupContent="@xml/copia_seguridad"
+		android:icon="@mipmap/ic_launcher"
+		android:label="@string/app_name"
+		android:localeConfig="@xml/locales_config"
+		android:networkSecurityConfig="@xml/seguridad_red"
+		android:roundIcon="@mipmap/ic_launcher"
+		android:supportsRtl="true"
+		android:theme="@style/Tema.NoMeSubas"
+		tools:targetApi="35">
+
+		<activity
+			android:name=".ui.PrincipalActivity"
+			android:exported="true"
+			android:launchMode="singleTop"
+			android:windowSoftInputMode="adjustResize">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<!-- Añadir producto: también recibe las direcciones compartidas desde el navegador -->
+		<activity
+			android:name=".ui.EditarProductoActivity"
+			android:exported="true"
+			android:label="@string/seguir_precio"
+			android:parentActivityName=".ui.PrincipalActivity"
+			android:windowSoftInputMode="adjustResize">
+			<intent-filter android:label="@string/seguir_precio">
+				<action android:name="android.intent.action.SEND" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="text/plain" />
+			</intent-filter>
+		</activity>
+
+		<activity
+			android:name=".ui.DetalleActivity"
+			android:exported="false"
+			android:parentActivityName=".ui.PrincipalActivity" />
+		<activity
+			android:name=".ui.CategoriasActivity"
+			android:exported="false"
+			android:windowSoftInputMode="adjustResize" />
+		<activity
+			android:name=".ui.TiendasActivity"
+			android:exported="false" />
+		<activity
+			android:name=".ui.EditarTiendaActivity"
+			android:exported="false"
+			android:windowSoftInputMode="adjustResize" />
+		<activity
+			android:name=".ui.ImportarExportarActivity"
+			android:exported="false" />
+		<activity
+			android:name=".ui.AjustesActivity"
+			android:exported="false"
+			android:windowSoftInputMode="adjustResize" />
+		<activity
+			android:name=".ui.ManualActivity"
+			android:exported="false" />
+		<activity
+			android:name=".ui.AccionesAjustesActivity"
+			android:exported="false" />
+		<activity
+			android:name=".ui.ElegirPrecioActivity"
+			android:exported="false" />
+		<activity
+			android:name=".ui.NavegadorActivity"
+			android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard"
+			android:exported="false" />
+
+		<receiver
+			android:name=".motor.ArranqueReceptor"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+			</intent-filter>
+		</receiver>
+
+		<provider
+			android:name="androidx.core.content.FileProvider"
+			android:authorities="${applicationId}.archivos"
+			android:exported="false"
+			android:grantUriPermissions="true">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/rutas_archivos" />
+		</provider>
+	</application>
+</manifest>

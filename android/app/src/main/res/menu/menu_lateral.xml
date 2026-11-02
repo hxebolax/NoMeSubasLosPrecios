@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú lateral: arriba los destinos (las 7 secciones); tras el divisor, las acciones generales -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<group android:id="@+id/grupo_destinos">
+		<item android:id="@+id/destino_todos" android:icon="@drawable/ic_lista" android:title="@string/seccion_todos" />
+		<item android:id="@+id/destino_categorias" android:icon="@drawable/ic_categoria" android:title="@string/seccion_categorias" />
+		<item android:id="@+id/destino_tiendas" android:icon="@drawable/ic_tienda" android:title="@string/seccion_tiendas" />
+		<item android:id="@+id/destino_ofertas" android:icon="@drawable/ic_oferta" android:title="@string/seccion_ofertas" />
+		<item android:id="@+id/destino_favoritos" android:icon="@drawable/ic_favorito" android:title="@string/seccion_favoritos" />
+		<item android:id="@+id/destino_comparar" android:icon="@drawable/ic_comparar" android:title="@string/seccion_comparar" />
+		<item android:id="@+id/destino_avisos" android:icon="@drawable/ic_notificacion" android:title="@string/seccion_avisos" />
+	</group>
+	<group android:id="@+id/grupo_general">
+		<item android:id="@+id/accion_importar" android:icon="@drawable/ic_importar" android:title="@string/importar_exportar" />
+		<item android:id="@+id/accion_categorias" android:icon="@drawable/ic_categoria" android:title="@string/gestionar_categorias" />
+		<item android:id="@+id/accion_tiendas" android:icon="@drawable/ic_tienda" android:title="@string/gestionar_tiendas" />
+		<item android:id="@+id/accion_ajustes" android:icon="@drawable/ic_ajustes" android:title="@string/ajustes" />
+		<item android:id="@+id/accion_manual" android:icon="@drawable/ic_manual" android:title="@string/manual" />
+		<item android:id="@+id/accion_actualizaciones" android:icon="@drawable/ic_actualizar" android:title="@string/buscar_actualizaciones" />
+		<item android:id="@+id/accion_acerca" android:icon="@drawable/ic_info" android:title="@string/acerca_de" />
+	</group>
+</menu>

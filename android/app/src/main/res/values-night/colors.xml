@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="primario">#89D79A</color>
+	<color name="sobre_primario">#003918</color>
+	<color name="primario_contenedor">#005226</color>
+	<color name="sobre_primario_contenedor">#A4F4B4</color>
+	<color name="secundario">#B6CCB8</color>
+	<color name="fondo">#101510</color>
+	<color name="sobre_fondo">#DFE4DC</color>
+	<color name="superficie_variante">#414941</color>
+	<!-- Bordes de los campos de texto: 3:1 como mínimo (aquí más de 5:1) -->
+	<color name="contorno">#8B9389</color>
+	<color name="sobre_superficie_variante">#C1C9BE</color>
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	<item
+		android:id="@+id/menu_buscar"
+		android:icon="@drawable/ic_buscar"
+		android:title="@string/buscar_productos"
+		app:actionViewClass="androidx.appcompat.widget.SearchView"
+		app:showAsAction="ifRoom|collapseActionView" />
+	<item
+		android:id="@+id/menu_comprobar"
+		android:icon="@drawable/ic_actualizar"
+		android:title="@string/comprobar_todos_ahora"
+		app:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/menu_detener"
+		android:icon="@drawable/ic_detener"
+		android:title="@string/detener_comprobacion"
+		android:visible="false"
+		app:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/menu_ordenar"
+		android:title="@string/ordenar"
+		app:showAsAction="never" />
+	<item
+		android:id="@+id/menu_filtrar"
+		android:title="@string/filtrar"
+		app:showAsAction="never" />
+	<item
+		android:id="@+id/menu_leidos"
+		android:title="@string/marcar_todos_leidos"
+		android:visible="false"
+		app:showAsAction="never" />
+	<item
+		android:id="@+id/menu_borrar_avisos"
+		android:title="@string/borrar_todos_avisos"
+		android:visible="false"
+		app:showAsAction="never" />
+</menu>

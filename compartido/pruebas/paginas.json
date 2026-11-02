@@ -1,0 +1,104 @@
+{
+  "_comentario": "Páginas de ejemplo y lo que deben extraer las dos apps con recursos/tiendas.json. Campos ausentes = no se comprueban. precio nulo = sin precio; disponible nulo = no se sabe; bloqueo = la tienda pidió verificación; error = la extracción falla (no hay precio ni disponibilidad).",
+  "paginas": [
+    {
+      "archivo": "jsonld_producto.html",
+      "url": "https://www.tiendaejemplo.es/p/x200",
+      "precio": 129.99,
+      "moneda": "EUR",
+      "nombre": "Auriculares Ejemplo X200",
+      "disponible": true,
+      "imagen": "https://www.tiendaejemplo.es/img/x200.jpg"
+    },
+    {
+      "archivo": "jsonld_grafo.html",
+      "url": "https://deportes.ejemplo.com/zapatillas-trail-3",
+      "precio": 54.95,
+      "moneda": "EUR",
+      "nombre": "Zapatillas Trail 3",
+      "disponible": true,
+      "imagen": "https://deportes.ejemplo.com/z3.jpg"
+    },
+    {
+      "archivo": "meta_og.html",
+      "url": "https://casaejemplo.es/lampara-nordica",
+      "precio": 24.95,
+      "moneda": "EUR",
+      "nombre": "Lámpara Nórdica",
+      "disponible": false,
+      "imagen": "https://casaejemplo.es/lampara.jpg"
+    },
+    {
+      "archivo": "microdatos.html",
+      "url": "https://informatica.ejemplo.es/portatil-15",
+      "precio": 1049.0,
+      "moneda": "EUR",
+      "nombre": "Portátil Ejemplo 15",
+      "disponible": true
+    },
+    {
+      "archivo": "amazon_es.html",
+      "url": "https://www.amazon.es/dp/B0EJEMPLO1",
+      "precio": 349.9,
+      "moneda": "EUR",
+      "nombre": "Robot Aspirador Ejemplo R5 con estación de vaciado",
+      "disponible": true,
+      "imagen": "https://m.media-amazon.com/images/I/ejemplo.jpg"
+    },
+    {
+      "archivo": "amazon_agotado.html",
+      "url": "https://www.amazon.es/dp/B0EJEMPLO2",
+      "precio": null,
+      "moneda": "EUR",
+      "nombre": "Consola Ejemplo Pro",
+      "disponible": false
+    },
+    {
+      "archivo": "agotado_sin_precio.html",
+      "url": "https://www.tiendaejemplo.es/p/cafetera",
+      "precio": null,
+      "moneda": "EUR",
+      "nombre": "Cafetera Ejemplo",
+      "disponible": false
+    },
+    {
+      "archivo": "sin_precio.html",
+      "url": "https://www.tiendaejemplo.es/inicio",
+      "precio": null,
+      "disponible": null,
+      "error": true
+    },
+    {
+      "archivo": "captcha_amazon.html",
+      "url": "https://www.amazon.es/dp/B0EJEMPLO3",
+      "precio": null,
+      "disponible": null,
+      "bloqueo": true,
+      "error": true
+    },
+    {
+      "archivo": "jsonld_malformado.html",
+      "url": "https://muebles.ejemplo.es/silla-gamer",
+      "precio": 189.0,
+      "moneda": "EUR",
+      "nombre": "Silla Gamer Ejemplo",
+      "disponible": true
+    },
+    {
+      "archivo": "selector_tienda.html",
+      "url": "https://www.carrefour.es/supermercado/aceite/R-1234/p",
+      "precio": 8.49,
+      "moneda": "EUR",
+      "nombre": "Aceite de oliva virgen extra 1 l",
+      "disponible": true
+    },
+    {
+      "archivo": "buscador_redirigido.html",
+      "url": "https://www.zara.com/es/es/jersey-retirado-p06427124.html",
+      "precio": null,
+      "disponible": null,
+      "error": true,
+      "categoria": true
+    }
+  ]
+}
