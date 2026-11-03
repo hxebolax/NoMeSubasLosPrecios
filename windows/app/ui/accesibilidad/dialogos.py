@@ -154,6 +154,12 @@ def _cuerpo_mensaje(padre: wx.Window, mensaje: str, nombre: str) -> wx.Window:
 	return texto
 
 
+def es_etiqueta_de_cancelar(etiqueta: str) -> bool:
+	"""«&Cancelar», «Cerrar»... (sin el acelerador ni mayúsculas)."""
+	limpia = etiqueta.replace("&", "").strip().rstrip(".").lower()
+	return limpia in {_("Cancelar").lower(), _("Cerrar").lower(), "cancelar", "cerrar"}
+
+
 class DialogoMensaje(wx.Dialog):
 	"""Mensaje, confirmación o elección con botones que dicen la acción.
 
@@ -186,15 +192,20 @@ class DialogoMensaje(wx.Dialog):
 		self.ids_opciones: list[int] = []
 		if opciones:
 			botonera = wx.BoxSizer(wx.HORIZONTAL)
+			# Si una opción ya es «Cancelar» o «Cerrar», ella es la que responde a
+			# Escape: añadir otro Cancelar daba dos botones iguales seguidos.
+			cancelar_propio = next((i for i, e in enumerate(opciones) if es_etiqueta_de_cancelar(e)), None)
 			for indice, etiqueta in enumerate(opciones):
-				boton = wx.Button(panel, wx.ID_ANY, etiqueta)
+				identificador = wx.ID_CANCEL if indice == cancelar_propio else wx.ID_ANY
+				boton = wx.Button(panel, identificador, etiqueta)
 				self.ids_opciones.append(boton.GetId())
 				boton.Bind(wx.EVT_BUTTON, lambda _e, i=boton.GetId(): self.EndModal(i))  # noqa: B008 - valor inmutable (dataclass congelada o identificador fijo)
 				if indice == 0:
 					boton.SetDefault()
 				botonera.Add(boton, 0, wx.ALL, 5)
-			cancelar = wx.Button(panel, wx.ID_CANCEL, _(ETIQUETAS[wx.ID_CANCEL]))
-			botonera.Add(cancelar, 0, wx.ALL, 5)
+			if cancelar_propio is None:
+				cancelar = wx.Button(panel, wx.ID_CANCEL, _(ETIQUETAS[wx.ID_CANCEL]))
+				botonera.Add(cancelar, 0, wx.ALL, 5)
 			sizer.Add(botonera, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
 		else:
 			sizer.Add(crear_botonera(panel, banderas, predeterminado), 0, wx.ALIGN_RIGHT | wx.ALL, 10)
@@ -251,7 +262,11 @@ def confirmar(
 
 
 def elegir_opcion(padre: wx.Window | None, mensaje: str, titulo: str, opciones: Sequence[str]) -> int | None:
-	"""Botones que dicen la acción («&Impulsar», «&Citar»...). Devuelve el índice o ``None`` si se cancela."""
+	"""Botones que dicen la acción («&Impulsar», «&Citar»...). Devuelve el índice o ``None`` si se cancela.
+
+	Si ``opciones`` incluye «&Cancelar» o «&Cerrar», Escape devuelve su índice
+	y no se añade otro botón; si no, se añade un «Cancelar» que devuelve ``None``.
+	"""
 	dialogo = DialogoMensaje(padre, mensaje, titulo, opciones=opciones, icono=wx.ICON_QUESTION)
 	ids = list(dialogo.ids_opciones)
 	resultado = _mostrar(dialogo)

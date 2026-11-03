@@ -1,5 +1,18 @@
 # Novedades
 
+## 1.0.1
+
+Solo Windows: arreglos de accesibilidad.
+
+- En «Añadir producto» y «Editar producto», el lector ya lee el campo «Avisar solo de bajadas de al menos (%)». Lo mismo con el campo «Ignorar bajadas y subidas menores de (%)» de Preferencias.
+- Los diálogos de confirmación ya no muestran dos botones «Cancelar» seguidos (por ejemplo, el de «Encontrado... ¿Guardar?» al añadir un producto). Escape equivale a Cancelar.
+- Ninguna ventana repite una letra de acceso rápido. Cambian estas:
+  - Añadir y Editar producto: Alt+T va a Categoría y Alt+U a Grupo para comparar (Alt+C es Cancelar y Alt+G, Guardar).
+  - Gestionar categorías: Alt+T va a la lista de categorías (Alt+C es Cerrar).
+  - Editar tienda: Alt+I abre la tienda en la app (Alt+A es Aceptar).
+  - Importar: Alt+U va al resumen y Alt+M a Combinar (Alt+R es Reemplazar todo y Alt+C, Cancelar).
+  - Manual: Alt+O va al texto del manual (Alt+C es Cerrar).
+
 ## 1.0.0
 
 - Primera versión, para Windows y para Android, con las mismas funciones en las dos.

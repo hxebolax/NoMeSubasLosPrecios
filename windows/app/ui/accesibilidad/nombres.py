@@ -41,6 +41,9 @@ import wx
 
 C = TypeVar("C", bound=wx.Window)
 
+#: Controles genéricos en Windows cuyo foco va a un campo de texto interno.
+CONTROLES_COMPUESTOS = (wx.SpinCtrlDouble, wx.SearchCtrl)
+
 
 def _(texto: str) -> str:
 	"""Traduce con gettext si está instalado en builtins; si no, devuelve el texto."""
@@ -120,6 +123,10 @@ def crear_campo(
 	texto_etiqueta = wx.StaticText(padre, label=etiqueta)
 	kwargs.setdefault("name", nombre_limpio(etiqueta))
 	control = fabrica(padre, *args, **kwargs)
+	if isinstance(control, CONTROLES_COMPUESTOS):
+		# El foco cae en su campo interno, que no toma la etiqueta: sin esto
+		# NVDA no lee nada al tabular (comprobado con MSAA en wxPython 4.3.2).
+		nombrar_campo_interno(control, nombre_limpio(etiqueta))
 	if ayuda:
 		control.SetHelpText(ayuda)
 	if sizer is not None:

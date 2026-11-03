@@ -77,7 +77,7 @@ class DialogoEditarTienda(wx.Dialog):
 		probar.SetHelpText(_("Descarga un producto de esta tienda con los selectores escritos y enseña lo que saca."))
 		probar.Bind(wx.EVT_BUTTON, lambda _evento: self.probar())
 		fila.Add(probar, 0, wx.ALL, 4)
-		abrir = wx.Button(self, label=_("Abrir la tienda en la &app"))
+		abrir = wx.Button(self, label=_("Abr&ir la tienda en la app"))
 		abrir.SetHelpText(_("Muestra un producto de la tienda en el navegador integrado para resolver una verificación "
 			"o aceptar las cookies. Escape la cierra; las cookies se quedan."))
 		abrir.Bind(wx.EVT_BUTTON, lambda _evento: self.abrir_en_app())

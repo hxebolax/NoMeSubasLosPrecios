@@ -7,7 +7,7 @@ Seguimiento de precios de productos de tiendas online, con dos apps gemelas: **W
 - El contrato está en `compartido/ESPECIFICACION.md` (datos, extracción, avisos, secciones, ajustes) y `compartido/FORMATO_INTERCAMBIO.md` (importar y exportar). Cualquier cambio de funciones se hace **en las dos apps** y se anota allí.
 - Los recursos de `compartido/recursos/` (reglas de tiendas, manual, novedades) son los mismos para las dos: Android los empaqueta como assets y Windows los copia a `windows/data/recursos`. No se duplican.
 - Las pruebas de `compartido/pruebas/` las pasan las dos apps con los mismos resultados. Si se añade una tienda o una regla de extracción, se añade una página de ejemplo y su resultado esperado.
-- Las dos llevan siempre el mismo número de versión (`windows/app/core/version.py` y `android/app/build.gradle.kts`).
+- Versiones (`windows/app/core/version.py` y `android/app/build.gradle.kts`): un cambio que afecta a las dos sube las dos al mismo número. Un arreglo de una sola plataforma sube solo esa (la 1.0.1 fue solo de Windows, con Android en 1.0.0) y se anota en `compartido/recursos/novedades.md` con «Solo Windows» o «Solo Android».
 
 ## Agentes que se usan
 

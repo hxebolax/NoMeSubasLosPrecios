@@ -39,6 +39,7 @@ import wx
 import wx.lib.scrolledpanel as scrolled
 
 from app.core.configuracion import Configuracion, ErrorValidacion
+from app.ui.accesibilidad.nombres import nombrar_campo_interno, nombre_limpio
 
 log = logging.getLogger(__name__)
 
@@ -338,6 +339,8 @@ class DialogoPreferencias(wx.Dialog):
 		elif opcion.tipo == DECIMAL:
 			control = wx.SpinCtrlDouble(panel, min=minimo, max=maximo, inc=opcion.incremento)
 			control.SetDigits(2)
+			# Su campo interno no toma la etiqueta: sin nombre propio, el lector no lee nada
+			nombrar_campo_interno(control, nombre_limpio(etiqueta))
 		elif opcion.tipo == OPCION:
 			control = wx.Choice(panel, choices=[_(nombre) for _valor, nombre in opcion.opciones])
 		elif opcion.tipo == SECRETO:

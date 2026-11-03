@@ -27,13 +27,13 @@ class DialogoImportar(wx.Dialog):
 		super().__init__(padre, title=_("Importar {archivo}").format(archivo=nombre_archivo), style=wx.DEFAULT_DIALOG_STYLE)
 		self.analisis = analisis
 		sizer = wx.BoxSizer(wx.VERTICAL)
-		sizer.Add(wx.StaticText(self, label=_("&Resumen:")), 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		sizer.Add(wx.StaticText(self, label=_("Res&umen:")), 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
 		self.campo_resumen = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY, size=self.FromDIP(wx.Size(460, 80)))
 		self.campo_resumen.SetHelpText(_("Lo que contiene el archivo y lo que pasará al importarlo."))
 		sizer.Add(self.campo_resumen, 0, wx.EXPAND | wx.ALL, 8)
 		self.modo = wx.RadioBox(
 			self, label=_("Modo de importación"),
-			choices=[_("&Combinar con lo que ya tengo"), _("&Reemplazar todo (se hace una copia de seguridad antes)")],
+			choices=[_("Co&mbinar con lo que ya tengo"), _("&Reemplazar todo (se hace una copia de seguridad antes)")],
 			majorDimension=1, style=wx.RA_SPECIFY_COLS,
 		)
 		self.modo.SetHelpText(_("Combinar añade lo nuevo y actualiza lo que ya existe. Reemplazar borra todo lo actual "

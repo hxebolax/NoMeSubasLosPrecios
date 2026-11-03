@@ -113,7 +113,7 @@ def test_gestionar_categorias_y_tiendas(app_wx, data_temporal, monkeypatch):
 	categorias = DialogoCategorias(None, nucleo.repositorio)
 	tiendas = DialogoTiendas(None, nucleo)
 	try:
-		assert _etiqueta_previa(categorias.lista) == "&Categorías:"
+		assert _etiqueta_previa(categorias.lista) == "Ca&tegorías:"
 		categorias.anadir()
 		assert categorias.lista.numero_filas() == 3 and categorias.cambiado
 		categorias.lista.enfocar_fila(2)

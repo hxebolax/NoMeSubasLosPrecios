@@ -33,7 +33,7 @@ class DialogoCategorias(wx.Dialog):
 		self.cambiado = False
 		self._categorias: list[dict[str, Any]] = []
 		sizer = wx.BoxSizer(wx.VERTICAL)
-		sizer.Add(wx.StaticText(self, label=_("&Categorías:")), 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		sizer.Add(wx.StaticText(self, label=_("Ca&tegorías:")), 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
 		self.lista = ListaAccesible(
 			self, _("Categorías"), columnas=[(_("Nombre"), 260), (_("Productos"), 100)], leer_preferencias=leer_preferencias
 		)

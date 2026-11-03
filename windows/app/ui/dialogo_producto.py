@@ -72,14 +72,14 @@ class DialogoProducto(wx.Dialog):
 			ayuda=_("Si lo deja vacío, se usa el nombre que aparece en la página."), sizer=sizer,
 		)
 		_e, self.lista_categoria = crear_campo(
-			panel, _("&Categoría:"), wx.Choice,
+			panel, _("Ca&tegoría:"), wx.Choice,
 			ayuda=_("Categoría del producto. Elija «Nueva categoría…» para crear una."), sizer=sizer,
 		)
 		self._rellenar_categorias(inicial.get("categoria_id"))
 		self.lista_categoria.Bind(wx.EVT_CHOICE, self._al_elegir_categoria)
 		grupos = [g for g, _n in nucleo.repositorio.grupos()]
 		_e, self.campo_grupo = crear_campo(
-			panel, _("&Grupo para comparar (opcional):"), wx.ComboBox, value=inicial.get("grupo") or "",
+			panel, _("Gr&upo para comparar (opcional):"), wx.ComboBox, value=inicial.get("grupo") or "",
 			choices=grupos, style=wx.CB_DROPDOWN,
 			ayuda=_("Ponga el mismo nombre de grupo al mismo producto en varias tiendas para compararlas "
 				"en la sección Comparar."), sizer=sizer,

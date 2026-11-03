@@ -302,7 +302,7 @@ class VisorAyuda(wx.Dialog):
 			self.secciones.Bind(wx.EVT_LISTBOX_DCLICK, lambda evento: self.ir_a_seccion(self.secciones.GetSelection()))
 			self._posiciones = [p for _t, p in visibles]
 			raiz.Add(self.secciones, 0, wx.EXPAND | wx.ALL, 6)
-		raiz.Add(wx.StaticText(self, label=_("&Contenido:")), 0, wx.LEFT | wx.TOP, 6)
+		raiz.Add(wx.StaticText(self, label=_("C&ontenido:")), 0, wx.LEFT | wx.TOP, 6)
 		# TE_RICH2: sin el límite de 64 KB del campo clásico y con posiciones
 		# que coinciden con el texto (un salto de línea = una posición).
 		self.contenido = wx.TextCtrl(

@@ -56,7 +56,7 @@ Las dos apps buscan versiones nuevas en `https://xebolax.synology.me/NoMeSubasLo
 
 Para publicar una versión nueva:
 
-1. Sube la versión en `windows\app\core\version.py` y en `android\app\build.gradle.kts` (`versionName` y `versionCode`). Las dos llevan siempre el mismo número.
+1. Sube la versión en `windows\app\core\version.py` y en `android\app\build.gradle.kts` (`versionName` y `versionCode`). Si el cambio es de las dos, el mismo número en las dos; si es solo de una, sube solo esa y publica solo su parte (`windows\entorno.bat publicar` y copiar `windows\dist` a la carpeta `windows` del servidor).
 2. Escribe sus novedades en `compartido\recursos\novedades.md` (sección `## <versión>`).
 3. `compilar.bat servidor`: compila las dos, deja en `dist` el APK, el ZIP y sus `version.json`, y los copia a la carpeta del servidor (primero los paquetes y después los `version.json`). Antes comprueba que el APK esté firmado con la clave de las versiones publicadas (`herramientas\huella_firma.txt`, que se crea en la primera publicación).
 
