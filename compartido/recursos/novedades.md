@@ -4,7 +4,7 @@
 
 Solo Windows: arreglos de accesibilidad.
 
-- En «Añadir producto» y «Editar producto», el lector ya lee el campo «Avisar solo de bajadas de al menos (%)». Lo mismo con el campo «Ignorar bajadas y subidas menores de (%)» de Preferencias.
+- En «Añadir producto» y «Editar producto», el lector ya lee el campo «Avisar solo de bajadas de al menos (%)» al llegar a él con el Tabulador. Ahora es un campo de texto normal: escribe un número de 0 a 100 (por ejemplo 5 o 7,5). Lo mismo con el campo «Ignorar bajadas y subidas menores de (%)» de Preferencias.
 - Los diálogos de confirmación ya no muestran dos botones «Cancelar» seguidos (por ejemplo, el de «Encontrado... ¿Guardar?» al añadir un producto). Escape equivale a Cancelar.
 - Ninguna ventana repite una letra de acceso rápido. Cambian estas:
   - Añadir y Editar producto: Alt+T va a Categoría y Alt+U a Grupo para comparar (Alt+C es Cancelar y Alt+G, Guardar).

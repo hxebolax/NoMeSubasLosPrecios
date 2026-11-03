@@ -58,15 +58,24 @@ def test_dialogo_producto_anadir(app_wx, data_temporal):
 		botones = _botones(dialogo)
 		assert botones[wx.ID_OK] == "Comprobar y a&ñadir" and botones[wx.ID_CANCEL] == "&Cancelar"
 		dialogo.campo_objetivo.SetValue("1.299,95")
+		# El porcentaje es un campo de texto normal (un SpinCtrlDouble no lo leía NVDA al tabular)
+		assert type(dialogo.campo_alerta) is wx.TextCtrl
+		assert _etiqueta_previa(dialogo.campo_alerta) == "&Avisar solo de bajadas de al menos (%):"
+		assert dialogo.campo_alerta.GetValue() == "0"
+		dialogo.campo_alerta.SetValue("7,5")
 		assert dialogo.validar()
 		datos = dialogo.datos()
 		assert datos["url"] == "https://www.amazon.es/dp/B0EJEMPLO9" and datos["precio_objetivo"] == 1299.95
-		dialogo.campo_url.SetValue("no es una dirección")
+		assert datos["alerta_porcentaje"] == 7.5
 		errores = []
 		import app.ui.dialogo_producto as modulo
 
 		modulo.comunes.error = lambda padre, texto, titulo="": errores.append(texto)
 		try:
+			dialogo.campo_alerta.SetValue("abc")
+			assert not dialogo.validar() and "porcentaje" in errores[-1]
+			dialogo.campo_alerta.SetValue("5")
+			dialogo.campo_url.SetValue("no es una dirección")
 			assert not dialogo.validar() and errores
 		finally:
 			modulo.comunes.error = comunes.error

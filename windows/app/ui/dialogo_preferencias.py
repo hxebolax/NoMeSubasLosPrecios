@@ -39,7 +39,7 @@ import wx
 import wx.lib.scrolledpanel as scrolled
 
 from app.core.configuracion import Configuracion, ErrorValidacion
-from app.ui.accesibilidad.nombres import nombrar_campo_interno, nombre_limpio
+from app.services.importes import porcentaje_para_campo
 
 log = logging.getLogger(__name__)
 
@@ -337,10 +337,9 @@ class DialogoPreferencias(wx.Dialog):
 		if opcion.tipo == ENTERO:
 			control = wx.SpinCtrl(panel, min=int(minimo), max=int(maximo))
 		elif opcion.tipo == DECIMAL:
-			control = wx.SpinCtrlDouble(panel, min=minimo, max=maximo, inc=opcion.incremento)
-			control.SetDigits(2)
-			# Su campo interno no toma la etiqueta: sin nombre propio, el lector no lee nada
-			nombrar_campo_interno(control, nombre_limpio(etiqueta))
+			# Campo de texto normal y no SpinCtrlDouble: este es genérico en Windows
+			# y NVDA no leía su etiqueta al llegar con Tabulador (1.0.1).
+			control = wx.TextCtrl(panel)
 		elif opcion.tipo == OPCION:
 			control = wx.Choice(panel, choices=[_(nombre) for _valor, nombre in opcion.opciones])
 		elif opcion.tipo == SECRETO:
@@ -390,8 +389,10 @@ class DialogoPreferencias(wx.Dialog):
 	def _escribir_control(self, opcion: Opcion, control: wx.Window, valor: Any) -> None:
 		if opcion.tipo == BOOL:
 			control.SetValue(bool(valor))
-		elif opcion.tipo in (ENTERO, DECIMAL):
+		elif opcion.tipo == ENTERO:
 			control.SetValue(valor)
+		elif opcion.tipo == DECIMAL:
+			control.ChangeValue(porcentaje_para_campo(float(valor or 0)))
 		elif opcion.tipo == OPCION:
 			valores = [v for v, _nombre in opcion.opciones]
 			control.SetSelection(valores.index(valor) if valor in valores else 0)
@@ -404,7 +405,12 @@ class DialogoPreferencias(wx.Dialog):
 		if opcion.tipo == ENTERO:
 			return int(control.GetValue())
 		if opcion.tipo == DECIMAL:
-			return round(float(control.GetValue()), 6)
+			texto = control.GetValue().replace("%", "").strip().replace(",", ".") or "0"
+			try:
+				return round(float(texto), 6)
+			except ValueError:
+				# La validación de la configuración lo rechaza con un mensaje claro
+				return control.GetValue()
 		if opcion.tipo == OPCION:
 			indice = control.GetSelection()
 			return opcion.opciones[indice][0] if indice != wx.NOT_FOUND else None

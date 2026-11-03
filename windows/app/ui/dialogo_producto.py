@@ -19,7 +19,7 @@ from typing import Any
 import wx
 
 from app.services.direcciones import es_url, extraer_primera_url, limpiar_url
-from app.services.importes import analizar_importe, formato_numero
+from app.services.importes import analizar_importe, analizar_porcentaje, formato_numero, porcentaje_para_campo
 from app.services.repositorio import SIN_CATEGORIA, ErrorDatos
 from app.ui import comunes
 from app.ui.accesibilidad.dialogos import preparar_dialogo
@@ -91,12 +91,14 @@ class DialogoProducto(wx.Dialog):
 			ayuda=_("Se avisa cuando el precio sea igual o menor. Por ejemplo: 99,95. Vacío: sin precio deseado."),
 			sizer=sizer,
 		)
+		# Campo de texto normal y no SpinCtrlDouble: este es genérico en Windows y
+		# NVDA no leía su etiqueta al llegar con Tabulador (1.0.1).
 		_e, self.campo_alerta = crear_campo(
-			panel, _("&Avisar solo de bajadas de al menos (%):"), wx.SpinCtrlDouble,
-			min=0, max=100, inc=1, initial=float(inicial.get("alerta_porcentaje") or 0),
-			ayuda=_("0 avisa de cualquier bajada. Con 5, solo de bajadas del 5 % o más."), sizer=sizer,
+			panel, _("&Avisar solo de bajadas de al menos (%):"), wx.TextCtrl,
+			value=porcentaje_para_campo(inicial.get("alerta_porcentaje")),
+			ayuda=_("Un número de 0 a 100. 0 avisa de cualquier bajada; con 5, solo de bajadas del 5 % o más."),
+			sizer=sizer,
 		)
-		self.campo_alerta.SetDigits(1)
 		self.casilla_disponible = wx.CheckBox(panel, label=_("A&visar si vuelve a estar disponible"))
 		self.casilla_disponible.SetValue(bool(inicial.get("avisar_disponible", 1)))
 		self.casilla_disponible.SetHelpText(_("Avisa cuando el producto pase de agotado a disponible."))
@@ -198,6 +200,9 @@ class DialogoProducto(wx.Dialog):
 		if objetivo and analizar_importe(objetivo) is None:
 			self._senalar(self.campo_objetivo, _("El precio deseado no es un importe válido. Escríbalo como 99,95."))
 			return False
+		if analizar_porcentaje(self.campo_alerta.GetValue()) is None:
+			self._senalar(self.campo_alerta, _("El porcentaje debe ser un número de 0 a 100, por ejemplo 5 o 7,5."))
+			return False
 		return True
 
 	def _al_aceptar(self, evento: wx.CommandEvent) -> None:
@@ -213,7 +218,7 @@ class DialogoProducto(wx.Dialog):
 			"categoria_id": self.categoria_id(),
 			"grupo": self.campo_grupo.GetValue().strip() or None,
 			"precio_objetivo": analizar_importe(objetivo) if objetivo else None,
-			"alerta_porcentaje": float(self.campo_alerta.GetValue()),
+			"alerta_porcentaje": analizar_porcentaje(self.campo_alerta.GetValue()) or 0.0,
 			"avisar_disponible": self.casilla_disponible.GetValue(),
 			"selector_precio": self.campo_selector.GetValue().strip() or None,
 			"notas": self.campo_notas.GetValue().strip() or None,

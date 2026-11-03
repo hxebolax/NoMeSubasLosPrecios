@@ -74,20 +74,50 @@ def _nombre_del_foco() -> tuple[str, int]:
 	return nombre.strip(), rol
 
 
+#: Controles genéricos en Windows: el foco cae en un campo interno que NVDA no
+#: asocia a la etiqueta aunque MSAA dé un nombre puesto a mano (comprobado por
+#: el usuario con NVDA en la 1.0.1). No deben usarse: campo de texto o SpinCtrl.
+_COMPUESTOS_PROHIBIDOS = (wx.SpinCtrlDouble, wx.SearchCtrl)
+
+
 def _enfocables(ventana: wx.Window) -> list[wx.Window]:
-	"""Controles que se alcanzan con Tab, en orden de creación."""
+	"""Controles visibles que deberían alcanzarse con Tab."""
 	salida = []
 	for hijo in ventana.GetChildren():
-		if not hijo.IsShown() or not hijo.IsEnabled() or isinstance(hijo, wx.TopLevelWindow):
+		if not hijo.IsShownOnScreen() or not hijo.IsEnabled() or isinstance(hijo, wx.TopLevelWindow):
 			continue
-		# Los compuestos (SpinCtrlDouble, SearchCtrl) aceptan el foco en su campo interno
-		if hijo.AcceptsFocusFromKeyboard() and not isinstance(hijo, (wx.Panel, wx.ScrolledWindow)):
+		if isinstance(hijo, _COMPUESTOS_PROHIBIDOS):
 			salida.append(hijo)
-		elif isinstance(hijo, (wx.SpinCtrlDouble, wx.SearchCtrl)):
+		elif hijo.AcceptsFocusFromKeyboard() and not isinstance(hijo, (wx.Panel, wx.ScrolledWindow)):
 			salida.append(hijo)
 		else:
 			salida.extend(_enfocables(hijo))
 	return salida
+
+
+def _compuesto_que_contiene(control: wx.Window | None) -> wx.Window | None:
+	while control is not None and not isinstance(control, wx.TopLevelWindow):
+		if isinstance(control, _COMPUESTOS_PROHIBIDOS):
+			return control
+		control = control.GetParent()
+	return None
+
+
+def _recorrer_con_tabulador(ventana: wx.TopLevelWindow) -> list[wx.Window]:
+	"""Pulsa Tab (navegación de wx) desde el foco inicial hasta dar la vuelta."""
+	if wx.Window.FindFocus() is None:
+		primeros = _enfocables(ventana)
+		if primeros:
+			primeros[0].SetFocus()
+	visitados: list[wx.Window] = []
+	for _paso in range(120):
+		procesar_eventos(segundos=0.03)
+		foco = wx.Window.FindFocus()
+		if foco is None or foco in visitados:
+			break
+		visitados.append(foco)
+		foco.Navigate(wx.NavigationKeyEvent.IsForward)
+	return visitados
 
 
 def _botones(ventana: wx.Window) -> list[str]:
@@ -104,13 +134,28 @@ def revisar(ventana: wx.TopLevelWindow) -> list[str]:
 	"""Problemas de accesibilidad de una ventana ya creada (la muestra y la recorre)."""
 	problemas = []
 	ventana.Show()
+	ventana.Raise()
 	procesar_eventos(segundos=0.2)
-	for control in _enfocables(ventana):
-		control.SetFocus()
-		procesar_eventos(segundos=0.05)
+	# 1. Lo que se oye al tabular: cada parada con nombre y fuera de controles compuestos
+	recorrido = _recorrer_con_tabulador(ventana)
+	for foco in recorrido:
+		compuesto = _compuesto_que_contiene(foco)
+		if compuesto is not None:
+			problemas.append(f"{type(compuesto).__name__} «{compuesto.GetName()}»: NVDA no lee su etiqueta al tabular")
+			continue
+		foco.SetFocus()
+		procesar_eventos(segundos=0.03)
 		nombre, rol = _nombre_del_foco()
 		if not nombre:
-			problemas.append(f"{type(control).__name__} «{control.GetName()}» (rol {rol}) sin nombre para el lector")
+			problemas.append(f"{type(foco).__name__} «{foco.GetName()}» (rol {rol}) sin nombre para el lector")
+	# 2. Todo control visible se alcanza con Tab
+	alcanzados = set(recorrido) | {_compuesto_que_contiene(f) for f in recorrido}
+	for control in _enfocables(ventana):
+		if control not in alcanzados and not any(control.IsDescendant(f) or f.IsDescendant(control) for f in recorrido):
+			problemas.append(f"{type(control).__name__} «{control.GetName()}» no se alcanza con Tabulador")
+	for control in _enfocables(ventana):
+		if isinstance(control, _COMPUESTOS_PROHIBIDOS) and control not in alcanzados:
+			problemas.append(f"{type(control).__name__} «{control.GetName()}»: NVDA no lee su etiqueta al tabular")
 	botones = _botones(ventana)
 	repetidos = sorted({b for b in botones if botones.count(b) > 1})
 	if repetidos:
@@ -252,5 +297,23 @@ def test_elegir_con_cancelar_propio_devuelve_su_indice(app_wx):
 	try:
 		assert _botones(dialogo) == ["Guardar", "Editar", "Cancelar"]
 		assert dialogo.ids_opciones[2] == wx.ID_CANCEL, "Escape elige la opción Cancelar"
+	finally:
+		dialogo.Destroy()
+
+
+def test_el_recorrido_detecta_un_spinctrldouble(app_wx):
+	"""El caso de la 1.0.1: con nombre MSAA puesto a mano, NVDA seguía sin leerlo al tabular."""
+	from app.ui.accesibilidad.nombres import crear_campo
+
+	dialogo = wx.Dialog(None, title="Prueba")
+	panel = wx.Panel(dialogo)
+	sizer = wx.BoxSizer(wx.VERTICAL)
+	crear_campo(panel, "&Nombre:", wx.TextCtrl, sizer=sizer)
+	crear_campo(panel, "&Avisar desde (%):", wx.SpinCtrlDouble, min=0, max=100, sizer=sizer)
+	sizer.Add(wx.Button(panel, wx.ID_OK, "&Aceptar"))
+	panel.SetSizer(sizer)
+	try:
+		problemas = revisar(dialogo)
+		assert any("SpinCtrlDouble" in p and "NVDA no lee" in p for p in problemas), problemas
 	finally:
 		dialogo.Destroy()

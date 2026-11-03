@@ -105,6 +105,31 @@ def redondear(valor: float | None) -> float | None:
 	return None if valor is None else redondeo_comercial(valor)
 
 
+_RE_PORCENTAJE = re.compile(r"^\d+(?:[.,]\d+)?$")
+
+
+def analizar_porcentaje(texto: str | None, maximo: float = 100.0) -> float | None:
+	"""Porcentaje escrito a mano: «5», «7,5», «7.5 %» → 5.0, 7.5. Vacío → 0.
+
+	``None`` si no es un número entre 0 y ``maximo``. Se usa en campos de
+	texto normales en lugar de ``SpinCtrlDouble``, que NVDA no lee al tabular.
+	"""
+	limpio = (texto or "").replace("%", "").strip()
+	if not limpio:
+		return 0.0
+	if not _RE_PORCENTAJE.match(limpio):
+		return None
+	valor = float(limpio.replace(",", "."))
+	return round(valor, 2) if 0 <= valor <= maximo else None
+
+
+def porcentaje_para_campo(valor: float | None) -> str:
+	"""``5.0`` → ``"5"``; ``7.5`` → ``"7,5"`` (para escribirlo en un campo)."""
+	if not valor:
+		return "0"
+	return formato_numero(valor, 0) if float(valor).is_integer() else formato_numero(valor, 2).rstrip("0").rstrip(",")
+
+
 def formato_numero(valor: float, decimales: int = 2) -> str:
 	"""``1299.99`` → ``"1.299,99"`` (miles con punto y decimales con coma)."""
 	texto = f"{abs(valor):,.{decimales}f}".replace(",", "\u0001").replace(".", ",").replace("\u0001", ".")
