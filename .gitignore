@@ -5,6 +5,7 @@ firma/
 # Material de consulta: solo se guardan los informes, no los repositorios clonados
 adjuntos/*
 !adjuntos/*.md
+!adjuntos/*.txt
 !adjuntos/investigacion-tiendas/
 # Compilaciones
 dist/
