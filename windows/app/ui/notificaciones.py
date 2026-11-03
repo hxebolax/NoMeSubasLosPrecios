@@ -23,6 +23,24 @@ log = logging.getLogger(__name__)
 MAXIMO_VIVAS = 20
 
 
+def _enlazador(nombre: str) -> wx.PyEventBinder | None:
+	"""``wx.adv.EVT_<nombre>``, o creado desde ``wxEVT_<nombre>``.
+
+	wxPython 4.3.2 solo trae el tipo de evento (``wxEVT_NOTIFICATION_MESSAGE_CLICK``)
+	y no el enlazador ``EVT_...``; usarlo directamente cerraba cada notificación
+	con AttributeError.
+	"""
+	enlazador = getattr(wx.adv, f"EVT_{nombre}", None)
+	if enlazador is not None:
+		return enlazador
+	tipo = getattr(wx.adv, f"wxEVT_{nombre}", None)
+	return wx.PyEventBinder(tipo, 0) if tipo is not None else None
+
+
+EVT_PULSADA = _enlazador("NOTIFICATION_MESSAGE_CLICK")
+EVT_DESCARTADA = _enlazador("NOTIFICATION_MESSAGE_DISMISSED")
+
+
 class Notificador:
 	"""Muestra notificaciones y avisa al pulsarlas con el id del producto."""
 
@@ -63,10 +81,15 @@ class Notificador:
 		"""Muestra una notificación. ``False`` si Windows no la aceptó."""
 		try:
 			notificacion = wx.adv.NotificationMessage(titulo, mensaje, self._padre, wx.ICON_WARNING if error else wx.ICON_INFORMATION)
-			notificacion.Bind(wx.adv.EVT_NOTIFICATION_MESSAGE_CLICK, lambda _evento, p=producto_id: self._pulsada(p))
-			notificacion.Bind(wx.adv.EVT_NOTIFICATION_MESSAGE_DISMISSED, lambda evento: evento.Skip())
+			if EVT_PULSADA is not None:
+				notificacion.Bind(EVT_PULSADA, lambda _evento, p=producto_id: self._pulsada(p))
+			else:
+				log.warning("Esta versión de wxPython no avisa al pulsar una notificación")
+			if EVT_DESCARTADA is not None:
+				notificacion.Bind(EVT_DESCARTADA, lambda evento: evento.Skip())
 			mostrada = bool(notificacion.Show(wx.adv.NotificationMessage.Timeout_Auto))
-		except (RuntimeError, wx.PyAssertionError):
+		except (AttributeError, TypeError, RuntimeError, wx.PyAssertionError):
+			# Un fallo al notificar nunca debe cerrar la comprobación: el aviso ya está en «Avisos»
 			log.exception("No se pudo mostrar la notificación")
 			return False
 		self._vivas.append(notificacion)

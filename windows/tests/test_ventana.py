@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import threading
+from datetime import datetime, timezone
 
 import pytest
 import wx
@@ -178,7 +179,9 @@ def test_comprobacion_en_segundo_plano_y_notificaciones(ventana, monkeypatch):
 		if al_progresar:
 			al_progresar(1, 5, "x")
 		avisos = [AvisoGuardado(i, 1, "bajada", f"Aviso {i}", "m") for i in range(5)]
-		return Resumen(total=5, comprobados=5, correctos=5, cambios_precio=5, avisos=avisos, fecha="2026-11-02T20:00:00Z")
+		# Fecha de ahora: con una fija, la prueba fallaría pasado el intervalo de comprobación
+		ahora = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+		return Resumen(total=5, comprobados=5, correctos=5, cambios_precio=5, avisos=avisos, fecha=ahora)
 
 	monkeypatch.setattr(ventana.nucleo.comprobador, "comprobar", comprobar)
 	assert ventana.comprobar()
