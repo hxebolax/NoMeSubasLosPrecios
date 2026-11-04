@@ -1,5 +1,12 @@
 # Novedades
 
+## 1.0.3
+
+Solo Windows: actualizaciones más seguras.
+
+- Si abres la aplicación justo cuando se está actualizando, la actualización ya no falla: cualquier copia de la versión nueva que se abra confirma que funciona.
+- Si una actualización tiene que volver a la versión anterior, primero cierra las copias abiertas de la aplicación. Antes podía restaurar a medias y dejar archivos sin copiar (por ejemplo, el que hace falta para descargar las páginas con conexión segura, y entonces todas las comprobaciones fallaban).
+
 ## 1.0.2
 
 Solo Windows: arreglos de errores que salían en el registro.

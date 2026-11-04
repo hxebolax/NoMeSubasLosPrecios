@@ -57,7 +57,24 @@ def main():
 	logs.mkdir(parents=True, exist_ok=True)
 	with open(logs / "arranques.txt", "a", encoding="utf-8") as registro:
 		registro.write(VERSION + " " + " ".join(sys.argv[1:]) + "\\n")
+	if "--segunda-copia" in sys.argv:
+		# La copia que el usuario abre a mano: sin --tras-actualizar.
+		time.sleep(2)
+		if COMPORTAMIENTO == "otra_copia":
+			from app.services import actualizador
+			config = actualizador.Configuracion(version_actual=VERSION, carpeta_app=RAIZ, comando=[])
+			actualizador.confirmar_arranque(config)
+			time.sleep(3)
+		else:
+			time.sleep(600)
+		return 0
 	if "--tras-actualizar" not in sys.argv:
+		return 0
+	if COMPORTAMIENTO in ("otra_copia", "otra_copia_rota"):
+		# Como al abrir la aplicación a mano a la vez: la copia lanzada ve «otra
+		# instancia» y se cierra sin confirmar; la otra sigue abierta.
+		import subprocess
+		subprocess.Popen([sys.executable, __file__, "--segunda-copia"], creationflags=0x00000008 | 0x00000200)
 		return 0
 	if COMPORTAMIENTO == "falla":
 		return 3
@@ -302,3 +319,47 @@ def test_si_la_aplicacion_no_se_cierra_no_se_toca_nada(entorno):
 	assert _leer(instalacion / "NoMeSubasLosPrecios.exe") == b"EXE 1.0.0"
 	assert not config.carpeta_respaldo.exists()
 	assert not (config.carpeta_trabajo / "nueva").exists()
+
+
+def test_otra_copia_abierta_a_mano_confirma_la_version(entorno):
+	"""Lo que pasó al actualizar de 1.0.1 a 1.0.2: el usuario abrió la aplicación a la
+	vez que el script la lanzaba. La copia lanzada se cierra sin confirmar y la otra
+	sigue abierta: debe confirmar ella, y el script no debe volver atrás."""
+	instalacion = entorno["instalacion"]
+	antes = _datos_usuario(instalacion / "data")
+	config, _ruta, resultado = _ejecutar(entorno, "otra_copia", espera_salud=30)
+	registro = config.registro_script.read_text(encoding="utf-8", errors="replace")
+	assert resultado.get("estado") == "correcta", registro
+	assert "hay otra abierta" in registro
+	assert _leer(instalacion / "NoMeSubasLosPrecios.exe") == b"EXE 1.1.0"
+	assert _datos_usuario(instalacion / "data") == antes
+	assert not (config.carpeta_trabajo / "esperando_salud.txt").exists()
+
+
+def test_vuelta_atras_cierra_antes_las_copias_abiertas(entorno):
+	"""Si hay que volver atrás con otra copia abierta, se cierra antes de restaurar:
+	con la copia abierta, la restauración quedaba a medias (faltaban archivos)."""
+	instalacion = entorno["instalacion"]
+	antes = _datos_usuario(instalacion / "data")
+	config, _ruta, resultado = _ejecutar(entorno, "otra_copia_rota", espera_salud=8)
+	registro = config.registro_script.read_text(encoding="utf-8", errors="replace")
+	assert resultado.get("estado") == "revertida", registro
+	assert "se cierran antes de restaurar" in registro
+	assert _leer(instalacion / "NoMeSubasLosPrecios.exe") == b"EXE 1.0.0"
+	assert _leer(instalacion / "lib" / "modulo.txt") == b"modulo 1.0.0"
+	assert not (instalacion / "lib" / "solo_1.1.0.txt").exists()
+	assert _datos_usuario(instalacion / "data") == antes
+	assert _esperar(lambda: _procesos_vivos(instalacion) == 0, 20)
+
+
+def test_confirma_sin_argumento_si_el_script_espera_esta_version(tmp_path):
+	config = actualizador.Configuracion(version_actual="1.1.0", carpeta_app=tmp_path, comando=[])
+	actualizador.confirmar_arranque(config, tras_actualizar=False)
+	assert not config.marcador_salud.exists(), "sin aviso del script no se escribe nada"
+	config.carpeta_trabajo.mkdir(parents=True, exist_ok=True)
+	config.aviso_espera_salud.write_text("1.0.9\n", encoding="utf-8")
+	actualizador.confirmar_arranque(config, tras_actualizar=False)
+	assert not config.marcador_salud.exists(), "solo confirma la versión que se espera"
+	config.aviso_espera_salud.write_text("1.1.0\n", encoding="utf-8")
+	actualizador.confirmar_arranque(config, tras_actualizar=False)
+	assert config.marcador_salud.read_text(encoding="utf-8").strip() == "ok 1.1.0"

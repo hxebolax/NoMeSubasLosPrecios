@@ -203,6 +203,11 @@ class Configuracion:
 		return self.carpeta_trabajo / "salud.txt"
 
 	@property
+	def aviso_espera_salud(self) -> Path:
+		"""Lo deja el script con la versión que espera: cualquier copia de esa versión confirma."""
+		return self.carpeta_trabajo / "esperando_salud.txt"
+
+	@property
 	def archivo_resultado(self) -> Path:
 		return self.carpeta_trabajo / "resultado.txt"
 
@@ -824,6 +829,13 @@ set "COMANDO={comando}"
 set "SISTEMA=%SystemRoot%\System32"
 set "ROBO=/R:2 /W:1 /NP /NFL /NDL /NJH /NJS"
 set "MOTIVO=desconocido"
+set "ESPERANDO=%TRABAJO%\esperando_salud.txt"
+rem Ruta del ejecutable para buscar copias abiertas de ESTA instalacion (PowerShell la lee del entorno).
+set "RUTA_EXE=%APP%\%EJECUTABLE%"
+set "POWERSHELL=%SISTEMA%\WindowsPowerShell\v1.0\powershell.exe"
+set "CARPETA_APP_BUSCADA=%APP%\"
+rem Entre comillas, | y ^ son literales: no se escapan.
+set "COPIAS_ABIERTAS=Get-CimInstance Win32_Process | Where-Object { ($_.ExecutablePath -eq $env:RUTA_EXE -or ($_.CommandLine -and $_.CommandLine.Contains($env:CARPETA_APP_BUSCADA))) -and $_.Name -notmatch '^(cmd|conhost|powershell|robocopy|find|findstr|tasklist|ping|taskkill)' }"
 
 call :anotar "Inicio: de %VERSION_ACTUAL% a %VERSION_NUEVA%"
 if not exist "%APP%\%EJECUTABLE%" goto instalacion_no_valida
@@ -870,6 +882,9 @@ for /f "delims=" %%S in ('dir /b /a:d "%NUEVA%\recursos" 2^>nul') do (
 call :anotar "Version nueva copiada; se lanza con {argumento}"
 
 rem 4. Lanzar la version nueva guardando su PID (start no lo da; PowerShell si).
+rem    Antes se avisa de la version esperada: si el usuario abre la aplicacion a
+rem    mano a la vez, la copia que quede abierta tambien escribe el marcador.
+>"%ESPERANDO%" echo %VERSION_NUEVA%
 {linea_lanzar}
 set "NUEVO_PID="
 if exist "%ARCHIVO_PID%" set /p NUEVO_PID=<"%ARCHIVO_PID%"
@@ -897,7 +912,27 @@ goto matar_y_volver
 :nueva_cerrada
 ping -n 2 127.0.0.1 >nul
 if exist "%MARCADOR%" goto comprobar_marcador
+rem La copia lanzada se cerro. Si queda otra copia de esta instalacion abierta
+rem (el usuario la abrio a mano), se sigue esperando su marcador.
+call :hay_copia_abierta
+if errorlevel 1 goto nueva_cerrada_sin_copias
+call :anotar "La copia lanzada se cerro, pero hay otra abierta; se espera su marcador"
+:esperar_otra_copia
+if exist "%MARCADOR%" goto comprobar_marcador
+set /a SEGUNDOS+=1
+if %SEGUNDOS% geq %ESPERA_SALUD% goto sin_salud_otra
+call :hay_copia_abierta
+if errorlevel 1 goto nueva_cerrada_sin_copias
+ping -n 2 127.0.0.1 >nul
+goto esperar_otra_copia
+
+:nueva_cerrada_sin_copias
+if exist "%MARCADOR%" goto comprobar_marcador
 set "MOTIVO=se_cerro_sin_confirmar"
+goto volver_atras
+
+:sin_salud_otra
+set "MOTIVO=sin_marcador_de_salud"
 goto volver_atras
 
 :sin_salud
@@ -919,6 +954,9 @@ rem 6. Vuelta atras: se borra el programa (NUNCA data) y se restaura la copia.
 :volver_atras
 call :anotar "Vuelta atras (%MOTIVO%): se restaura %VERSION_ACTUAL%"
 if not exist "%RESPALDO%\programa\%EJECUTABLE%" goto fallo_restaurar
+rem Nunca se borra un programa en uso: se cierran antes las copias de ESTA
+rem instalacion (con la aplicacion abierta, la restauracion quedaba a medias).
+call :cerrar_copias_abiertas
 for /f "delims=" %%F in ('dir /b /a:-d "%APP%" 2^>nul') do del /f /q /a "%APP%\%%F" >nul 2>&1
 for /f "delims=" %%D in ('dir /b /a:d "%APP%" 2^>nul') do if /I not "%%D"=="data" rmdir /s /q "%APP%\%%D"
 "%SISTEMA%\robocopy.exe" "%RESPALDO%\programa" "%APP%" /E /IS /IT %ROBO% >nul
@@ -981,8 +1019,30 @@ exit /b 0
 :limpiar
 rmdir /s /q "%NUEVA%" >nul 2>&1
 rmdir /s /q "%TRABAJO%\descarga" >nul 2>&1
-del /f /q "%ARCHIVO_PID%" "%MARCADOR%" >nul 2>&1
+del /f /q "%ARCHIVO_PID%" "%MARCADOR%" "%ESPERANDO%" >nul 2>&1
 exit /b 0
+
+rem errorlevel 0 si hay alguna copia abierta de ESTA instalacion: su ejecutable, o un
+rem proceso cuya linea de ordenes apunta a la carpeta (nunca cmd, PowerShell ni
+rem herramientas del propio script). Se busca por ruta, no por nombre: otra copia
+rem del programa en otra carpeta no cuenta.
+:hay_copia_abierta
+"%POWERSHELL%" -NoProfile -NonInteractive -Command "if (@(%COPIAS_ABIERTAS%).Count -gt 0) { exit 0 } else { exit 1 }" >nul 2>&1
+exit /b %errorlevel%
+
+:cerrar_copias_abiertas
+call :hay_copia_abierta
+if errorlevel 1 exit /b 0
+call :anotar "Hay copias de la aplicacion abiertas; se cierran antes de restaurar"
+"%POWERSHELL%" -NoProfile -NonInteractive -Command "%COPIAS_ABIERTAS% | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" >nul 2>&1
+set /a ESPERAS=0
+:esperar_copias
+call :hay_copia_abierta
+if errorlevel 1 exit /b 0
+set /a ESPERAS+=1
+if %ESPERAS% geq 15 exit /b 0
+ping -n 2 127.0.0.1 >nul
+goto esperar_copias
 
 :resultado
 >"%RESULTADO%" echo estado=%~1
@@ -1142,6 +1202,22 @@ def descargar_y_preparar(
 # ════════════════════════════════════════════════════════════════════════════
 
 
+def _se_espera_esta_version(config: Configuracion) -> bool:
+	"""¿Hay un script de sustitución esperando el marcador de salud de esta versión?
+
+	Si el usuario abre la aplicación a mano justo cuando el script lanza la
+	versión nueva, la que lanzó el script ve «otra instancia» y se cierra, y la
+	que queda abierta no tenía ``--tras-actualizar``: el script volvía atrás con
+	la aplicación abierta y la instalación quedaba a medias (1.0.1 → 1.0.2).
+	Ahora cualquier copia de la versión esperada confirma que arranca bien.
+	"""
+	try:
+		esperada = config.aviso_espera_salud.read_text(encoding="utf-8").strip()
+	except OSError:
+		return False
+	return esperada == config.version_actual
+
+
 def confirmar_arranque(config: Configuracion, tras_actualizar: bool | None = None) -> None:
 	"""Llamar unos segundos después de mostrar la ventana principal.
 
@@ -1153,7 +1229,7 @@ def confirmar_arranque(config: Configuracion, tras_actualizar: bool | None = Non
 	if tras_actualizar is None:
 		tras_actualizar = ARGUMENTO_TRAS_ACTUALIZAR in sys.argv
 	confirmar_version(config)
-	if not tras_actualizar:
+	if not tras_actualizar and not _se_espera_esta_version(config):
 		return
 	try:
 		config.marcador_salud.parent.mkdir(parents=True, exist_ok=True)
