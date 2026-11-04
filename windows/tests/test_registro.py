@@ -240,3 +240,21 @@ def test_paquete_de_diagnostico_anonimiza(carpeta):
 	assert "sistema.txt" in nombres
 	assert any(n.startswith("logs/sesion_") for n in nombres)
 	assert "ana.garcia" not in contenido
+
+
+def test_cierre_normal_aclara_fallo_nativo(tmp_path):
+	"""faulthandler anota excepciones que Windows recupera (0x8001010d): al cerrar bien se aclara."""
+	from app.core import registro as reg
+
+	reg.configurar_registro("Prueba", "1.0", carpeta=tmp_path)
+	try:
+		archivo = reg._estado["archivo_fallo_nativo"]
+		assert archivo is not None
+		assert reg.anotar_cierre_normal() is False, "sin nada anotado no se escribe nada"
+		archivo.write("Windows fatal exception: code 0x8001010d\n")
+		archivo.flush()
+		assert reg.anotar_cierre_normal() is True
+	finally:
+		reg.detener_registro(cerrar_fallo_nativo=True)
+	texto = (tmp_path / "fallo_nativo.log").read_text(encoding="utf-8")
+	assert "terminó con normalidad" in texto

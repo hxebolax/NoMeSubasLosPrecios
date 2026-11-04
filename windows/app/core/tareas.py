@@ -246,6 +246,19 @@ class TokenCancelacion:
 		"""Espera como ``time.sleep`` pero se despierta al cancelar. Devuelve ``cancelado``."""
 		return self._evento.wait(segundos)
 
+	def wait(self, timeout: float | None = None) -> bool:
+		"""Compatibilidad con ``threading.Event.wait``: ``True`` si se canceló.
+
+		Sin esto, el código que recibe un «evento de cancelación» y hace
+		``cancelado.wait(pausa)`` fallaba con este token (AttributeError en
+		cada «Comprobar todos» de la 1.0.1).
+		"""
+		return self._evento.wait(timeout)
+
+	def set(self) -> None:
+		"""Compatibilidad con ``threading.Event.set``: pide la cancelación."""
+		self.cancelar()
+
 
 @dataclass(frozen=True)
 class Progreso:

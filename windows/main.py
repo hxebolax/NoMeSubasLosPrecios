@@ -173,6 +173,7 @@ def _principal(argumentos: list[str]) -> int:
 	vigilante_ui.detener()
 	registro.establecer_avisador(None)
 	instancia.liberar()
+	registro.anotar_cierre_normal()
 	log.info("Cierre normal.")
 	return 0
 

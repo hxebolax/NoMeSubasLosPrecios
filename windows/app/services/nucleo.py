@@ -28,6 +28,8 @@ log = logging.getLogger(__name__)
 
 # Copias diarias que se guardan en data/backups.
 COPIAS_CONSERVADAS = 7
+#: Primera espera tras un fallo de la comprobación automática (luego se duplica).
+ESPERA_TRAS_FALLO = timedelta(minutes=15)
 
 
 class Nucleo:
@@ -44,6 +46,9 @@ class Nucleo:
 		self.repositorio = Repositorio(self.bd)
 		self.descargador = Descargador(float(self.ajustes()["tiempo_espera"]))
 		self.comprobador = Comprobador(self.repositorio, self.descargador, reglas.catalogo, self.ajustes)
+		# Espera tras fallos de la comprobación automática (ver aplazar_tras_fallo)
+		self._fallos_seguidos = 0
+		self._no_antes_de: datetime | None = None
 
 	# ── Ajustes ──────────────────────────────────────────────────────────────
 
@@ -73,9 +78,27 @@ class Nucleo:
 
 	# ── Calendario ───────────────────────────────────────────────────────────
 
+	def aplazar_tras_fallo(self, ahora: datetime | None = None) -> timedelta:
+		"""Tras un fallo de la comprobación automática, espera antes de reintentar.
+
+		Sin esto, el programador (cada minuto) la repetía sin parar: en la 1.0.1
+		un mismo fallo quedó 1039 veces en el registro en una noche. La espera
+		crece con cada fallo seguido (15, 30, 60 minutos...) sin pasar del
+		intervalo de comprobación. Vive solo en memoria: al reiniciar la app se
+		vuelve a intentar.
+		"""
+		ahora = ahora or datetime.now(timezone.utc)
+		self._fallos_seguidos += 1
+		intervalo = timedelta(hours=int(self.config.obtener("precios.intervalo_horas") or 6))
+		espera = min(ESPERA_TRAS_FALLO * (2 ** (self._fallos_seguidos - 1)), intervalo)
+		self._no_antes_de = ahora + espera
+		return espera
+
 	def toca_comprobar(self, ahora: datetime | None = None) -> bool:
 		"""¿La última comprobación completa es más vieja que el intervalo?"""
 		ahora = ahora or datetime.now(timezone.utc)
+		if self._no_antes_de is not None and ahora < self._no_antes_de:
+			return False
 		ultima = leer_fecha(self.config.obtener("general.ultima_comprobacion")) or leer_fecha(
 			self.repositorio.ultima_comprobacion_global()
 		)
@@ -95,6 +118,9 @@ class Nucleo:
 
 	def anotar_comprobacion(self, fecha: str | None = None) -> None:
 		self.config.establecer("general.ultima_comprobacion", fecha or ahora_iso())
+		# Una comprobación completa que termina bien olvida los fallos anteriores
+		self._fallos_seguidos = 0
+		self._no_antes_de = None
 
 	def copia_diaria_si_toca(self, hoy: date | None = None) -> Path | None:
 		"""Copia de seguridad diaria de la base (se guardan las 7 últimas)."""

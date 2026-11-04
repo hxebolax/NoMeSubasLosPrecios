@@ -1,5 +1,14 @@
 # Novedades
 
+## 1.0.2
+
+Solo Windows: arreglos de errores que salían en el registro.
+
+- «Comprobar todos» (y la comprobación automática) fallaba siempre en cuanto había dos productos de la misma tienda: «La comprobación falló. Los detalles están en el registro.» Ya comprueba todos los productos.
+- Si la comprobación automática falla, ya no lo vuelve a intentar cada minuto: espera 15 minutos, luego 30, luego una hora, y como mucho el intervalo de comprobación que tengas elegido.
+- Al aceptar una actualización, la aplicación se cierra de verdad para que se pueda sustituir, aunque tengas activado «minimizar a la bandeja». Antes solo se ocultaba y la actualización se cancelaba a los 90 segundos.
+- Si en una sesión el registro fallo_nativo.log anota excepciones de Windows que se recuperan solas (pasa a veces con el lector de pantalla al abrir una ventana), al cerrar con normalidad se aclara en ese mismo archivo que no hubo ningún cierre.
+
 ## 1.0.1
 
 Solo Windows: arreglos de accesibilidad.

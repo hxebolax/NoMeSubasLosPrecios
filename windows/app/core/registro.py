@@ -653,6 +653,7 @@ def _activar_faulthandler(carpeta: Path) -> None:
 		archivo.flush()
 		faulthandler.enable(file=archivo, all_threads=True)
 		_estado["archivo_fallo_nativo"] = archivo
+		_estado["tamano_fallo_nativo"] = os.fstat(archivo.fileno()).st_size
 	except OSError:
 		logging.getLogger(__name__).warning("No se pudo activar faulthandler.", exc_info=True)
 
@@ -901,6 +902,35 @@ def cambiar_nivel(nivel: str | int) -> None:
 	valor = nivel if isinstance(nivel, int) else getattr(logging, str(nivel).upper(), logging.INFO)
 	logging.getLogger().setLevel(valor)
 	logging.getLogger("app.registro").info("Nivel de registro cambiado a %s.", logging.getLevelName(valor))
+
+
+def anotar_cierre_normal() -> bool:
+	"""Al cerrar bien, aclara en ``fallo_nativo.log`` que lo anotado no fue un cierre.
+
+	En Windows, faulthandler escribe «Windows fatal exception» también para
+	excepciones que Windows recupera solas, como 0x8001010d (una llamada COM
+	mientras el lector de pantalla consulta la ventana). Si la sesión llega
+	aquí, el programa no murió: se dice para que nadie lo tome por un fallo.
+	Devuelve ``True`` si había algo que aclarar.
+	"""
+	archivo = _estado.get("archivo_fallo_nativo")
+	if archivo is None:
+		return False
+	try:
+		if os.fstat(archivo.fileno()).st_size <= _estado.get("tamano_fallo_nativo", 0):
+			return False
+		archivo.write(
+			"--- La sesión terminó con normalidad: lo anterior son excepciones de Windows que se "
+			"recuperaron solas (no hubo cierre). Solo importa si el programa se cerró de golpe. ---\n"
+		)
+		archivo.flush()
+		logging.getLogger("app.registro").info(
+			"faulthandler anotó excepciones nativas recuperadas en esta sesión (no hubo cierre)."
+		)
+		return True
+	except (OSError, ValueError):
+		logging.getLogger(__name__).debug("No se pudo anotar el cierre normal en fallo_nativo.log", exc_info=True)
+		return False
 
 
 def detener_registro(cerrar_fallo_nativo: bool = False) -> None:

@@ -281,3 +281,19 @@ def test_aviso_tras_actualizacion_fallida_en_espanol(aplicacion, config, monkeyp
 	dialogo_mod.al_arrancar(None, config)
 	assert pendientes and pendientes[0][0] is dialogo_mod.mostrar_mensaje
 	assert pendientes[0][1][1:3] == ("No se pudo actualizar.", "Actualización")
+
+
+def test_cerrar_la_aplicacion_usa_salir_y_no_minimiza(aplicacion, monkeypatch):
+	"""Con «minimizar a la bandeja», Close() solo ocultaba la ventana y el script esperaba en vano."""
+	llamadas = []
+
+	class Ventana:
+		def salir(self):
+			llamadas.append("salir")
+
+		def Close(self, force=False):  # noqa: N802 - API de wx
+			llamadas.append("close")
+
+	monkeypatch.setattr(wx.App, "GetTopWindow", lambda self: Ventana())
+	dialogo_mod._cerrar_aplicacion()
+	assert llamadas == ["salir"]

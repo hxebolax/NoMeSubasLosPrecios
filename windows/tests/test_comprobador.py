@@ -213,3 +213,53 @@ def test_parece_javascript():
 	assert mod.parece_javascript('<html><body><app-root></app-root></body></html>')
 	assert mod.parece_javascript("<p>poco</p>")
 	assert not mod.parece_javascript("<p>" + "texto de producto " * 30 + "</p>")
+
+
+def test_comprobar_con_el_token_del_gestor_de_tareas(nucleo):
+	"""Como lo hace la ventana: con un TokenCancelacion, no con un threading.Event.
+
+	En la 1.0.1 «Comprobar todos» fallaba siempre con «'TokenCancelacion' object has
+	no attribute 'wait'» en cuanto había dos productos de la misma tienda (la pausa).
+	"""
+	from app.core.tareas import TokenCancelacion
+
+	paginas = {f"https://a.es/p/{n}": JSONLD.format(nombre=f"Taza {n}", precio=n) for n in (1, 2)}
+	nucleo.comprobador.descargador = DescargadorFalso(paginas)
+	for url in paginas:
+		_anadir(nucleo, url)
+	mod_azar = mod.AZAR_PAUSA
+	mod.AZAR_PAUSA = 0
+	try:
+		resumen = nucleo.comprobador.comprobar(cancelado=TokenCancelacion())
+	finally:
+		mod.AZAR_PAUSA = mod_azar
+	assert (resumen.comprobados, resumen.correctos) == (2, 2)
+
+
+def test_comprobar_con_token_cancelado_se_detiene(nucleo):
+	from app.core.tareas import TokenCancelacion
+
+	paginas = {f"https://a.es/p/{n}": JSONLD.format(nombre=f"Taza {n}", precio=n) for n in (1, 2, 3)}
+	nucleo.comprobador.descargador = DescargadorFalso(paginas)
+	for url in paginas:
+		_anadir(nucleo, url)
+	token = TokenCancelacion()
+	token.cancelar()
+	resumen = nucleo.comprobador.comprobar(cancelado=token)
+	assert resumen.cancelado and resumen.comprobados == 0
+
+
+def test_tras_un_fallo_automatico_no_se_reintenta_cada_minuto(nucleo):
+	from datetime import datetime, timedelta, timezone
+
+	ahora = datetime(2026, 11, 4, 9, 0, tzinfo=timezone.utc)
+	assert nucleo.toca_comprobar(ahora)
+	assert nucleo.aplazar_tras_fallo(ahora) == timedelta(minutes=15)
+	assert not nucleo.toca_comprobar(ahora + timedelta(minutes=1))
+	assert nucleo.toca_comprobar(ahora + timedelta(minutes=16))
+	assert nucleo.aplazar_tras_fallo(ahora) == timedelta(minutes=30), "la espera crece con cada fallo"
+	for _ in range(10):
+		espera = nucleo.aplazar_tras_fallo(ahora)
+	assert espera == timedelta(hours=int(nucleo.config.obtener("precios.intervalo_horas"))), "nunca más que el intervalo"
+	nucleo.anotar_comprobacion()
+	assert nucleo.aplazar_tras_fallo(ahora) == timedelta(minutes=15), "una comprobación buena olvida los fallos"

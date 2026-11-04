@@ -1382,6 +1382,9 @@ class VentanaPrincipal(wx.Frame):
 		else:
 			log.error("La comprobación falló: %s", error)
 			self.SetStatusText(_("La comprobación falló. Los detalles están en el registro."))
+			if self._comprobacion_automatica:
+				espera = self.nucleo.aplazar_tras_fallo()
+				log.info("Se reintentará la comprobación automática dentro de %d minutos", espera.total_seconds() // 60)
 		self.recargar_datos()
 
 	def _notificar(self, avisos: list[Any]) -> None:

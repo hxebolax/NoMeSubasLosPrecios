@@ -9,4 +9,4 @@ Para publicar una versión nueva solo se cambia ``APP_VERSION`` aquí.
 NOMBRE_APLICACION = "No Me Subas Los Precios"
 # Identificador sin espacios: ejecutable, instancia única, carpeta de compilación.
 ID_APLICACION = "NoMeSubasLosPrecios"
-APP_VERSION = "1.0.1"
+APP_VERSION = "1.0.2"

@@ -568,3 +568,14 @@ def test_con_wx_calllater_sin_mainloop(app_wx):
 	g.apagar(2)
 	assert recibido == [("desde el hilo", True)]
 	assert wx.GetApp() is app_wx  # la aplicación sigue viva para el resto de la sesión
+
+
+def test_token_se_usa_como_threading_event():
+	"""El código que recibe «un evento de cancelación» llama a wait, is_set y set."""
+	from app.core.tareas import TokenCancelacion
+
+	token = TokenCancelacion()
+	assert token.wait(0.01) is False and not token.is_set()
+	token.set()
+	assert token.is_set() and token.cancelado
+	assert token.wait(5) is True, "se despierta al momento si está cancelado"

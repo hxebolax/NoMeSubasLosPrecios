@@ -88,11 +88,22 @@ def _decir(anunciar: Anunciar | None, texto: str) -> None:
 
 
 def _cerrar_aplicacion() -> None:
-	"""Cierre normal de la ventana principal (se guardan preferencias y trabajo)."""
+	"""Cierre normal de la ventana principal (se guardan preferencias y trabajo).
+
+	Si la ventana tiene ``salir()``, se usa: con «minimizar a la bandeja»,
+	``Close()`` solo la ocultaba, la aplicación seguía abierta y el script de
+	sustitución se cansaba de esperar (en la 1.0.1, «La aplicación no se cerró
+	en 90 s»).
+	"""
 	aplicacion = wx.GetApp()
 	ventana = aplicacion.GetTopWindow() if aplicacion else None
-	if ventana:
-		ventana.Close()
+	if not ventana:
+		return
+	salir = getattr(ventana, "salir", None)
+	if callable(salir):
+		salir()
+	else:
+		ventana.Close(force=True)
 
 
 class DialogoActualizacion(wx.Dialog):
