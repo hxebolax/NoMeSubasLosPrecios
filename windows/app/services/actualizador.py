@@ -77,6 +77,15 @@ EJECUTABLE = "NoMeSubasLosPrecios.exe"
 # Dirección del manifiesto firmado. Siempre https (http solo se admite en localhost
 # para las pruebas).
 URL_MANIFIESTO = "https://xebolax.synology.me/NoMeSubasLosPrecios/windows/version.json"
+# 1.2.0: origen elegible (especificación común, «Origen de las actualizaciones»).
+URL_GITHUB = "https://github.com/hxebolax/NoMeSubasLosPrecios/releases/latest/download/version-windows.json"
+SERVIDOR, GITHUB, AMBOS, PERSONALIZADA = "servidor", "github", "ambos", "personalizada"
+ORIGENES = (
+	(SERVIDOR, "Servidor del autor (xebolax.synology.me)"),
+	(GITHUB, "GitHub (página de versiones del proyecto)"),
+	(AMBOS, "Los dos: el que tenga la versión más nueva"),
+	(PERSONALIZADA, "Dirección personalizada"),
+)
 # Claves PÚBLICAS Ed25519 en hexadecimal (64 caracteres). Se acepta la firma de
 # CUALQUIERA de ellas: así se puede rotar la clave publicando una versión que ya
 # conozca la nueva antes de retirar la antigua. Vacía = se rechaza todo.
@@ -170,6 +179,8 @@ class Configuracion:
 	nombre_app: str = NOMBRE_APP
 	ejecutable: str = EJECUTABLE
 	url_manifiesto: str = URL_MANIFIESTO
+	# Varios manifiestos (origen «ambos»): gana la versión más alta. Vacío = solo ``url_manifiesto``.
+	urls_manifiesto: tuple[str, ...] = ()
 	claves_publicas: tuple[str, ...] = CLAVES_PUBLICAS_ED25519
 	comando: list[str] | None = None
 	data_actualizable: tuple[str, ...] = DATA_ACTUALIZABLE
@@ -534,7 +545,70 @@ def _info_desde_manifiesto(config: Configuracion, manifiesto: dict, url_manifies
 	)
 
 
+def base_personalizada(texto: str | None) -> str:
+	"""Carpeta de una dirección personalizada, terminada en «/»; vacío si no vale.
+
+	Acepta la carpeta o la dirección de su ``version.json`` (de Android o de
+	Windows). Solo https (http únicamente en localhost, para pruebas).
+	"""
+	base = (texto or "").strip()
+	for final in ("/windows/version.json", "/version.json"):
+		if base.lower().endswith(final):
+			base = base[: -len(final)]
+			break
+	partes = urllib.parse.urlsplit(base)
+	if not partes.netloc or partes.query or partes.fragment:
+		return ""
+	if partes.scheme != "https" and not (partes.scheme == "http" and partes.hostname in _HOSTS_LOCALES):
+		return ""
+	return base.rstrip("/") + "/"
+
+
+def urls_de_origen(origen: str | None, url_personalizada: str | None = "") -> tuple[str, ...]:
+	"""Manifiestos de Windows que corresponden al origen elegido en las preferencias."""
+	if origen == GITHUB:
+		return (URL_GITHUB,)
+	if origen == AMBOS:
+		return (URL_MANIFIESTO, URL_GITHUB)
+	if origen == PERSONALIZADA:
+		base = base_personalizada(url_personalizada)
+		if base:
+			return (base + "windows/version.json",)
+		log.warning("Dirección personalizada de actualizaciones no válida: se usa el servidor del autor")
+	return (URL_MANIFIESTO,)
+
+
 def comprobar(
+	config: Configuracion, url_manifiesto: str | None = None, *, respetar_omitida: bool = False
+) -> InfoActualizacion | None:
+	"""Consulta el origen (o los orígenes) y devuelve la versión nueva, o ``None``.
+
+	Con varios manifiestos (``config.urls_manifiesto``): gana la versión más
+	alta (con empate, el primero); si uno falla vale el otro; solo es error si
+	fallan todos (se lanza el primer error).
+	"""
+	urls = (url_manifiesto,) if url_manifiesto else (config.urls_manifiesto or (config.url_manifiesto,))
+	if len(urls) == 1:
+		return _comprobar_uno(config, urls[0], respetar_omitida=respetar_omitida)
+	mejor: InfoActualizacion | None = None
+	alguno_bien = False
+	primer_error: ErrorActualizacion | None = None
+	for url in urls:
+		try:
+			info = _comprobar_uno(config, url, respetar_omitida=respetar_omitida)
+		except ErrorActualizacion as error:
+			log.info("Sin respuesta válida de %s: %s", url, error)
+			primer_error = primer_error or error
+			continue
+		alguno_bien = True
+		if info is not None and (mejor is None or es_mas_nueva(info.version, mejor.version)):
+			mejor = info
+	if mejor is None and not alguno_bien and primer_error is not None:
+		raise primer_error
+	return mejor
+
+
+def _comprobar_uno(
 	config: Configuracion, url_manifiesto: str | None = None, *, respetar_omitida: bool = False
 ) -> InfoActualizacion | None:
 	"""Consulta el servidor y devuelve la versión nueva, o ``None`` si no la hay.

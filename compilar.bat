@@ -6,7 +6,8 @@ rem  vive en la carpeta "entorno": no se instala nada en el sistema.
 rem
 rem  Uso con menu:   compilar.bat
 rem  Uso sin menu:   compilar.bat todo ^| windows ^| android ^| instalar ^| android-instalar
-rem                  ^| ejecutar ^| pruebas ^| emulador ^| dispositivos ^| publicar ^| servidor ^| entorno
+rem                  ^| ejecutar ^| pruebas ^| emulador ^| dispositivos ^| publicar ^| servidor ^| github
+rem                  ^| publicar-todo ^| entorno
 rem ============================================================================
 setlocal EnableExtensions EnableDelayedExpansion
 chcp 65001 >nul
@@ -50,6 +51,8 @@ if /i "%~1"=="emulador" call :emulador & exit /b !errorlevel!
 if /i "%~1"=="dispositivos" call :dispositivos & exit /b !errorlevel!
 if /i "%~1"=="publicar" call :publicar & exit /b !errorlevel!
 if /i "%~1"=="servidor" call :servidor & exit /b !errorlevel!
+if /i "%~1"=="github" call :github & exit /b !errorlevel!
+if /i "%~1"=="publicar-todo" call :publicar_todo & exit /b !errorlevel!
 if /i "%~1"=="entorno" call :preparar & exit /b !errorlevel!
 echo Orden desconocida: %~1
 exit /b 1
@@ -70,6 +73,8 @@ echo  9. Ver los moviles conectados
 echo  10. Preparar las actualizaciones (carpeta dist)
 echo  11. Preparar y copiar las actualizaciones al servidor
 echo  12. Preparar o reparar el entorno
+echo  13. Publicar la version en GitHub (release con APK y ZIP)
+echo  14. Publicar en el servidor y en GitHub
 echo  0. Salir
 echo.
 set "OPCION="
@@ -89,6 +94,8 @@ if "%OPCION%"=="9" call :dispositivos & goto :pausa
 if "%OPCION%"=="10" call :publicar & goto :pausa
 if "%OPCION%"=="11" call :servidor & goto :pausa
 if "%OPCION%"=="12" call :preparar & goto :pausa
+if "%OPCION%"=="13" call :github & goto :pausa
+if "%OPCION%"=="14" call :publicar_todo & goto :pausa
 if "%OPCION%"=="0" exit /b 0
 echo Opcion no valida.
 goto :menu
@@ -280,6 +287,18 @@ exit /b 0
 
 rem Primero los paquetes y despues los version.json: asi nadie ve una version
 rem cuyo archivo aun no ha llegado.
+rem GitHub: compila, prepara dist y crea la release v<version> (necesita gh con la sesion iniciada).
+:github
+call :publicar || exit /b 1
+"%PYTHON%" "%RAIZ%\herramientas\publicar_github.py" || exit /b 1
+exit /b 0
+
+rem Servidor y GitHub con una sola compilacion.
+:publicar_todo
+call :servidor || exit /b 1
+"%PYTHON%" "%RAIZ%\herramientas\publicar_github.py" || exit /b 1
+exit /b 0
+
 :servidor
 call :publicar || exit /b 1
 if not exist "%SERVIDOR%" (

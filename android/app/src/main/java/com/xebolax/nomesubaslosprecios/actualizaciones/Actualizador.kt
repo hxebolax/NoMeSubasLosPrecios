@@ -6,19 +6,26 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import com.xebolax.nomesubaslosprecios.BuildConfig
+import com.xebolax.nomesubaslosprecios.datos.Preferencias
+import com.xebolax.nomesubaslosprecios.nucleo.OrigenActualizaciones
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.net.ConnectException
 import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
 import java.net.URL
+import java.net.UnknownHostException
 import java.security.MessageDigest
 
-/** Versión publicada en el servidor (version.json). */
+/** Versión publicada (version.json). base: carpeta de ese version.json, con «/» al final; de ahí sale el APK. */
 data class VersionPublicada(
 	val version: String,
 	val versionCode: Int,
@@ -27,8 +34,9 @@ data class VersionPublicada(
 	val tamano: Long,
 	val fecha: String,
 	val notas: String,
+	val base: String,
 ) {
-	val url: String get() = "${Actualizador.URL_BASE}/$archivo"
+	val url: String get() = base + archivo
 }
 
 /**
@@ -44,7 +52,8 @@ data class VersionPublicada(
  */
 object Actualizador {
 
-	val URL_BASE: String = BuildConfig.URL_ACTUALIZACIONES.trimEnd('/')
+	/** version.json del servidor del autor (el de siempre; se puede cambiar al compilar con -PurlActualizaciones). */
+	val MANIFIESTO_SERVIDOR: String = BuildConfig.URL_ACTUALIZACIONES.trimEnd('/') + "/version.json"
 	private const val AGENTE = "NoMeSubasLosPrecios-Android-Actualizador"
 	private const val ESPERA_MS = 20_000
 	/** Cortes seguidos SIN avanzar antes de rendirse (si avanza, el contador vuelve a cero). */
@@ -76,24 +85,83 @@ object Actualizador {
 		return 0
 	}
 
-	/** Lee version.json del servidor (con reintentos si la red falla). Lanza excepción si no se puede. */
-	suspend fun versionPublicada(): VersionPublicada = withContext(Dispatchers.IO) {
+	/**
+	 * version.json que se consultan según el ajuste origen_actualizaciones (1.2.0).
+	 * Una dirección personalizada no válida (por ejemplo, importada) se cambia por
+	 * el servidor del autor, y se registra.
+	 */
+	fun manifiestos(contexto: Context): List<String> {
+		val prefs = Preferencias(contexto)
+		val origen = prefs.origenActualizaciones
+		if (origen == OrigenActualizaciones.PERSONALIZADA && OrigenActualizaciones.basePersonalizada(prefs.urlActualizaciones).isEmpty()) {
+			Log.w(ETIQUETA, "Dirección personalizada de actualizaciones no válida («${prefs.urlActualizaciones}»): se usa el servidor del autor")
+		}
+		return OrigenActualizaciones.manifiestos(origen, prefs.urlActualizaciones, MANIFIESTO_SERVIDOR)
+	}
+
+	/**
+	 * Lee la versión publicada de los version.json indicados (con reintentos si la
+	 * red falla). Con varios, gana la versión más alta y, con empate, el primero;
+	 * si uno falla vale otro. Si fallan todos, se lanza el error del primero.
+	 */
+	suspend fun versionPublicada(manifiestos: List<String>): VersionPublicada = withContext(Dispatchers.IO) {
+		require(manifiestos.isNotEmpty())
+		var mejor: VersionPublicada? = null
+		var primerError: Exception? = null
+		for (m in manifiestos) {
+			val v = try {
+				versionDe(m)
+			} catch (e: CancellationException) {
+				throw e
+			} catch (e: Exception) {
+				Log.w(ETIQUETA, "No se pudo leer $m", e)
+				if (primerError == null) primerError = e
+				continue
+			}
+			Log.i(ETIQUETA, "$m: versión ${v.version} (${v.versionCode})")
+			if (mejor == null || masNueva(v, mejor)) mejor = v
+		}
+		mejor ?: throw primerError!!
+	}
+
+	/** ¿a es más nueva que b? Por versionCode si los dos lo tienen; si no, por el número de versión. */
+	private fun masNueva(a: VersionPublicada, b: VersionPublicada): Boolean =
+		if (a.versionCode > 0 && b.versionCode > 0) a.versionCode > b.versionCode
+		else compararVersiones(a.version, b.version) > 0
+
+	private suspend fun versionDe(manifiesto: String): VersionPublicada {
 		repeat(2) { intento ->
 			try {
-				return@withContext leerVersion()
+				return leerVersion(manifiesto)
 			} catch (e: IOException) {
-				Log.w(ETIQUETA, "No se pudo leer version.json", e)
+				Log.w(ETIQUETA, "No se pudo leer $manifiesto", e)
 				delay(2000L * (intento + 1))
 			}
 		}
-		leerVersion()
+		return leerVersion(manifiesto)
 	}
 
-	private fun leerVersion(): VersionPublicada {
-		val c = conexion("$URL_BASE/version.json?t=${System.currentTimeMillis()}")
+	private fun leerVersion(manifiesto: String): VersionPublicada {
+		// Redirecciones seguidas (GitHub manda de github.com a release-assets.githubusercontent.com, las dos https)
+		val c = conexion("$manifiesto?t=${System.currentTimeMillis()}")
+		val servidor = URL(manifiesto).host
 		try {
-			if (c.responseCode != 200) throw IllegalStateException("El servidor respondió ${c.responseCode}.")
-			val o = JSONObject(c.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() })
+			val codigo = try {
+				c.responseCode
+			} catch (e: UnknownHostException) {
+				throw IOException("No se pudo conectar con $servidor. Comprueba la conexión a internet.", e)
+			} catch (e: ConnectException) {
+				throw IOException("No se pudo conectar con $servidor. Comprueba la conexión a internet.", e)
+			} catch (e: SocketTimeoutException) {
+				throw IOException("$servidor no respondió a tiempo.", e)
+			}
+			if (codigo == 404) throw IllegalStateException("No hay ninguna versión publicada en $servidor (respuesta 404).")
+			if (codigo != 200) throw IllegalStateException("$servidor respondió $codigo.")
+			val o = try {
+				JSONObject(c.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() })
+			} catch (e: JSONException) {
+				throw IllegalStateException("El archivo de versión de $servidor no es válido.", e)
+			}
 			val version = o.optString("version").trim()
 			val archivo = o.optString("file").trim()
 			require(version.isNotEmpty() && archivo.isNotEmpty()) { "El archivo de versión del servidor no es válido." }
@@ -107,6 +175,7 @@ object Actualizador {
 				tamano = o.optLong("size", 0L),
 				fecha = o.optString("date"),
 				notas = o.optString("notas").trim(),
+				base = OrigenActualizaciones.carpeta(manifiesto),
 			)
 		} finally {
 			c.disconnect()

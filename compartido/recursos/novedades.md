@@ -1,5 +1,12 @@
 # Novedades
 
+## 1.2.0
+
+Windows y Android.
+
+- **Elige de dónde se descargan las actualizaciones**: del servidor del autor (como hasta ahora), de **GitHub**, de **los dos** (se usa el que tenga la versión más nueva y, si uno no responde, el otro) o de una **dirección personalizada**. Está en Preferencias, pestaña Comprobación (Windows) y en Ajustes, Actualizaciones (Android). Venga de donde venga, solo se instala una versión firmada por el autor.
+- El proyecto ya está en GitHub: https://github.com/hxebolax/NoMeSubasLosPrecios. Cada versión se publica allí con el APK de Android y el ZIP de Windows.
+
 ## 1.1.0
 
 Windows y Android.

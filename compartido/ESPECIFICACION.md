@@ -140,6 +140,8 @@ Cada app guarda sus ajustes a su manera (Windows en `data/config`, Android en `S
 | tiempo_espera | entero | 25 | Segundos máximos por página |
 | conservar_avisos_dias | entero | 90 | 0 = siempre |
 | buscar_actualizaciones | booleano | true | |
+| origen_actualizaciones | texto | `servidor` | 1.2.0. De dónde se descargan: `servidor`, `github`, `ambos` o `personalizada` (ver «Actualizaciones») |
+| url_actualizaciones | texto | `""` | 1.2.0. Carpeta para `personalizada` (https) |
 
 Ajustes incluye además un botón **«Enviar una notificación de prueba»** en las dos apps, para comprobar que las notificaciones llegan.
 
@@ -450,10 +452,30 @@ En Android, importar y exportar usan el selector de archivos del sistema (`ACTIO
 
 ## Actualizaciones
 
-Las dos buscan versión nueva en `https://xebolax.synology.me/NoMeSubasLosPrecios/` al arrancar (como mucho una vez al día, si `buscar_actualizaciones`) y desde el menú:
+Las dos buscan versión nueva al arrancar (como mucho una vez al día, si `buscar_actualizaciones`) y desde el menú. Lo que se descarga y cómo se comprueba es igual venga de donde venga:
 
-- Android: `version.json` y `NoMeSubasLosPrecios_v<versión>.apk`, con SHA-256 y comprobación de que el APK está firmado con la misma clave, como YouTubeRO.
-- Windows: `windows/version.json` firmado (Ed25519) y `windows/NoMeSubasLosPrecios-<versión>-win64.zip`, con el actualizador que sustituye el programa sin tocar `data/`.
+- Android: un `version.json` (versión, `versionCode`, `file`, `sha256`, `size`, `notas`) y el APK que nombra; se comprueban el tamaño, el SHA-256 y que el APK esté firmado con la misma clave que la app instalada, como YouTubeRO.
+- Windows: un `version.json` firmado con Ed25519 y el ZIP que nombra (`file`), con el actualizador que sustituye el programa sin tocar `data/`. Una firma que no sea la del autor se rechaza.
+
+El paquete se busca **en la misma carpeta que su `version.json`** (Windows: `urljoin` del manifiesto y `file`; Android: carpeta del manifiesto + `/` + `file`).
+
+### Origen de las actualizaciones (1.2.0)
+
+Ajuste `origen_actualizaciones` (en Windows, Preferencias, pestaña Comprobación; en Android, Ajustes, apartado Actualizaciones), con estas opciones y estos textos:
+
+| Valor | Texto | Android: version.json | Windows: version.json |
+|---|---|---|---|
+| `servidor` (por defecto) | «Servidor del autor (xebolax.synology.me)» | `https://xebolax.synology.me/NoMeSubasLosPrecios/version.json` | `https://xebolax.synology.me/NoMeSubasLosPrecios/windows/version.json` |
+| `github` | «GitHub (página de versiones del proyecto)» | `https://github.com/hxebolax/NoMeSubasLosPrecios/releases/latest/download/version.json` | `https://github.com/hxebolax/NoMeSubasLosPrecios/releases/latest/download/version-windows.json` |
+| `ambos` | «Los dos: el que tenga la versión más nueva» | los dos de arriba | los dos de arriba |
+| `personalizada` | «Dirección personalizada» | `<carpeta>version.json` | `<carpeta>windows/version.json` |
+
+- **`ambos`**: se consultan los dos; si los dos responden, gana la versión más alta (con empate, el servidor del autor); si uno falla, vale el otro; solo es error si fallan los dos (se da el mensaje del primero).
+- **`personalizada`**: `url_actualizaciones` es la dirección de una carpeta con la misma estructura que el servidor del autor (`version.json` y el APK en la raíz; `windows/version.json` y el ZIP en `windows/`). Se normaliza con `base_personalizada` (`basePersonalizada` en Android): se quitan los espacios; si acaba en `/windows/version.json` o en `/version.json` se quita ese final; se añade `/` al final. Solo se admite `https://` (y `http://localhost` o `127.0.0.1` para pruebas); si no vale, la función devuelve vacío. Una dirección no válida no se puede guardar en las preferencias (Android sí deja guardarla vacía, y la guarda ya normalizada); si aun así llega una (por ejemplo, de un archivo importado), se usa el servidor del autor y se registra.
+- En la pantalla de ajustes, el campo de la dirección solo está activo con `personalizada`.
+- Cambiar el origen no rebaja la seguridad: la firma Ed25519 (Windows) y la firma del APK (Android) se siguen exigiendo, así que una dirección personalizada solo puede servir versiones del autor (útil para una copia en una red local o un espejo).
+
+**Publicación en GitHub**: cada versión es una *release* con la etiqueta `v<versión>` y estos archivos: `NoMeSubasLosPrecios_v<versión>.apk`, `version.json` (el de Android), `NoMeSubasLosPrecios-<versión>-win64.zip` y `version-windows.json` (el `windows/version.json` firmado, con otro nombre porque una release no tiene carpetas). Los `version.json` son los mismos que los del servidor del autor.
 
 Si no hay conexión o el servidor no responde, se registra y no se molesta al usuario (salvo en la comprobación manual, que dice el motivo).
 

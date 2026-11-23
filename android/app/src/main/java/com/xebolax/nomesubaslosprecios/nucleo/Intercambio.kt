@@ -53,6 +53,8 @@ object Intercambio {
 		"tiempo_espera", "conservar_avisos_dias", "buscar_actualizaciones", "solo_wifi",
 		// 1.1.0: colores de la lista
 		"colores_lista", "colores_modo", "color_bajada", "color_subida", "color_objetivo", "color_problema",
+		// 1.2.0: origen de las actualizaciones
+		"origen_actualizaciones", "url_actualizaciones",
 	)
 
 	// --- Lectura ----------------------------------------------------------------------------

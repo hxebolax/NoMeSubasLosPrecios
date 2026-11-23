@@ -7,6 +7,8 @@ Seguimiento de precios de productos de tiendas online, con avisos cuando bajan, 
 - **Windows**: Python + wxPython, portable, compilada con cx_Freeze (carpeta `windows`).
 - **Android**: Kotlin con Views y Material 3, accesible con TalkBack (carpeta `android`).
 
+Repositorio: https://github.com/hxebolax/NoMeSubasLosPrecios (el [README.md](README.md) es la presentación para usuarios y programadores; este archivo, la guía detallada).
+
 El manual de usuario, común a las dos, está en [compartido/recursos/manual.md](compartido/recursos/manual.md). Dentro de las apps se abre con F1 (Windows) o desde el menú lateral, Manual (Android).
 
 ## compilar.bat
@@ -25,8 +27,10 @@ Haz doble clic y elige:
 10. Preparar las actualizaciones en `dist`.
 11. Preparar y copiar las actualizaciones al servidor.
 12. Preparar o reparar el entorno.
+13. Publicar la versión en GitHub (release con el APK y el ZIP).
+14. Publicar en el servidor y en GitHub.
 
-También acepta una orden: `compilar.bat todo`, `windows`, `android`, `instalar`, `android-instalar`, `ejecutar`, `pruebas`, `emulador`, `dispositivos`, `publicar`, `servidor` o `entorno`.
+También acepta una orden: `compilar.bat todo`, `windows`, `android`, `instalar`, `android-instalar`, `ejecutar`, `pruebas`, `emulador`, `dispositivos`, `publicar`, `servidor`, `github`, `publicar-todo` o `entorno`.
 
 La versión de Windows tiene además su propio `windows\entorno.bat` (crear el entorno virtual, pruebas, compilar, auditoría, diagnóstico...).
 
@@ -49,7 +53,9 @@ Si falta, `compilar.bat` lo prepara con `herramientas\preparar_entorno.ps1`: lo 
 
 ## Actualizaciones
 
-Las dos apps buscan versiones nuevas en `https://xebolax.synology.me/NoMeSubasLosPrecios/`, que es la carpeta `SynologyDrive\web\NoMeSubasLosPrecios` del usuario:
+Desde la 1.2.0 el usuario elige el origen en las preferencias (especificación, «Origen de las actualizaciones»): el servidor del autor (por defecto), GitHub, los dos (gana la versión más nueva) o una dirección personalizada con la misma estructura que el servidor. Los archivos y las comprobaciones son los mismos en todos los casos.
+
+El servidor del autor es `https://xebolax.synology.me/NoMeSubasLosPrecios/`, la carpeta `SynologyDrive\web\NoMeSubasLosPrecios` del usuario:
 
 - Android: `version.json` y `NoMeSubasLosPrecios_v<versión>.apk` en la raíz. La app comprueba el tamaño, el SHA-256 y que el APK esté firmado con la misma clave, y abre el instalador.
 - Windows: `windows/version.json` (firmado con Ed25519) y `windows/NoMeSubasLosPrecios-<versión>-win64.zip`. El actualizador sustituye el programa sin tocar `data` y vuelve atrás si la versión nueva no arranca.
@@ -58,7 +64,8 @@ Para publicar una versión nueva:
 
 1. Sube la versión en `windows\app\core\version.py` y en `android\app\build.gradle.kts` (`versionName` y `versionCode`). Si el cambio es de las dos, el mismo número en las dos; si es solo de una, sube solo esa y publica solo su parte (`windows\entorno.bat publicar` y copiar `windows\dist` a la carpeta `windows` del servidor).
 2. Escribe sus novedades en `compartido\recursos\novedades.md` (sección `## <versión>`).
-3. `compilar.bat servidor`: compila las dos, deja en `dist` el APK, el ZIP y sus `version.json`, y los copia a la carpeta del servidor (primero los paquetes y después los `version.json`). Antes comprueba que el APK esté firmado con la clave de las versiones publicadas (`herramientas\huella_firma.txt`, que se crea en la primera publicación).
+3. `compilar.bat pruebas`, commit y etiqueta `v<versión>` (`git push --follow-tags`).
+4. `compilar.bat publicar-todo` (o `servidor` y después `github`). `servidor` compila las dos, deja en `dist` el APK, el ZIP y sus `version.json`, y los copia a la carpeta del servidor (primero los paquetes y después los `version.json`). Antes comprueba que el APK esté firmado con la clave de las versiones publicadas (`herramientas\huella_firma.txt`, que se crea en la primera publicación). `github` crea con `gh` la release `v<versión>` con `NoMeSubasLosPrecios_v<versión>.apk`, `version.json`, `NoMeSubasLosPrecios-<versión>-win64.zip` y `version-windows.json` (el `windows/version.json` firmado); antes comprueba que las versiones cuadran, que el `version.json` de Windows está firmado y que la etiqueta existe (si no está en GitHub, la sube). Las apps los buscan en `https://github.com/hxebolax/NoMeSubasLosPrecios/releases/latest/download/`.
 
 ## Cómo está organizado
 
@@ -71,8 +78,8 @@ Para publicar una versión nueva:
   - `referencia_extractor/`: el prototipo en Python del extractor genérico.
 - `windows/`: la app de Windows (`main.py`, `app/core`, `app/services` sin wx, `app/ui`, `tests`, `setup_cx.py`).
 - `android/`: la app de Android (`app/src/main/java/com/xebolax/nomesubaslosprecios`: `nucleo` con la lógica pura, `datos`, `motor`, `ui`, `accesibilidad`, `actualizaciones`).
-- `herramientas/`: `preparar_entorno.ps1` y `publicar_android.py`.
-- `adjuntos/`: investigación (informes de tiendas, del extractor y de apps de seguimiento de precios) y repositorios clonados de referencia. No forma parte de las apps.
+- `herramientas/`: `preparar_entorno.ps1`, `publicar_android.py` y `publicar_github.py`.
+- `adjuntos/` (solo en la copia local; no se publica en GitHub): investigación (informes de tiendas, del extractor y de apps de seguimiento de precios) y repositorios clonados de referencia. No forma parte de las apps.
 
 ## Cómo se obtiene el precio
 
@@ -88,7 +95,7 @@ En este orden, se usa el primer resultado seguro:
 8. Una puntuación de los importes visibles (cerca del título y del botón de compra; tachados, cuotas, envío y precio por kilo restan).
 9. Si nada es seguro, se pregunta al usuario con una lista de candidatos y se guarda un selector estable.
 
-Las tiendas que no dejan descargar sus páginas o que montan el precio con JavaScript se leen con el navegador integrado (WebView2 en Windows, WebView en Android), sin trucos para engañar a la tienda. La investigación con 166 tiendas reales está en `adjuntos/investigacion-tiendas`.
+Las tiendas que no dejan descargar sus páginas o que montan el precio con JavaScript se leen con el navegador integrado (WebView2 en Windows, WebView en Android), sin trucos para engañar a la tienda. La investigación con 166 tiendas reales está en `adjuntos/investigacion-tiendas` (copia local; el resultado de cada tienda está resumido en `notas` y `comprobado` de `tiendas.json`).
 
 ## Pruebas
 
@@ -105,4 +112,4 @@ TalkBack se activa solo en el emulador, nunca en un móvil real. Si hay un móvi
 
 ## Repositorios de referencia
 
-En `adjuntos` están clonados, solo para consulta: PriceBuddy, Discount Bandit, PriceGhost, changedetection.io y price-parser. No se usa su código; sirvieron para comparar cómo extraen los precios.
+En `adjuntos` (copia local, no publicada) están clonados, solo para consulta: PriceBuddy, Discount Bandit, PriceGhost, changedetection.io y price-parser. No se usa su código; sirvieron para comparar cómo extraen los precios.

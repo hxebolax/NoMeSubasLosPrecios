@@ -385,6 +385,16 @@
 	<string name="ajuste_bateria_resumen">Algunos fabricantes retrasan o cortan las comprobaciones en segundo plano. Si no llegan los avisos, abre esta pantalla y quita la optimización para la app. En dontkillmyapp.com se explica cómo hacerlo en cada marca.</string>
 	<string name="ajuste_buscar_actualizaciones">Buscar actualizaciones al abrir</string>
 	<string name="ajuste_buscar_actualizaciones_resumen">Como mucho una vez al día.</string>
+	<!-- Origen de las actualizaciones (1.2.0) -->
+	<string name="ajuste_origen_actualizaciones">Descargar las actualizaciones de</string>
+	<string name="origen_servidor">Servidor del autor (xebolax.synology.me)</string>
+	<string name="origen_github">GitHub (página de versiones del proyecto)</string>
+	<string name="origen_ambos">Los dos: el que tenga la versión más nueva</string>
+	<string name="origen_personalizada">Dirección personalizada</string>
+	<string name="ajuste_url_actualizaciones">Dirección personalizada</string>
+	<string name="ajuste_url_actualizaciones_ayuda">Carpeta con el version.json y el APK, como en el servidor del autor. Debe empezar por https://. La app sigue comprobando la firma del APK, así que solo se instalan versiones del autor.</string>
+	<string name="ajuste_url_ninguna">Ninguna</string>
+	<string name="ajuste_url_no_valida">La dirección debe empezar por https:// y ser la de una carpeta, por ejemplo https://ejemplo.es/NoMeSubasLosPrecios/. No se ha guardado.</string>
 	<!-- Colores de la lista (1.1.0) -->
 	<string name="ajustes_colores">Colores de la lista</string>
 	<string name="ajuste_colores_lista">Colorear la lista según el estado</string>

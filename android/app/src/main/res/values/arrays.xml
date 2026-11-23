@@ -30,6 +30,18 @@
 		<item>365</item>
 		<item>0</item>
 	</string-array>
+	<string-array name="origenes_actualizaciones_nombres">
+		<item>@string/origen_servidor</item>
+		<item>@string/origen_github</item>
+		<item>@string/origen_ambos</item>
+		<item>@string/origen_personalizada</item>
+	</string-array>
+	<string-array name="origenes_actualizaciones_valores" translatable="false">
+		<item>servidor</item>
+		<item>github</item>
+		<item>ambos</item>
+		<item>personalizada</item>
+	</string-array>
 	<string-array name="colores_modo_nombres">
 		<item>@string/colores_modo_fondo</item>
 		<item>@string/colores_modo_texto</item>

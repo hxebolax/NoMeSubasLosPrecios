@@ -72,7 +72,7 @@ class GestorActualizaciones(private val actividad: AppCompatActivity) {
 		if (System.currentTimeMillis() - p.getLong(CLAVE_ULTIMA, 0L) < CADA_MS) return
 		actividad.lifecycleScope.launch {
 			val v = try {
-				Actualizador.versionPublicada()
+				Actualizador.versionPublicada(Actualizador.manifiestos(actividad))
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Exception) {
@@ -92,7 +92,7 @@ class GestorActualizaciones(private val actividad: AppCompatActivity) {
 		actividad.avisar(actividad.getString(R.string.buscando_actualizaciones), mostrar = false)
 		actividad.lifecycleScope.launch {
 			try {
-				val v = Actualizador.versionPublicada()
+				val v = Actualizador.versionPublicada(Actualizador.manifiestos(actividad))
 				p.edit().putLong(CLAVE_ULTIMA, System.currentTimeMillis()).apply()
 				if (Actualizador.esNueva(v)) ofrecer(v, automatica = false)
 				else actividad.mensaje(

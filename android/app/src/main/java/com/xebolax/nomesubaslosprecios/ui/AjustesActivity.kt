@@ -29,6 +29,7 @@ import com.xebolax.nomesubaslosprecios.databinding.ActivityAjustesBinding
 import com.xebolax.nomesubaslosprecios.datos.Preferencias
 import com.xebolax.nomesubaslosprecios.motor.Notificaciones
 import com.xebolax.nomesubaslosprecios.motor.TrabajoComprobacion
+import com.xebolax.nomesubaslosprecios.nucleo.OrigenActualizaciones
 import com.xebolax.nomesubaslosprecios.nucleo.TipoColor
 import com.xebolax.nomesubaslosprecios.nucleo.formatearPorcentaje
 
@@ -75,6 +76,7 @@ class AjustesFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 				valido
 			}
 		}
+		configurarDireccionActualizaciones()
 		findPreference<Preference>("permiso_notificaciones")?.setOnPreferenceClickListener {
 			pedirPermiso()
 			true
@@ -109,6 +111,7 @@ class AjustesFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 	override fun onSharedPreferenceChanged(p: SharedPreferences?, clave: String?) {
 		// Al cambiar el intervalo o la red se reprograma (ExistingPeriodicWorkPolicy.UPDATE)
 		if (clave == Preferencias.INTERVALO_HORAS || clave == Preferencias.SOLO_WIFI) TrabajoComprobacion.programar(requireContext())
+		if (clave == Preferencias.ORIGEN_ACTUALIZACIONES) activarDireccionActualizaciones()
 		// Colores de la lista: las muestras dependen de «Qué se colorea» y la vista previa, de todo.
 		// La lista principal se repinta sola al volver (PrincipalActivity.onResume).
 		if (clave in Preferencias.CLAVES_COLORES) {
@@ -117,6 +120,44 @@ class AjustesFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 			}
 			findPreference<VistaPreviaColores>("colores_vista_previa")?.refrescar()
 		}
+	}
+
+	/**
+	 * «Dirección personalizada» (1.2.0): teclado de direcciones, resumen con la
+	 * dirección o «Ninguna», activa solo con el origen «personalizada». Una
+	 * dirección no válida no se guarda y se explica por qué; una válida se guarda
+	 * ya normalizada (la carpeta, con «/» al final). Vacía se puede guardar.
+	 */
+	private fun configurarDireccionActualizaciones() {
+		findPreference<EditTextPreference>(Preferencias.URL_ACTUALIZACIONES)?.apply {
+			setOnBindEditTextListener {
+				it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+				it.hint = getString(R.string.ajuste_url_actualizaciones)
+				it.setSelection(it.text.length)
+			}
+			summaryProvider = Preference.SummaryProvider<EditTextPreference> { p ->
+				p.text?.trim()?.takeIf { it.isNotEmpty() } ?: getString(R.string.ajuste_url_ninguna)
+			}
+			setOnPreferenceChangeListener { pref, nuevo ->
+				val texto = nuevo?.toString()?.trim().orEmpty()
+				if (texto.isEmpty()) return@setOnPreferenceChangeListener true
+				val base = OrigenActualizaciones.basePersonalizada(texto)
+				if (base.isEmpty()) {
+					requireContext().mensaje(getString(R.string.ajuste_url_actualizaciones), getString(R.string.ajuste_url_no_valida))
+					false
+				} else if (base != nuevo) {
+					// Se guarda la carpeta normalizada en lugar de lo escrito
+					(pref as EditTextPreference).text = base
+					false
+				} else true
+			}
+		}
+		activarDireccionActualizaciones()
+	}
+
+	private fun activarDireccionActualizaciones() {
+		findPreference<Preference>(Preferencias.URL_ACTUALIZACIONES)?.isEnabled =
+			Preferencias(requireContext()).origenActualizaciones == OrigenActualizaciones.PERSONALIZADA
 	}
 
 	private fun permisoConcedido() = Build.VERSION.SDK_INT < 33 ||

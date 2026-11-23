@@ -150,5 +150,20 @@
 			app:summary="@string/ajuste_buscar_actualizaciones_resumen"
 			app:defaultValue="true"
 			app:iconSpaceReserved="false" />
+		<!-- 1.2.0: de dónde se descargan; la dirección solo está activa con «personalizada» (AjustesFragment) -->
+		<ListPreference
+			app:key="origen_actualizaciones"
+			app:title="@string/ajuste_origen_actualizaciones"
+			app:entries="@array/origenes_actualizaciones_nombres"
+			app:entryValues="@array/origenes_actualizaciones_valores"
+			app:defaultValue="servidor"
+			app:useSimpleSummaryProvider="true"
+			app:iconSpaceReserved="false" />
+		<EditTextPreference
+			app:key="url_actualizaciones"
+			app:title="@string/ajuste_url_actualizaciones"
+			app:dialogMessage="@string/ajuste_url_actualizaciones_ayuda"
+			app:defaultValue=""
+			app:iconSpaceReserved="false" />
 	</PreferenceCategory>
 </PreferenceScreen>

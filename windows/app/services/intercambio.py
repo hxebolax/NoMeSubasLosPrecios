@@ -52,6 +52,8 @@ CLAVES_AJUSTES = (
 	"iniciar_con_windows", "minimizar_a_bandeja", "sonidos",
 	# 1.1.0: colores de la lista.
 	"colores_lista", "colores_modo", "color_bajada", "color_subida", "color_objetivo", "color_problema",
+	# 1.2.0: origen de las actualizaciones.
+	"origen_actualizaciones", "url_actualizaciones",
 )
 
 _PRECIOS = ("precio_actual", "precio_inicial", "precio_minimo", "precio_maximo", "precio_anterior", "precio_objetivo")

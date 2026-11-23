@@ -3,7 +3,7 @@
 [project]
 name = "no-me-subas-los-precios"
 # Debe coincidir con APP_VERSION de app/core/version.py (lo comprueba una prueba).
-version = "1.1.0"
+version = "1.2.0"
 description = "Seguimiento accesible de precios de tiendas online para Windows (wxPython)."
 # Versión mínima de Python del proyecto: ajústela a la elegida al crearlo.
 requires-python = ">=3.13"

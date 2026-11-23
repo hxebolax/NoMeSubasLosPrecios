@@ -8,6 +8,7 @@ import com.xebolax.nomesubaslosprecios.nucleo.AjustesColores
 import com.xebolax.nomesubaslosprecios.nucleo.Colores
 import com.xebolax.nomesubaslosprecios.nucleo.Intercambio
 import com.xebolax.nomesubaslosprecios.nucleo.ModoColores
+import com.xebolax.nomesubaslosprecios.nucleo.OrigenActualizaciones
 import com.xebolax.nomesubaslosprecios.nucleo.TipoColor
 
 /**
@@ -43,6 +44,10 @@ class Preferencias(contexto: Context) {
 		const val COLOR_SUBIDA = "color_subida"
 		const val COLOR_OBJETIVO = "color_objetivo"
 		const val COLOR_PROBLEMA = "color_problema"
+
+		// Origen de las actualizaciones (1.2.0)
+		const val ORIGEN_ACTUALIZACIONES = "origen_actualizaciones"
+		const val URL_ACTUALIZACIONES = "url_actualizaciones"
 
 		/** Claves que, si cambian, obligan a repintar las listas. */
 		val CLAVES_COLORES = setOf(COLORES_LISTA, COLORES_MODO, COLOR_BAJADA, COLOR_SUBIDA, COLOR_OBJETIVO, COLOR_PROBLEMA)
@@ -99,6 +104,12 @@ class Preferencias(contexto: Context) {
 	val ajustesColores: AjustesColores
 		get() = AjustesColores(coloresLista, coloresModo, TipoColor.entries.associateWith { color(it) })
 
+	/** servidor, github, ambos o personalizada; uno desconocido se lee como servidor. */
+	val origenActualizaciones: String get() = OrigenActualizaciones.origen(p.all[ORIGEN_ACTUALIZACIONES] as? String)
+
+	/** Carpeta para el origen personalizada (tal cual se guardó; se normaliza al usarla). */
+	val urlActualizaciones: String get() = (p.all[URL_ACTUALIZACIONES] as? String).orEmpty()
+
 	val ajustesAvisos: AjustesAvisos
 		get() = AjustesAvisos(
 			avisarBajadas = booleano(AVISAR_BAJADAS, true),
@@ -153,6 +164,8 @@ class Preferencias(contexto: Context) {
 		COLOR_SUBIDA to color(TipoColor.SUBIDA),
 		COLOR_OBJETIVO to color(TipoColor.OBJETIVO),
 		COLOR_PROBLEMA to color(TipoColor.PROBLEMA),
+		ORIGEN_ACTUALIZACIONES to origenActualizaciones,
+		URL_ACTUALIZACIONES to urlActualizaciones,
 	)
 
 	/** Aplica los ajustes de un archivo importado (solo las claves conocidas y con el tipo que espera cada control). */
@@ -168,6 +181,10 @@ class Preferencias(contexto: Context) {
 				clave in COMO_ENTERO -> (valor as? Number)?.let { e.putInt(clave, it.toInt()) }
 				// Colores (1.1.0): un valor desconocido se guarda como el de por defecto
 				clave == COLORES_MODO -> e.putString(clave, ModoColores.de(valor as? String).id)
+				// Actualizaciones (1.2.0): un origen desconocido se guarda como servidor; la dirección, tal cual
+				// (si no vale, al buscar se usa el servidor del autor y se registra)
+				clave == ORIGEN_ACTUALIZACIONES -> e.putString(clave, OrigenActualizaciones.origen(valor as? String))
+				clave == URL_ACTUALIZACIONES -> (valor as? String)?.let { e.putString(clave, it.trim()) }
 				clave.startsWith("color_") -> TipoColor.entries.firstOrNull { it.clave == clave }?.let { t ->
 					e.putString(clave, (valor as? String)?.takeIf { it in Colores.IDS } ?: t.porDefecto)
 				}

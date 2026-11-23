@@ -2,11 +2,8 @@
 entorno/
 # Firmas (Android y Windows): NO se suben a ningún sitio; guárdalas aparte
 firma/
-# Material de consulta: solo se guardan los informes, no los repositorios clonados
-adjuntos/*
-!adjuntos/*.md
-!adjuntos/*.txt
-!adjuntos/investigacion-tiendas/
+# Material de consulta (informes y repositorios clonados): no se publica
+adjuntos/
 # Compilaciones
 dist/
 *.apk

@@ -40,7 +40,7 @@ import wx.adv
 import wx.lib.scrolledpanel as scrolled
 
 from app.core.configuracion import Configuracion, ErrorValidacion
-from app.services import colores
+from app.services import actualizador, colores
 from app.services.importes import porcentaje_para_campo
 from app.ui.accesibilidad.visual import alto_contraste_activo
 
@@ -110,6 +110,10 @@ class Opcion:
 		de la configuración).
 	:param incremento: paso de los decimales.
 	:param opciones: pares ``(valor, etiqueta)`` para el tipo ``opcion``.
+	:param activa_si: ``(clave, valor)``: el control solo está activo si esa otra
+		opción vale eso (se actualiza al momento).
+	:param validar: ``validar(valor) -> mensaje o None`` además de las reglas de la
+		configuración; solo se aplica si el control está activo.
 	"""
 
 	clave: str
@@ -120,6 +124,15 @@ class Opcion:
 	maximo: float | None = None
 	incremento: float = 0.1
 	opciones: tuple[tuple[Any, str], ...] = ()
+	activa_si: tuple[str, Any] | None = None
+	validar: Callable[[Any], str | None] | None = None
+
+
+def _validar_url_actualizaciones(valor: Any) -> str | None:
+	if actualizador.base_personalizada(str(valor or "")):
+		return None
+	return N_("Escribe la dirección de una carpeta que empiece por https:// (por ejemplo, "
+		"https://mi-servidor.es/NoMeSubasLosPrecios/), o elige otro origen.")
 
 
 @dataclass(frozen=True)
@@ -149,6 +162,15 @@ PAGINAS: tuple[Pagina, ...] = (
 			N_("Si una tienda tarda más en responder, la comprobación de ese producto falla y se reintenta la próxima vez.")),
 		Opcion("precios.buscar_actualizaciones", N_("&Buscar actualizaciones de la aplicación al iniciar"), BOOL,
 			N_("Como mucho una vez al día. Si no hay conexión, no molesta.")),
+		Opcion("precios.origen_actualizaciones", N_("Descargar &las actualizaciones de:"), OPCION,
+			N_("De dónde se descargan las versiones nuevas: del servidor del autor, de GitHub, de los dos (se usa el "
+				"que tenga la versión más nueva y, si uno falla, el otro) o de una dirección tuya. Venga de donde venga, "
+				"solo se instala una versión firmada por el autor."),
+			opciones=tuple((valor, nombre) for valor, nombre in actualizador.ORIGENES)),
+		Opcion("precios.url_actualizaciones", N_("Dirección personali&zada (https):"), TEXTO,
+			N_("Solo con «Dirección personalizada»: la carpeta con la misma estructura que el servidor del autor "
+				"(windows/version.json y el ZIP dentro de windows). Sirve, por ejemplo, para una copia en tu red."),
+			activa_si=("precios.origen_actualizaciones", "personalizada"), validar=_validar_url_actualizaciones),
 	)),
 	Pagina(N_("Avisos"), (
 		Opcion("precios.avisar_bajadas", N_("Avisar cuando &baje el precio"), BOOL,
@@ -370,6 +392,12 @@ class DialogoPreferencias(wx.Dialog):
 			self._escribir_control(opcion, control, self._valor_guardado(opcion))
 		if any(opcion.tipo == COLOR for opcion in pagina.opciones):
 			self._crear_vista_previa(panel, sizer)
+		for opcion in pagina.opciones:
+			if opcion.activa_si and opcion.activa_si[0] in self._controles:
+				origen = self._controles[opcion.activa_si[0]][1]
+				for evento in (wx.EVT_CHECKBOX, wx.EVT_CHOICE, wx.EVT_COMBOBOX):
+					origen.Bind(evento, self._al_cambiar_dependencia)
+		self._actualizar_dependencias()
 		panel.SetSizer(sizer)
 		# Desplaza la vista hasta el control enfocado (útil con muchas opciones).
 		panel.SetupScrolling(scroll_x=False)
@@ -406,6 +434,23 @@ class DialogoPreferencias(wx.Dialog):
 				for evento in (wx.EVT_CHECKBOX, wx.EVT_CHOICE, wx.EVT_COMBOBOX):
 					control.Bind(evento, self._al_cambiar_color)
 		self._actualizar_colores()
+
+	def _al_cambiar_dependencia(self, evento: wx.Event) -> None:
+		self._actualizar_dependencias()
+		evento.Skip()
+
+	def _activa(self, opcion: Opcion) -> bool:
+		"""¿Cumple la condición ``activa_si`` con lo que hay ahora en los controles?"""
+		if not opcion.activa_si or opcion.activa_si[0] not in self._controles:
+			return True
+		clave, valor = opcion.activa_si
+		otra, control, _pagina = self._controles[clave]
+		return self._leer_control(otra, control) == valor
+
+	def _actualizar_dependencias(self) -> None:
+		for opcion, control, _pagina in self._controles.values():
+			if opcion.activa_si:
+				control.Enable(self._activa(opcion))
 
 	def _al_cambiar_color(self, evento: wx.Event) -> None:
 		self._actualizar_colores()
@@ -558,6 +603,12 @@ class DialogoPreferencias(wx.Dialog):
 			except ErrorValidacion as error:
 				self._senalar(clave, str(error))
 				return False
+			opcion = self._controles[clave][0]
+			if opcion.validar is not None and self._activa(opcion):
+				mensaje = opcion.validar(valor)
+				if mensaje:
+					self._senalar(clave, _(mensaje))
+					return False
 			if valor != self._config.obtener(clave, None):
 				cambios[clave] = valor
 		cambios_secretos = {
@@ -595,6 +646,7 @@ class DialogoPreferencias(wx.Dialog):
 				continue  # los secretos no tienen valor de fábrica: no se borran por esto
 			self._escribir_control(opcion, control, self._config.valor_por_defecto(clave))
 		self._actualizar_colores()
+		self._actualizar_dependencias()
 
 	def _cerrar(self, codigo: int) -> None:
 		if self.IsModal():

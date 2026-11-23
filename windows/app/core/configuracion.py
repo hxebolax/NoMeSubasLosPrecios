@@ -83,6 +83,9 @@ VALORES_POR_DEFECTO: dict[str, dict[str, Any]] = {
 		"tiempo_espera": 25,
 		"conservar_avisos_dias": 90,
 		"buscar_actualizaciones": True,
+		# 1.2.0: de dónde se descargan las actualizaciones (servidor, github, ambos o personalizada).
+		"origen_actualizaciones": "servidor",
+		"url_actualizaciones": "",
 	},
 	# Colores de la lista (1.1.0, especificación común: se exportan con estas claves).
 	"colores": {
@@ -166,6 +169,8 @@ _IDS_COLORES = (
 
 REGLAS: dict[str, Regla] = {
 	"precios.intervalo_horas": Regla(opciones=(1, 2, 3, 6, 12, 24)),
+	"precios.origen_actualizaciones": Regla(opciones=("servidor", "github", "ambos", "personalizada")),
+	"precios.url_actualizaciones": Regla(longitud_maxima=500),
 	"precios.cambio_minimo_porcentaje": Regla(minimo=0.0, maximo=100.0),
 	"precios.pausa_entre_peticiones": Regla(minimo=0, maximo=120),
 	"precios.tiempo_espera": Regla(minimo=5, maximo=300),

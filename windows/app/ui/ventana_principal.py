@@ -469,6 +469,7 @@ class VentanaPrincipal(wx.Frame):
 		from app.ui import dialogo_actualizacion
 
 		self.actualizador = actualizador.configuracion_por_defecto(APP_VERSION)
+		self._aplicar_origen_actualizaciones()
 		dialogo_actualizacion.al_arrancar(self, self.actualizador, anunciar=voz.hablar)
 		if self._config.obtener("precios.buscar_actualizaciones", True):
 			self.comprobador_actualizaciones = dialogo_actualizacion.ComprobadorPeriodico(
@@ -1632,8 +1633,24 @@ class VentanaPrincipal(wx.Frame):
 		self._programar_repintado()
 		evento.Skip()
 
+	def _aplicar_origen_actualizaciones(self) -> None:
+		"""Manifiestos del origen elegido en Preferencias (servidor, GitHub, los dos o una dirección)."""
+		from app.services import actualizador
+
+		if self.actualizador is None:
+			return
+		urls = actualizador.urls_de_origen(
+			self._config.obtener("precios.origen_actualizaciones", "servidor"),
+			self._config.obtener("precios.url_actualizaciones", ""),
+		)
+		self.actualizador.urls_manifiesto = urls
+		self.actualizador.url_manifiesto = urls[0]
+		log.info("Origen de las actualizaciones: %s", ", ".join(urls))
+
 	def _al_cambiar_configuracion(self, clave: str, anterior: Any, nuevo: Any) -> None:
 		"""Las preferencias se aplican al momento (llega desde cualquier hilo)."""
+		if clave in ("precios.origen_actualizaciones", "precios.url_actualizaciones"):
+			wx.CallAfter(self._aplicar_origen_actualizaciones)
 		if clave.startswith("colores."):
 			wx.CallAfter(self._programar_repintado)
 		if clave == "windows.iniciar_con_windows":
@@ -1696,6 +1713,7 @@ class VentanaPrincipal(wx.Frame):
 
 		if self.actualizador is None:
 			self.actualizador = actualizador.configuracion_por_defecto(APP_VERSION)
+		self._aplicar_origen_actualizaciones()
 		dialogo_actualizacion.comprobar_manualmente(self, self.actualizador, anunciar=voz.hablar)
 
 	def _al_acerca_de(self, _evento: wx.CommandEvent | None) -> None:

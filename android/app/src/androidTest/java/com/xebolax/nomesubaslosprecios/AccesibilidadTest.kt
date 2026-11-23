@@ -16,10 +16,12 @@ import com.google.android.apps.common.testing.accessibility.framework.Parameters
 import com.google.android.apps.common.testing.accessibility.framework.uielement.AccessibilityHierarchyAndroid
 import com.google.android.apps.common.testing.accessibility.framework.utils.contrast.BitmapImage
 import com.xebolax.nomesubaslosprecios.datos.BaseDatos
+import com.xebolax.nomesubaslosprecios.datos.Preferencias
 import com.xebolax.nomesubaslosprecios.nucleo.AjustesAvisos
 import com.xebolax.nomesubaslosprecios.nucleo.Colores
 import com.xebolax.nomesubaslosprecios.nucleo.Lectura
 import com.xebolax.nomesubaslosprecios.nucleo.LogicaAvisos
+import com.xebolax.nomesubaslosprecios.nucleo.OrigenActualizaciones
 import com.xebolax.nomesubaslosprecios.nucleo.Producto
 import com.xebolax.nomesubaslosprecios.ui.AjustesActivity
 import com.xebolax.nomesubaslosprecios.ui.CategoriasActivity
@@ -267,6 +269,48 @@ class AccesibilidadTest {
 		comprobarEstricto()
 	}
 
+	/** Desplaza la primera lista desplazable hasta que se vea un elemento con ese texto (como mucho 10 pasos). */
+	private fun desplazarHasta(texto: String) {
+		repeat(10) {
+			if (elemento(texto) != null) return
+			val lista = mutableListOf<AccessibilityNodeInfo>()
+			fun buscar(n: AccessibilityNodeInfo) {
+				if (n.isScrollable) lista += n
+				for (i in 0 until n.childCount) n.getChild(i)?.let { buscar(it) }
+			}
+			raiz()?.let { buscar(it) }
+			lista.firstOrNull()?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+			esperar(800)
+		}
+	}
+
+	/**
+	 * Ajustes, «Descargar las actualizaciones de» (1.2.0): la fila dice el origen
+	 * elegido y la dirección personalizada está desactivada si el origen no es
+	 * «personalizada».
+	 */
+	@Test
+	fun origenDeLasActualizaciones() {
+		abrir(Intent(app, AjustesActivity::class.java))
+		val origen = app.getString(R.string.ajuste_origen_actualizaciones)
+		val direccion = app.getString(R.string.ajuste_url_actualizaciones)
+		desplazarHasta(direccion)
+		revisar("Ajustes: actualizaciones")
+		val nodos = mutableListOf<AccessibilityNodeInfo>()
+		raiz()?.let { recoger(it, nodos) }
+		val filaOrigen = nodos.firstOrNull { nombre(it).startsWith(origen) }
+		assertTrue("Falta la fila «$origen»", filaOrigen != null)
+		val dicho = nombre(filaOrigen!!)
+		Log.i("Recorrido", "Origen | $dicho")
+		assertTrue("La fila del origen debe decir el elegido: $dicho", dicho.length > origen.length + 2)
+		val personalizada = Preferencias(app).origenActualizaciones == OrigenActualizaciones.PERSONALIZADA
+		val filaDireccion = raiz()?.findAccessibilityNodeInfosByText(direccion)?.lastOrNull { it.text?.toString() == direccion }
+		assertTrue("Falta la fila «$direccion»", filaDireccion != null)
+		Log.i("Recorrido", "Dirección personalizada | activa: ${filaDireccion!!.isEnabled}")
+		assertTrue("La dirección solo está activa con «personalizada»", filaDireccion.isEnabled == personalizada)
+		comprobarEstricto()
+	}
+
 	/**
 	 * Ajustes, «Colores de la lista» (1.1.0): las filas de colores dicen su título y
 	 * el color elegido, la vista previa no la visita TalkBack y la lista de colores
@@ -277,17 +321,7 @@ class AccesibilidadTest {
 		abrir(Intent(app, AjustesActivity::class.java))
 		val titulo = app.getString(R.string.ajustes_colores)
 		val ultimo = app.getString(R.string.color_tipo_problema)
-		repeat(8) {
-			if (elemento(ultimo) != null) return@repeat
-			val lista = mutableListOf<AccessibilityNodeInfo>()
-			fun buscar(n: AccessibilityNodeInfo) {
-				if (n.isScrollable) lista += n
-				for (i in 0 until n.childCount) n.getChild(i)?.let { buscar(it) }
-			}
-			raiz()?.let { buscar(it) }
-			lista.firstOrNull()?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
-			esperar(800)
-		}
+		desplazarHasta(ultimo)
 		assertTrue("No se llega a «$titulo»", elemento(titulo) != null || elemento(ultimo) != null)
 		revisar("Ajustes: colores de la lista")
 		val nodos = mutableListOf<AccessibilityNodeInfo>()

@@ -224,7 +224,7 @@ Antes de cambiar nada se muestra un resumen («El archivo tiene 42 productos... 
 - **Ignorar cambios menores que** un porcentaje.
 - **Pausa entre páginas de la misma tienda** y **tiempo máximo por página**: para no cargar a las tiendas.
 - **Cuántos días guardar los avisos.**
-- **Buscar actualizaciones** al abrir.
+- **Buscar actualizaciones** al abrir, y **de dónde descargarlas** (ver «Actualizaciones»).
 - **Enviar una notificación de prueba**: para comprobar que los avisos te llegan.
 - **Colores de la lista**: si se colorea, qué se colorea y el color de cada estado (ver «Colores de la lista»).
 - Solo en Windows: **minimizar a la bandeja** al cerrar, **iniciar con Windows** (en la bandeja) y **sonidos**.
@@ -243,6 +243,17 @@ Las dos versiones buscan versiones nuevas al abrirse (como mucho una vez al día
 
 - En Windows descargan la nueva versión, comprueban su firma y la instalan sin tocar tus datos de la carpeta `data`. Si la nueva no arrancara, vuelven a la anterior.
 - En Android descargan el APK, comprueban que es auténtico y abren el instalador de Android.
+
+### De dónde se descargan
+
+En **Preferencias, pestaña Comprobación** (Windows) o en **Ajustes, Actualizaciones** (Android), en «Descargar las actualizaciones de», puedes elegir:
+
+- **Servidor del autor (xebolax.synology.me)**: lo de siempre, y la opción por defecto.
+- **GitHub (página de versiones del proyecto)**: https://github.com/hxebolax/NoMeSubasLosPrecios/releases. Útil si el servidor del autor no responde desde tu red.
+- **Los dos: el que tenga la versión más nueva**: se preguntan los dos; si uno no responde, se usa el otro.
+- **Dirección personalizada**: la dirección (https) de una carpeta con la misma estructura que el servidor del autor: `version.json` y el APK en la carpeta, y `windows/version.json` con el ZIP dentro de `windows`. Sirve, por ejemplo, para una copia en tu propia red. El campo de la dirección solo se puede escribir con esta opción, y si no empieza por https:// no se guarda.
+
+Elijas lo que elijas, la app solo instala versiones del autor: en Windows comprueba la firma de la versión, y en Android que el APK esté firmado con la misma clave que la app que tienes.
 
 ## Teclas en Windows
 
