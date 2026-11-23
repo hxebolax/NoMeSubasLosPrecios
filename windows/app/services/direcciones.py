@@ -18,7 +18,7 @@ import urllib.parse
 # Parámetros de seguimiento que se quitan (nombre exacto).
 PARAMETROS_SEGUIMIENTO = frozenset({
 	"gclid", "fbclid", "ref", "ref_", "tag", "psc", "smid", "spLa", "th", "_encoding",
-	"qid", "sr", "keywords", "crid", "sprefix", "dib", "dib_tag", "linkCode", "linkId", "srsltid",
+	"qid", "sr", "keywords", "crid", "sprefix", "dib", "dib_tag", "linkCode", "linkId", "srsltid", "suid",
 })
 # Prefijos de parámetros de seguimiento.
 PREFIJOS_SEGUIMIENTO = ("utm_", "pd_rd_", "pf_rd_")

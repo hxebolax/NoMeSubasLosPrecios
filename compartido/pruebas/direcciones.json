@@ -30,6 +30,11 @@
       "entrada": "https://WWW.MediaMarkt.es/es/product/_robot-1234.html",
       "limpia": "https://www.mediamarkt.es/es/product/_robot-1234.html",
       "dominio": "mediamarkt.es"
+    },
+    {
+      "entrada": "https://www.g2a.com/es/juego-de-ejemplo-pc-steam-key-global-i10000000000001?suid=fbf7e42e-da7b-4a5d-9f07-800cf64377e5",
+      "limpia": "https://www.g2a.com/es/juego-de-ejemplo-pc-steam-key-global-i10000000000001",
+      "dominio": "g2a.com"
     }
   ]
 }

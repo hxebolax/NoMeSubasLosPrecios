@@ -8,7 +8,7 @@ package com.xebolax.nomesubaslosprecios.nucleo
 /** Parámetros de seguimiento que se quitan (comparación exacta). */
 private val PARAMETROS_SEGUIMIENTO = setOf(
 	"gclid", "fbclid", "ref", "ref_", "tag", "psc", "smid", "spla", "th", "_encoding", "qid", "sr", "keywords",
-	"crid", "sprefix", "dib", "dib_tag", "linkcode", "linkid", "srsltid",
+	"crid", "sprefix", "dib", "dib_tag", "linkcode", "linkid", "srsltid", "suid",
 )
 
 /** Prefijos de parámetros de seguimiento. */

@@ -36,10 +36,13 @@ from dataclasses import dataclass
 from typing import Any
 
 import wx
+import wx.adv
 import wx.lib.scrolledpanel as scrolled
 
 from app.core.configuracion import Configuracion, ErrorValidacion
+from app.services import colores
 from app.services.importes import porcentaje_para_campo
+from app.ui.accesibilidad.visual import alto_contraste_activo
 
 log = logging.getLogger(__name__)
 
@@ -59,10 +62,39 @@ def N_(texto: str) -> str:  # noqa: N802 - convención de gettext
 	return texto
 
 
-# Tipos de opción admitidos.
-BOOL, ENTERO, DECIMAL, TEXTO, OPCION, CARPETA, SECRETO = (
-	"bool", "entero", "decimal", "texto", "opcion", "carpeta", "secreto",
+# Tipos de opción admitidos. COLOR (1.1.0): lista desplegable nativa de solo
+# lectura en la que cada elemento lleva una muestra del color y su nombre (el
+# lector lee el nombre).
+BOOL, ENTERO, DECIMAL, TEXTO, OPCION, CARPETA, SECRETO, COLOR = (
+	"bool", "entero", "decimal", "texto", "opcion", "carpeta", "secreto", "color",
 )
+_PALETA = tuple((c.id, c.nombre) for c in colores.PALETA)
+
+
+def muestra_color(ventana: wx.Window, identificador: str) -> wx.Bitmap:
+	"""Cuadradito con el color: fondo claro, borde y franja del tono de texto.
+
+	«Sin color» es un cuadrado blanco tachado en diagonal.
+	"""
+	lado = ventana.FromDIP(16)
+	mapa = wx.Bitmap(lado, lado)
+	dc = wx.MemoryDC(mapa)
+	try:
+		elegido = colores.color(identificador)
+		borde = wx.Colour(elegido.texto) if elegido.texto else wx.Colour(96, 96, 96)
+		dc.SetBackground(wx.Brush(wx.Colour(elegido.fondo) if elegido.fondo else wx.WHITE))
+		dc.Clear()
+		dc.SetPen(wx.Pen(borde, max(1, ventana.FromDIP(1))))
+		if elegido.texto:
+			dc.SetBrush(wx.Brush(borde))
+			dc.DrawRectangle(lado * 2 // 3, 0, lado - lado * 2 // 3, lado)
+		else:
+			dc.DrawLine(0, lado - 1, lado - 1, 0)
+		dc.SetBrush(wx.TRANSPARENT_BRUSH)
+		dc.DrawRectangle(0, 0, lado, lado)
+	finally:
+		dc.SelectObject(wx.NullBitmap)
+	return mapa
 
 
 @dataclass(frozen=True)
@@ -71,7 +103,7 @@ class Opcion:
 
 	:param clave: «seccion.clave» en la configuración (o nombre del secreto).
 	:param etiqueta: texto visible y nombre para el lector (con ``&`` opcional).
-	:param tipo: ``bool``, ``entero``, ``decimal``, ``texto``, ``opcion``,
+	:param tipo: ``bool``, ``entero``, ``decimal``, ``texto``, ``opcion``, ``color``,
 		``carpeta`` o ``secreto``.
 	:param ayuda: explicación que se lee con Ctrl+H.
 	:param minimo, maximo: límites numéricos (si faltan, se toman de la regla
@@ -149,6 +181,27 @@ PAGINAS: tuple[Pagina, ...] = (
 			N_("Un sonido corto del sistema cuando una comprobación encuentra cambios.")),
 		Opcion("general.anunciar_arranque", N_("Anunciar el arranque por &voz"), BOOL,
 			N_("Dice el nombre de la aplicación al abrirla, antes de que aparezca la ventana.")),
+	)),
+	# Colores de la lista (1.1.0). Aceleradores: o, q, b, s, d, g (sin R, E, A, C, P de los botones).
+	Pagina(N_("Colores"), (
+		Opcion("colores.colores_lista", N_("C&olorear la lista según el estado"), BOOL,
+			N_("Pinta de un color las filas de los productos que han bajado, subido, llegado al precio deseado o "
+				"tienen algún problema, y los avisos de cada tipo. Es solo visual: la fila ya dice su estado al leerla. "
+				"Con el contraste alto de Windows no se colorea nada.")),
+		Opcion("colores.colores_modo", N_("&Qué se colorea:"), OPCION,
+			N_("Fondo de la fila: un tono claro detrás del texto, que se ve más. Texto: las letras de la fila en un "
+				"tono oscuro del color."),
+			opciones=tuple((valor, nombre) for valor, nombre in colores.MODOS)),
+		Opcion("colores.color_bajada", N_("Color de &bajada u oferta:"), COLOR,
+			N_("Productos en oferta: han bajado en los últimos 7 días o están en su precio mínimo. "
+				"También los avisos de bajada y de mínimo histórico."), opciones=_PALETA),
+		Opcion("colores.color_subida", N_("Color de &subida:"), COLOR,
+			N_("Productos que han subido de precio en los últimos 7 días, y los avisos de subida."), opciones=_PALETA),
+		Opcion("colores.color_objetivo", N_("Color de precio &deseado alcanzado:"), COLOR,
+			N_("Productos que han llegado al precio deseado o lo han bajado, y esos avisos."), opciones=_PALETA),
+		Opcion("colores.color_problema", N_("Color de a&gotado o con problemas:"), COLOR,
+			N_("Productos agotados, bloqueados por la tienda, sin precio, sin conexión o con error, y esos avisos."),
+			opciones=_PALETA),
 	)),
 	Pagina(N_("Lectura de listas"), (
 		Opcion("lectura.numero_fila", N_("Decir el &número de fila"), BOOL,
@@ -252,6 +305,8 @@ class DialogoPreferencias(wx.Dialog):
 		# id de control (y de sus hijos, p. ej. el texto de un SpinCtrl) → clave
 		self._clave_por_id: dict[int, str] = {}
 		self._valores_secretos: dict[str, str] = {}
+		# Filas de la vista previa de colores (tipo → texto pintado).
+		self._muestras: dict[str, wx.StaticText] = {}
 
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.libro = wx.Notebook(self)
@@ -281,7 +336,8 @@ class DialogoPreferencias(wx.Dialog):
 			botones.Add(boton, 0, wx.ALL, 4)
 		sizer.Add(botones, 0, wx.EXPAND | wx.ALL, 4)
 		self.SetSizerAndFit(sizer)
-		self.SetMinSize((520, 420))
+		# Alto suficiente para ver la vista previa de la pestaña Colores sin desplazarse.
+		self.SetMinSize(self.FromDIP(wx.Size(560, 640)))
 
 		self.boton_aceptar.SetDefault()
 		self.SetEscapeId(wx.ID_CANCEL)
@@ -312,10 +368,67 @@ class DialogoPreferencias(wx.Dialog):
 			self._controles[opcion.clave] = (opcion, control, indice)
 			self._registrar_ids(control, opcion.clave)
 			self._escribir_control(opcion, control, self._valor_guardado(opcion))
+		if any(opcion.tipo == COLOR for opcion in pagina.opciones):
+			self._crear_vista_previa(panel, sizer)
 		panel.SetSizer(sizer)
 		# Desplaza la vista hasta el control enfocado (útil con muchas opciones).
 		panel.SetupScrolling(scroll_x=False)
 		return panel
+
+	# ── Colores: vista previa y casilla que activa las demás opciones ─────────
+
+	def _crear_vista_previa(self, panel: wx.Window, sizer: wx.Sizer) -> None:
+		"""Una fila de ejemplo por estado, pintada como quedará en la lista (solo visual).
+
+		Son ``StaticText``: no reciben el foco, así que no estorban al recorrer
+		el diálogo con el tabulador. Se repinta al cambiar cualquier opción.
+		"""
+		titulo = wx.StaticText(panel, label=_("Vista previa (solo visual; la lista dice su estado al leerla):"))
+		sizer.Add(titulo, 0, wx.LEFT | wx.RIGHT | wx.TOP, 6)
+		ejemplos = {
+			colores.BAJADA: _("En oferta, Mando inalámbrico, 49,99 €, bajó 10,00 € (17 %)"),
+			colores.SUBIDA: _("Correcto, Auriculares, 89,90 €, subió 5,00 € (6 %)"),
+			colores.OBJETIVO: _("En oferta, Robot aspirador, 199,00 €, precio deseado alcanzado"),
+			colores.PROBLEMA: _("Agotado, Consola portátil, 349,00 €, sin cambios"),
+		}
+		caja = wx.BoxSizer(wx.VERTICAL)
+		for tipo in colores.TIPOS:
+			muestra = wx.StaticText(panel, label=f"  {ejemplos[tipo]}  ")
+			self._muestras[tipo] = muestra
+			caja.Add(muestra, 0, wx.EXPAND | wx.BOTTOM, 2)
+		sizer.Add(caja, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 6)
+		if alto_contraste_activo():
+			aviso = wx.StaticText(panel, label=_(
+				"El contraste alto de Windows está activado: la lista no se colorea, para respetar sus colores."))
+			sizer.Add(aviso, 0, wx.ALL, 6)
+		for clave, (_opcion, control, _pagina) in self._controles.items():
+			if clave.startswith("colores."):
+				for evento in (wx.EVT_CHECKBOX, wx.EVT_CHOICE, wx.EVT_COMBOBOX):
+					control.Bind(evento, self._al_cambiar_color)
+		self._actualizar_colores()
+
+	def _al_cambiar_color(self, evento: wx.Event) -> None:
+		self._actualizar_colores()
+		evento.Skip()
+
+	def _actualizar_colores(self) -> None:
+		"""Activa o desactiva las opciones según la casilla y repinta la vista previa."""
+		if not self._muestras:
+			return
+		valores = {clave: self._leer_control(opcion, control)
+			for clave, (opcion, control, _pagina) in self._controles.items() if clave.startswith("colores.")}
+		activos = bool(valores.get("colores.colores_lista", True))
+		for clave, (_opcion, control, _pagina) in self._controles.items():
+			if clave.startswith("colores.") and clave != "colores.colores_lista":
+				control.Enable(activos)
+		ajustes = colores.leer_ajustes(lambda clave, defecto: valores.get(clave, defecto))
+		fondo_normal = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW)
+		texto_normal = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWTEXT)
+		for tipo, muestra in self._muestras.items():
+			fondo, texto = ajustes.pintura(tipo)
+			muestra.SetBackgroundColour(wx.Colour(fondo) if fondo else fondo_normal)
+			muestra.SetForegroundColour(wx.Colour(texto) if texto else texto_normal)
+			muestra.Refresh()
 
 	def _registrar_ids(self, control: wx.Window, clave: str) -> None:
 		self._clave_por_id[control.GetId()] = clave
@@ -342,6 +455,12 @@ class DialogoPreferencias(wx.Dialog):
 			control = wx.TextCtrl(panel)
 		elif opcion.tipo == OPCION:
 			control = wx.Choice(panel, choices=[_(nombre) for _valor, nombre in opcion.opciones])
+		elif opcion.tipo == COLOR:
+			# ComboBoxEx nativo de solo lectura: se maneja como un Choice (flechas,
+			# letra inicial) y el lector lee el nombre de cada color.
+			control = wx.adv.BitmapComboBox(panel, style=wx.CB_READONLY)
+			for valor, nombre in opcion.opciones:
+				control.Append(_(nombre), muestra_color(control, valor))
 		elif opcion.tipo == SECRETO:
 			control = wx.TextCtrl(panel, style=wx.TE_PASSWORD)
 		elif opcion.tipo in (TEXTO, CARPETA):
@@ -393,7 +512,7 @@ class DialogoPreferencias(wx.Dialog):
 			control.SetValue(valor)
 		elif opcion.tipo == DECIMAL:
 			control.ChangeValue(porcentaje_para_campo(float(valor or 0)))
-		elif opcion.tipo == OPCION:
+		elif opcion.tipo in (OPCION, COLOR):
 			valores = [v for v, _nombre in opcion.opciones]
 			control.SetSelection(valores.index(valor) if valor in valores else 0)
 		else:
@@ -411,7 +530,7 @@ class DialogoPreferencias(wx.Dialog):
 			except ValueError:
 				# La validación de la configuración lo rechaza con un mensaje claro
 				return control.GetValue()
-		if opcion.tipo == OPCION:
+		if opcion.tipo in (OPCION, COLOR):
 			indice = control.GetSelection()
 			return opcion.opciones[indice][0] if indice != wx.NOT_FOUND else None
 		return control.GetValue()
@@ -475,6 +594,7 @@ class DialogoPreferencias(wx.Dialog):
 			if opcion.tipo == SECRETO:
 				continue  # los secretos no tienen valor de fábrica: no se borran por esto
 			self._escribir_control(opcion, control, self._config.valor_por_defecto(clave))
+		self._actualizar_colores()
 
 	def _cerrar(self, codigo: int) -> None:
 		if self.IsModal():

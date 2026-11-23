@@ -84,6 +84,15 @@ VALORES_POR_DEFECTO: dict[str, dict[str, Any]] = {
 		"conservar_avisos_dias": 90,
 		"buscar_actualizaciones": True,
 	},
+	# Colores de la lista (1.1.0, especificación común: se exportan con estas claves).
+	"colores": {
+		"colores_lista": True,
+		"colores_modo": "fondo",
+		"color_bajada": "verde",
+		"color_subida": "rojo",
+		"color_objetivo": "azul",
+		"color_problema": "gris",
+	},
 	# Ajustes solo de Windows (también se exportan; Android los ignora).
 	"windows": {
 		"iniciar_con_windows": False,
@@ -129,6 +138,7 @@ VALORES_POR_DEFECTO: dict[str, dict[str, Any]] = {
 CLAVES_ESPECIFICACION: dict[str, str] = {
 	**{clave: f"precios.{clave}" for clave in VALORES_POR_DEFECTO["precios"]},
 	**{clave: f"windows.{clave}" for clave in VALORES_POR_DEFECTO["windows"]},
+	**{clave: f"colores.{clave}" for clave in VALORES_POR_DEFECTO["colores"]},
 }
 
 
@@ -149,12 +159,19 @@ class Regla:
 
 
 # Reglas por clave «seccion.clave». Las claves sin regla solo comprueban el tipo.
+# Identificadores de la paleta (los mismos que app/services/colores.PALETA; una prueba lo comprueba).
+_IDS_COLORES = (
+	"ninguno", "verde", "azul", "celeste", "turquesa", "morado", "rosa", "rojo", "naranja", "amarillo", "marron", "gris",
+)
+
 REGLAS: dict[str, Regla] = {
 	"precios.intervalo_horas": Regla(opciones=(1, 2, 3, 6, 12, 24)),
 	"precios.cambio_minimo_porcentaje": Regla(minimo=0.0, maximo=100.0),
 	"precios.pausa_entre_peticiones": Regla(minimo=0, maximo=120),
 	"precios.tiempo_espera": Regla(minimo=5, maximo=300),
 	"precios.conservar_avisos_dias": Regla(minimo=0, maximo=36500),
+	"colores.colores_modo": Regla(opciones=("fondo", "texto")),
+	**{f"colores.color_{tipo}": Regla(opciones=_IDS_COLORES) for tipo in ("bajada", "subida", "objetivo", "problema")},
 	"lista.orden": Regla(opciones=("nombre", "precio", "bajada", "cambio", "alta", "tienda")),
 	"lista.seccion": Regla(minimo=0, maximo=6),
 	"registro.nivel": Regla(opciones=("DEBUG", "INFO", "WARNING", "ERROR")),

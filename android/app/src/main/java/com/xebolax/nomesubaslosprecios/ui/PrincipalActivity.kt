@@ -35,6 +35,7 @@ import com.xebolax.nomesubaslosprecios.datos.AvisoConProducto
 import com.xebolax.nomesubaslosprecios.datos.BaseDatos
 import com.xebolax.nomesubaslosprecios.datos.Preferencias
 import com.xebolax.nomesubaslosprecios.nucleo.Categoria
+import com.xebolax.nomesubaslosprecios.nucleo.Colores
 import com.xebolax.nomesubaslosprecios.nucleo.Fechas
 import com.xebolax.nomesubaslosprecios.nucleo.Ofertas
 import com.xebolax.nomesubaslosprecios.nucleo.ProductoConNombres
@@ -157,6 +158,8 @@ class PrincipalActivity : AppCompatActivity() {
 
 	override fun onResume() {
 		super.onResume()
+		// Colores de la lista (1.1.0): al volver de Ajustes se repintan sin reiniciar
+		adaptador.colores = prefs.ajustesColores
 		cargar()
 		Papelera.ultima?.let { copia ->
 			Papelera.ultima = null
@@ -485,6 +488,7 @@ class PrincipalActivity : AppCompatActivity() {
 			zona = ZonaAcciones.PRODUCTO,
 			alPulsar = { DetalleActivity.abrir(this, p.id) },
 			acciones = acc,
+			tipoColor = Colores.tipoColor(p),
 		)
 	}
 
@@ -580,6 +584,7 @@ class PrincipalActivity : AppCompatActivity() {
 				}
 			},
 			acciones = acc,
+			tipoColor = Colores.tipoColorAviso(a.tipo),
 		)
 	}
 

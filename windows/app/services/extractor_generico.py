@@ -624,7 +624,7 @@ NUM = r"\d{1,3}(?:[.\s  ]\d{3})*(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?"
 RE_PRECIO_TEXTO = re.compile(r"(?:%s\s*(?:%s)|(?:%s)\s*,?-?\s*%s)" % (MONEDA, NUM, NUM, MONEDA))
 RE_CLASE_PRECIO = re.compile(r"price|precio|prezzo|preco|preis|prix|amount|importe|pvp|cost|tarifa|money", re.I)
 RE_CLASE_ACTUAL = re.compile(r"current|final|sale|special|actual|now|offer|oferta|promo|selling|our[-_]?price|regular-price__current|price--main|main-price|product-price", re.I)
-RE_CLASE_TACHADO = re.compile(r"old|was|before|regular(?!-price__current)|compare|tachad|anterior|strike|crossed|rrp|pvpr|list-?price|original|antes|precio-?base|price-?before|discount-from", re.I)
+RE_CLASE_TACHADO = re.compile(r"(?<![bfghst])old|was|before|(?<!font-)regular(?!-price__current)|compare|tachad|anterior|strike|line-through|crossed|rrp|pvpr|list-?price|original|antes|precio-?base|price-?before|discount-from", re.I)
 RE_ZONA_AJENA = re.compile(r"related|relacionad|recommend|recomend|upsell|up-sell|cross-?sell|carousel|carrusel|slider|swiper|similar|recent|viewed|vistos|also|tambien|bundle|accesor|complement|footer|header|navbar|menu|minicart|mini-cart|cart-drawer|widget_shopping_cart|sidebar|newsletter|popup|modal|banner|product-tile|product-item(?!-info)|product-card|miniature|grid-product|product-list|productos-|products-grid|tile|frequently|compra-junto|pack", re.I)
 RE_DESDE = re.compile(r"\b(desde|a partir de|from|ab|starting at)\b", re.I)
 RE_CUOTA = re.compile(r"/\s*mes|al mes|mensual|cuotas?|financ|plazos|meses|month|/mo\b|aplazame|sequra|klarna|pagantis|paypal en 3|en \d+ pagos", re.I)
@@ -663,11 +663,16 @@ def atributos_texto(el):
 	return " ".join(partes)
 
 
+def clases_sin_variantes(el):
+	"""Clases del elemento sin las variantes de Tailwind (con «:» o «[»), que describen a otros elementos."""
+	return " ".join(c for c in (el.get("class") or []) if ":" not in c and "[" not in c)
+
+
 def tachado(el):
 	for a in [el] + ancestros(el, 4):
 		if a.name in ("del", "s", "strike"):
 			return True
-		if RE_CLASE_TACHADO.search(" ".join(a.get("class") or []) + " " + (a.get("id") or "")):
+		if RE_CLASE_TACHADO.search(clases_sin_variantes(a) + " " + (a.get("id") or "")):
 			return True
 		if "line-through" in (a.get("style") or ""):
 			return True

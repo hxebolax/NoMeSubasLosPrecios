@@ -1,6 +1,9 @@
 package com.xebolax.nomesubaslosprecios.nucleo
 
+import org.json.JSONArray
 import org.json.JSONObject
+import org.jsoup.Jsoup
+import org.jsoup.select.Selector
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -61,5 +64,33 @@ class ExtractorTest {
 		val r = Extractor.extraer("<html><body></body></html>", "https://www.amazon.es/dp/B0EJEMPLO9", Comun.reglas, codigoHttp = 202)
 		assertTrue(r.bloqueo)
 		assertEquals(MensajesError.BLOQUEO, r.error)
+	}
+
+	/** Todos los selectores CSS de tiendas.json los entiende Jsoup (las tiendas nuevas sin página de ejemplo también). */
+	@Test
+	fun selectoresDeTiendasValidos() {
+		val raiz = JSONObject(File(Comun.recursos, "tiendas.json").readText(Charsets.UTF_8))
+		val selectores = mutableSetOf<String>()
+		fun recorrer(o: Any?) {
+			when (o) {
+				is JSONObject -> for (k in o.keys()) {
+					val v = o.opt(k)
+					if (k == "css" && v is String) selectores += v else recorrer(v)
+				}
+				is JSONArray -> for (i in 0 until o.length()) recorrer(o.opt(i))
+			}
+		}
+		recorrer(raiz)
+		assertTrue(selectores.size > 100)
+		val documento = Jsoup.parse("<html><body><p>1</p></body></html>")
+		val malos = selectores.filter { css ->
+			try {
+				documento.select(css)
+				false
+			} catch (e: Selector.SelectorParseException) {
+				true
+			}
+		}
+		assertTrue("Selectores que Jsoup no entiende: $malos", malos.isEmpty())
 	}
 }

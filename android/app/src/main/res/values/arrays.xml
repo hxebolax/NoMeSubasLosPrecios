@@ -30,4 +30,12 @@
 		<item>365</item>
 		<item>0</item>
 	</string-array>
+	<string-array name="colores_modo_nombres">
+		<item>@string/colores_modo_fondo</item>
+		<item>@string/colores_modo_texto</item>
+	</string-array>
+	<string-array name="colores_modo_valores" translatable="false">
+		<item>fondo</item>
+		<item>texto</item>
+	</string-array>
 </resources>

@@ -38,7 +38,7 @@ from app.core.instancia_unica import ORDEN_ABRIR, ORDEN_MOSTRAR, InstanciaUnica,
 from app.core.tareas import GestorTareas, HitosProgreso, TareaCancelada, TareaDuplicada
 from app.core.version import APP_VERSION, NOMBRE_APLICACION
 from app.services import avisos as logica
-from app.services import intercambio, vistas
+from app.services import colores, intercambio, vistas
 from app.services.direcciones import dominio_de, es_url, extraer_primera_url
 from app.services.errores import ErrorComprobacion
 from app.services.extractor import ORIGEN_ELEGIDO, Resultado
@@ -48,6 +48,7 @@ from app.services.repositorio import SIN_CATEGORIA, ErrorDatos
 from app.ui import comunes, espera
 from app.ui.accesibilidad.composicion import PreferenciasLectura
 from app.ui.accesibilidad.lista import ListaAccesible
+from app.ui.accesibilidad.visual import alto_contraste_activo
 from app.ui.bandeja import IconoBandeja
 from app.ui.dialogo_elegir import describir_resultado, elegir_precio, elegir_variante
 from app.ui.navegador import MENSAJE_SIN_MOTOR, URL_WEBVIEW2, NavegadorIntegrado
@@ -203,6 +204,9 @@ class VentanaPrincipal(wx.Frame):
 		self._programador = wx.Timer(self)
 		self.Bind(wx.EVT_TIMER, self._al_programador, self._programador)
 		self._desuscribir = self._config.suscribir(self._al_cambiar_configuracion)
+		# Colores de la lista: se repintan al cambiar las preferencias o el tema de Windows.
+		self._repintado_pendiente = False
+		self.Bind(wx.EVT_SYS_COLOUR_CHANGED, self._al_cambiar_colores_sistema)
 
 		self._aplicar_seccion(int(self._config.obtener("lista.seccion", 0) or 0), enfocar=False)
 		self._mostrar_ultima_comprobacion()
@@ -650,6 +654,8 @@ class VentanaPrincipal(wx.Frame):
 				columnas[COLUMNA_CAMBIO] = self._comparacion.get(int(p["id"]), columnas[COLUMNA_CAMBIO])
 			filas.append(columnas)
 		self.lista.reemplazar_filas(filas)
+		ajustes = self._ajustes_colores()
+		self.lista.colorear_filas([ajustes.pintura(colores.tipo_color(p, ahora)) for p in self._productos])
 		if objetivo is not None:
 			for indice, p in enumerate(self._productos):
 				if p["id"] == objetivo:
@@ -670,6 +676,8 @@ class VentanaPrincipal(wx.Frame):
 			for a in self._avisos
 		]
 		self.lista_avisos.reemplazar_filas(filas)
+		ajustes = self._ajustes_colores()
+		self.lista_avisos.colorear_filas([ajustes.pintura(colores.tipo_color_aviso(a.get("tipo"))) for a in self._avisos])
 		if objetivo is not None:
 			for indice, a in enumerate(self._avisos):
 				if a["id"] == objetivo:
@@ -1600,8 +1608,34 @@ class VentanaPrincipal(wx.Frame):
 			comunes.mensaje(None, _("Windows no aceptó la notificación. Revise en Configuración de Windows, Sistema, "
 				"Notificaciones, que estén activadas."), _("Notificación de prueba"), wx.ICON_WARNING)
 
+	def _ajustes_colores(self) -> colores.Ajustes:
+		"""Colores de la lista vigentes; con el contraste alto de Windows, ninguno."""
+		if alto_contraste_activo():
+			return colores.Ajustes(activos=False)
+		return colores.leer_ajustes(self._config.obtener)
+
+	def _programar_repintado(self) -> None:
+		"""Repinta las listas una sola vez aunque cambien varias claves a la vez (hilo principal)."""
+		if self._repintado_pendiente:
+			return
+		self._repintado_pendiente = True
+
+		def repintar() -> None:
+			self._repintado_pendiente = False
+			if self:
+				# En la sección Avisos repinta los avisos; la otra lista se pinta al entrar en ella.
+				self.refrescar_lista()
+
+		wx.CallAfter(repintar)
+
+	def _al_cambiar_colores_sistema(self, evento: wx.SysColourChangedEvent) -> None:
+		self._programar_repintado()
+		evento.Skip()
+
 	def _al_cambiar_configuracion(self, clave: str, anterior: Any, nuevo: Any) -> None:
 		"""Las preferencias se aplican al momento (llega desde cualquier hilo)."""
+		if clave.startswith("colores."):
+			wx.CallAfter(self._programar_repintado)
 		if clave == "windows.iniciar_con_windows":
 			threading.Thread(target=self._aplicar_inicio_windows, args=(bool(nuevo),), name="inicio-windows", daemon=True).start()
 		elif clave == "precios.buscar_actualizaciones" and nuevo and self.comprobador_actualizaciones is None and self.actualizador:

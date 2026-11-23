@@ -1,7 +1,7 @@
 {
   "_comentario": "Reglas de extracción por tienda que usan las dos apps (Windows y Android). Formato en compartido/ESPECIFICACION.md. Cada regla: css (selector CSS) y, opcional, atributo (leer ese atributo en vez del texto). Las reglas van en orden: se usa la primera que dé un importe válido. Si una tienda no está aquí, se usa la extracción genérica (JSON-LD, metadatos y microdatos), que funciona en la mayoría.",
   "version": 1,
-  "actualizado": "2026-11-02",
+  "actualizado": "2026-11-23",
   "bloqueo_general": [
     "/AtaVerifyCaptcha",
     "/_sec/verify?provider=interstitial",
@@ -1192,6 +1192,22 @@
       "comprobado": "2026-11-02: genérica: 31.64 EUR (JSON-LD AggregateOffer, la oferta más barata), InStock. Respondió 200."
     },
     {
+      "id": "epicgames",
+      "nombre": "Epic Games Store",
+      "dominios": [
+        "store.epicgames.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Bloquea la descarga normal (verificación de Cloudflare). En el navegador, JSON-LD Product con AggregateOffer (lowPrice = precio con descuento).",
+      "plataforma": "Propia (React, Cloudflare)",
+      "comprobado": "2026-11-23: navegador: 24.50 EUR (JSON-LD AggregateOffer). Descarga normal bloqueada.",
+      "navegador": true
+    },
+    {
       "id": "eroski",
       "nombre": "Eroski",
       "dominios": [
@@ -1281,6 +1297,22 @@
       "notas": "Sin JSON-LD Product ni metadatos de precio. span.gtag-precio lleva data-precio='488.00'. Una ficha retirada muestra h1 'Producto no disponible' (y la palabra captcha del reCAPTCHA hace que la app la tome por bloqueo).",
       "plataforma": "Propia (PHP, UIkit)",
       "comprobado": "2026-11-02: selector: 488.00 EUR (span.gtag-precio data-precio). La genérica no da nada y además marca bloqueo por la palabra 'captcha' (script de reCAPTCHA)."
+    },
+    {
+      "id": "fanatical",
+      "nombre": "Fanatical",
+      "dominios": [
+        "fanatical.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El HTML de la descarga normal no trae precio (Next.js); en el navegador, JSON-LD Product/VideoGame con su Offer (precio con descuento).",
+      "plataforma": "Next.js propia",
+      "comprobado": "2026-11-23: navegador: 21.59 EUR (JSON-LD), InStock. Descarga normal: 200 sin precio.",
+      "navegador": true
     },
     {
       "id": "farmaciabarata",
@@ -1472,6 +1504,38 @@
       "comprobado": "2026-11-02: precio por selector (JSON-LD y metadatos engañosos)"
     },
     {
+      "id": "g2a",
+      "nombre": "G2A",
+      "dominios": [
+        "g2a.com"
+      ],
+      "precio": [
+        {
+          "css": "[data-locator=ppa-payment-normal__price]"
+        },
+        {
+          "css": "[data-testid=ppa-payment-normal__price]"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1[data-locator=canonical-title]"
+        },
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [
+        "errors.edgesuite.net"
+      ],
+      "notas": "Mercado de claves. Akamai deja colgada la descarga normal (sin respuesta) y da 403 a curl: va siempre con el navegador. El JSON-LD trae un AggregateOffer cuyo lowPrice es el vendedor más barato de todos (11,94), no la oferta que se compra con el botón; la regla lee el «precio regular» de la oferta seleccionada (12,55 EUR, en texto «12.55 EUR»). El precio de G2A Plus (10,36) es de suscripción y no se usa. Antes de 1.1.0 la heurística tomaba el precio en negrita por tachado (clase font-bold).",
+      "plataforma": "Propia (React, Akamai)",
+      "comprobado": "2026-11-23: navegador: 12.55 EUR (regla ppa-payment-normal__price); JSON-LD AggregateOffer InStock. Descarga normal colgada.",
+      "navegador": true
+    },
+    {
       "id": "gadis",
       "nombre": "Gadis",
       "dominios": [
@@ -1504,6 +1568,53 @@
       "notas": "MAL ANTES: '.buy--price' y '.product-price' ya no existen (web nueva en Next.js); no hacían daño porque se caía al JSON-LD. El JSON-LD da el precio de nuevo (81,99); el 'Desde 54,99€' visible es el seminuevo.",
       "plataforma": "Next.js propia",
       "comprobado": "2026-11-02: genérica: 81.99 EUR (JSON-LD), InStock. Redirigió a /mando-inalambrico-dualsense-sterling-silver/224122."
+    },
+    {
+      "id": "gamivo",
+      "nombre": "GAMIVO",
+      "dominios": [
+        "gamivo.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Mercado de claves (Angular). Bloquea la descarga normal. JSON-LD Product con una Offer por vendedor, todas con la misma url: se toma la más barata en stock.",
+      "plataforma": "Angular propia",
+      "comprobado": "2026-11-23: navegador: JSON-LD con ofertas de vendedores. Descarga normal bloqueada.",
+      "navegador": true
+    },
+    {
+      "id": "gog",
+      "nombre": "GOG",
+      "dominios": [
+        "gog.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto.",
+      "plataforma": "Propia (Angular SSR)",
+      "comprobado": "2026-11-23: genérica: 13.99 EUR (JSON-LD), InStock. Respondió 200."
+    },
+    {
+      "id": "greenmangaming",
+      "nombre": "Green Man Gaming",
+      "dominios": [
+        "greenmangaming.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Bloquea la descarga normal (verificación). En el navegador, JSON-LD Product con price en texto «53,99» y availability «InStock» sin prefijo.",
+      "plataforma": "Propia",
+      "comprobado": "2026-11-23: navegador: 53.99 EUR (JSON-LD). Descarga normal bloqueada.",
+      "navegador": true
     },
     {
       "id": "hm",
@@ -1541,6 +1652,33 @@
       "plataforma": "propia (El Corte Inglés, tras Akamai)",
       "comprobado": "2026-11-02: bloqueada 403",
       "navegador": true
+    },
+    {
+      "id": "humble",
+      "nombre": "Humble Bundle",
+      "dominios": [
+        "humblebundle.com"
+      ],
+      "precio": [
+        {
+          "css": "[data-testid=product-price]",
+          "atributo": "aria-label"
+        },
+        {
+          "css": "[data-testid=product-price] .full-price:not(.line-through)"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h2"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Sin JSON-LD ni metadatos de precio. El precio actual está en el aria-label de [data-testid=product-price] («19,99 €»). Los juegos para adultos redirigen a /age-gate (sin precio). El nombre va en el primer h2 (no hay h1); el og:title añade «Buy ... from the Humble Store».",
+      "plataforma": "Propia (Tailwind)",
+      "comprobado": "2026-11-23: selector: 19.99 EUR (aria-label de product-price). Respondió 200."
     },
     {
       "id": "ikea",
@@ -1813,7 +1951,7 @@
       ],
       "notas": "Bloqueada: 403 «Access Denied … errors.edgesuite.net».",
       "plataforma": "Propia (Akamai)",
-      "comprobado": "2026-11-02: bloqueada: 403 Akamai Access Denied",
+      "comprobado": "2026-11-23: navegador: 7.50 EUR (JSON-LD). Descarga normal: 403 Akamai.",
       "navegador": true
     },
     {
@@ -2401,6 +2539,33 @@
       "comprobado": "2026-11-02: precio por JSON-LD"
     },
     {
+      "id": "nintendo",
+      "nombre": "Nintendo eShop",
+      "dominios": [
+        "nintendo.com"
+      ],
+      "precio": [
+        {
+          "css": ".plo-digital-price-box .plm-price__main"
+        },
+        {
+          "css": ".plm-price__main"
+        }
+      ],
+      "titulo": [
+        {
+          "css": "h1"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "El precio lo pinta JavaScript después de cargar (sin JSON-LD): va con el navegador. «Precio de la versión digital (IVA incluido)».",
+      "plataforma": "Propia (AEM)",
+      "comprobado": "2026-11-23: navegador: 13.99 EUR (.plm-price__main). Descarga normal: sin precio.",
+      "navegador": true
+    },
+    {
       "id": "norauto",
       "nombre": "Norauto",
       "dominios": [
@@ -2625,6 +2790,21 @@
       "notas": "JSON-LD ProductGroup con hasVariant (un Product por talla) con precio y disponibilidad; todas las tallas al mismo precio. Probada la versión es-en (euros); la es-es tiene la misma plantilla.",
       "plataforma": "Salesforce Commerce Cloud",
       "comprobado": "2026-11-02: precio por JSON-LD"
+    },
+    {
+      "id": "playstation",
+      "nombre": "PlayStation Store",
+      "dominios": [
+        "store.playstation.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto en /product/. Las direcciones /concept/ pueden redirigir a una página de error.",
+      "plataforma": "Propia (Sony, Next.js)",
+      "comprobado": "2026-11-23: genérica: 13.99 EUR (JSON-LD), InStock. Respondió 200."
     },
     {
       "id": "primaprix",
@@ -2912,6 +3092,28 @@
       "plataforma": "Propia (grupo JD) tras Akamai",
       "comprobado": "2026-11-02: bloqueada (403)",
       "navegador": true
+    },
+    {
+      "id": "steam",
+      "nombre": "Steam",
+      "dominios": [
+        "store.steampowered.com"
+      ],
+      "precio": [],
+      "titulo": [
+        {
+          "css": "#appHubAppName"
+        },
+        {
+          "css": ".apphub_AppName"
+        }
+      ],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "Metadatos de precio correctos (el primer paquete de compra). El <title> lleva «en Steam» entre comillas: el título sale de #appHubAppName. Los juegos para adultos piden la edad (agecheck) y no dan precio hasta confirmarla en «Abrir la tienda en la app».",
+      "plataforma": "Propia (Valve)",
+      "comprobado": "2026-11-23: genérica: 13.99 y 24.50 EUR (metadatos). Respondió 200."
     },
     {
       "id": "stradivarius",
@@ -3290,6 +3492,21 @@
       "plataforma": "Propia (Cloudflare)",
       "comprobado": "2026-11-02: bloqueada: 403 Cloudflare",
       "navegador": true
+    },
+    {
+      "id": "xbox",
+      "nombre": "Microsoft Store (Xbox)",
+      "dominios": [
+        "xbox.com"
+      ],
+      "precio": [],
+      "titulo": [],
+      "imagen": [],
+      "disponible": [],
+      "bloqueo": [],
+      "notas": "JSON-LD Product correcto en la ficha de la tienda (/games/store/...).",
+      "plataforma": "Propia (Microsoft)",
+      "comprobado": "2026-11-23: genérica: 14.99 EUR (JSON-LD), InStock. Respondió 200."
     },
     {
       "id": "xiaomi",

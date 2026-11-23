@@ -177,6 +177,17 @@ class Comprobador:
 			if error.estado == errores.BLOQUEADA and modo == "auto" and self.navegador is not None:
 				log.info("Bloqueo en la descarga normal de %s; se repite con el navegador integrado", redactar_url(url))
 				return self._con_navegador(url, cancelado, tiene_precio), 200, True
+			if error.mensaje == errores.MENSAJE_TIEMPO and modo == "auto" and self.navegador is not None:
+				# 1.1.0: algunas protecciones (Akamai en G2A) dejan la descarga colgada
+				# en vez de rechazarla. Un fallo de DNS o de red no llega aquí.
+				log.info("La descarga normal de %s no respondió; se prueba con el navegador integrado", redactar_url(url))
+				try:
+					return self._con_navegador(url, cancelado, tiene_precio), 200, True
+				except ErrorComprobacion as error_navegador:
+					if cancelado is not None and cancelado.is_set():
+						raise
+					log.info("El navegador integrado tampoco pudo: %s", error_navegador.mensaje)
+					raise error from None
 			raise
 		return pagina.html, pagina.estado, False
 

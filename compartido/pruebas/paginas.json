@@ -99,6 +99,22 @@
       "disponible": null,
       "error": true,
       "categoria": true
+    },
+    {
+      "archivo": "g2a.html",
+      "url": "https://www.g2a.com/es/juego-de-ejemplo-pc-steam-key-global-i10000000000001",
+      "precio": 12.55,
+      "moneda": "EUR",
+      "nombre": "Juego de Ejemplo (PC) - Steam Clave - GLOBAL",
+      "disponible": true
+    },
+    {
+      "archivo": "humble.html",
+      "url": "https://www.humblebundle.com/store/juego-de-ejemplo",
+      "precio": 19.99,
+      "moneda": "EUR",
+      "nombre": "Juego de Ejemplo - Simulador de Tienda",
+      "disponible": true
     }
   ]
 }

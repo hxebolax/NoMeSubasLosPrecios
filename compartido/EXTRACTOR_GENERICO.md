@@ -358,7 +358,7 @@ Suman:
 
 Restan:
 
-- −6: tachado. Puede ser por la etiqueta `del`, `s` o `strike` en el elemento o en sus 4 ancestros; por una clase o id que cumple `RE_CLASE_TACHADO`; por `line-through` en `style`; o por `data-price-type` igual a `oldPrice` o `basePrice`.
+- −6: tachado. Puede ser por la etiqueta `del`, `s` o `strike` en el elemento o en sus 4 ancestros; por una clase o id que cumple `RE_CLASE_TACHADO` (1.1.0: antes se quitan las clases que contienen `:` o `[`, variantes de Tailwind que describen a otros elementos, y «old» no cuenta en `font-bold`, `semibold`, `gold`, `sold`…; ver el punto 10 de la extracción ampliada de la especificación); por `line-through` en `style`; o por `data-price-type` igual a `oldPrice` o `basePrice`.
 - −6: texto de precio anterior en t o justo antes (`RE_ANTES`), si no estaba ya marcado como tachado.
 - −6: cuota o financiación en t o alrededor (`RE_CUOTA`).
 - −5: zona ajena, si no está dentro del bloque principal.
@@ -374,7 +374,7 @@ Expresiones regulares (todas sin distinguir mayúsculas):
 
 ```
 RE_CLASE_ACTUAL = current|final|sale|special|actual|now|offer|oferta|promo|selling|our[-_]?price|regular-price__current|price--main|main-price|product-price
-RE_CLASE_TACHADO = old|was|before|regular(?!-price__current)|compare|tachad|anterior|strike|crossed|rrp|pvpr|list-?price|original|antes|precio-?base|price-?before|discount-from
+RE_CLASE_TACHADO = (?<![bfghst])old|was|before|(?<!font-)regular(?!-price__current)|compare|tachad|anterior|strike|line-through|crossed|rrp|pvpr|list-?price|original|antes|precio-?base|price-?before|discount-from
 RE_ANTES = precio original|precio anterior|precio de venta recomendado|pvp ?rec|pvpr|antes:?\s|\bwas\b|\brrp\b|original price|regular price|precio habitual|precio sin descuento
 RE_ACTUAL_TXT = precio actual|current price|ahora:?\s|now:?\s|precio final|tu precio
 RE_CUOTA = /\s*mes|al mes|mensual|cuotas?|financ|plazos|meses|month|/mo\b|aplazame|sequra|klarna|pagantis|paypal en 3|en \d+ pagos

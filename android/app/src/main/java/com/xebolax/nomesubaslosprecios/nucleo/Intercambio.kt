@@ -51,6 +51,8 @@ object Intercambio {
 		"intervalo_horas", "comprobar_al_iniciar", "avisar_bajadas", "avisar_subidas", "avisar_objetivo", "avisar_minimo",
 		"avisar_disponible", "avisar_agotado", "avisar_errores", "cambio_minimo_porcentaje", "pausa_entre_peticiones",
 		"tiempo_espera", "conservar_avisos_dias", "buscar_actualizaciones", "solo_wifi",
+		// 1.1.0: colores de la lista
+		"colores_lista", "colores_modo", "color_bajada", "color_subida", "color_objetivo", "color_problema",
 	)
 
 	// --- Lectura ----------------------------------------------------------------------------

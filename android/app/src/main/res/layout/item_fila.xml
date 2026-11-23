@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fila de una lista: una sola parada (la raíz es la pulsable y lleva la línea entera en contentDescription) -->
+<!-- Fila de una lista: una sola parada (la raíz es la pulsable y lleva la línea entera en contentDescription).
+     El efecto de pulsar y de foco va en el primer plano: el fondo queda libre para los colores de la lista (1.1.0) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?attr/selectableItemBackground"
+	android:foreground="?attr/selectableItemBackground"
 	android:clickable="true"
 	android:focusable="true"
 	android:minHeight="64dp"

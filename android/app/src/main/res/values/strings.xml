@@ -385,6 +385,26 @@
 	<string name="ajuste_bateria_resumen">Algunos fabricantes retrasan o cortan las comprobaciones en segundo plano. Si no llegan los avisos, abre esta pantalla y quita la optimización para la app. En dontkillmyapp.com se explica cómo hacerlo en cada marca.</string>
 	<string name="ajuste_buscar_actualizaciones">Buscar actualizaciones al abrir</string>
 	<string name="ajuste_buscar_actualizaciones_resumen">Como mucho una vez al día.</string>
+	<!-- Colores de la lista (1.1.0) -->
+	<string name="ajustes_colores">Colores de la lista</string>
+	<string name="ajuste_colores_lista">Colorear la lista según el estado</string>
+	<string name="ajuste_colores_lista_resumen">El color es solo una ayuda visual: cada fila sigue diciendo su estado.</string>
+	<string name="ajuste_colores_modo">Qué se colorea</string>
+	<string name="colores_modo_fondo">Fondo de la fila</string>
+	<string name="colores_modo_texto">Texto</string>
+	<string name="color_tipo_bajada">Bajada u oferta</string>
+	<string name="color_tipo_subida">Subida</string>
+	<string name="color_tipo_objetivo">Precio deseado alcanzado</string>
+	<string name="color_tipo_problema">Agotado o con problemas</string>
+	<string name="colores_vista_previa">Vista previa</string>
+	<string name="colores_ejemplo_bajada">En oferta, Auriculares inalámbricos</string>
+	<string name="colores_ejemplo_bajada_detalle">49,99 €, bajó 10,00 € (17 %)</string>
+	<string name="colores_ejemplo_subida">Cafetera de cápsulas</string>
+	<string name="colores_ejemplo_subida_detalle">89,99 €, subió 5,00 € (6 %)</string>
+	<string name="colores_ejemplo_objetivo">Teclado mecánico</string>
+	<string name="colores_ejemplo_objetivo_detalle">29,99 €, bajó 5,00 € (14,3 %), precio deseado alcanzado</string>
+	<string name="colores_ejemplo_problema">Agotado, Zapatillas de correr</string>
+	<string name="colores_ejemplo_problema_detalle">59,95 €, sin cambios</string>
 
 	<!-- Notificaciones -->
 	<string name="canal_bajadas">Bajadas y ofertas</string>

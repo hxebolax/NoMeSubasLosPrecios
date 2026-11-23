@@ -66,7 +66,7 @@ Para publicar una versión nueva:
   - [ESPECIFICACION.md](compartido/ESPECIFICACION.md): el contrato (base de datos, extracción del precio, avisos, secciones, ajustes, notificaciones, actualizaciones).
   - [FORMATO_INTERCAMBIO.md](compartido/FORMATO_INTERCAMBIO.md): el archivo JSON para pasar los datos entre Windows y Android.
   - [EXTRACTOR_GENERICO.md](compartido/EXTRACTOR_GENERICO.md): cómo se encuentra el precio en tiendas sin reglas propias (plataformas, datos incrustados, puntuación de candidatos, selección por el usuario).
-  - `recursos/`: `tiendas.json` (reglas de más de 160 tiendas españolas, con la fecha y el resultado de su comprobación), `manual.md` y `novedades.md`. Android los empaqueta como assets y Windows los copia a `windows\data\recursos`.
+  - `recursos/`: `tiendas.json` (reglas de más de 170 tiendas, españolas y de videojuegos, con la fecha y el resultado de su comprobación), `manual.md` y `novedades.md`. Android los empaqueta como assets y Windows los copia a `windows\data\recursos`.
   - `pruebas/`: importes, direcciones, páginas de ejemplo, vectores del extractor genérico y un archivo de exportación que deben pasar las dos apps con los mismos resultados.
   - `referencia_extractor/`: el prototipo en Python del extractor genérico.
 - `windows/`: la app de Windows (`main.py`, `app/core`, `app/services` sin wx, `app/ui`, `tests`, `setup_cx.py`).

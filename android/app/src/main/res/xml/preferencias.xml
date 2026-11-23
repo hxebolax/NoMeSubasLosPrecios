@@ -89,6 +89,52 @@
 			app:iconSpaceReserved="false" />
 	</PreferenceCategory>
 
+	<!-- Colores de la lista (1.1.0): los controles de colores se desactivan si el interruptor está apagado -->
+	<PreferenceCategory app:key="categoria_colores" app:title="@string/ajustes_colores" app:iconSpaceReserved="false">
+		<SwitchPreferenceCompat
+			app:key="colores_lista"
+			app:title="@string/ajuste_colores_lista"
+			app:summary="@string/ajuste_colores_lista_resumen"
+			app:defaultValue="true"
+			app:iconSpaceReserved="false" />
+		<ListPreference
+			app:key="colores_modo"
+			app:title="@string/ajuste_colores_modo"
+			app:entries="@array/colores_modo_nombres"
+			app:entryValues="@array/colores_modo_valores"
+			app:defaultValue="fondo"
+			app:dependency="colores_lista"
+			app:useSimpleSummaryProvider="true"
+			app:iconSpaceReserved="false" />
+		<com.xebolax.nomesubaslosprecios.ui.PreferenciaColor
+			app:key="color_bajada"
+			app:title="@string/color_tipo_bajada"
+			app:defaultValue="verde"
+			app:dependency="colores_lista"
+			app:iconSpaceReserved="false" />
+		<com.xebolax.nomesubaslosprecios.ui.PreferenciaColor
+			app:key="color_subida"
+			app:title="@string/color_tipo_subida"
+			app:defaultValue="rojo"
+			app:dependency="colores_lista"
+			app:iconSpaceReserved="false" />
+		<com.xebolax.nomesubaslosprecios.ui.PreferenciaColor
+			app:key="color_objetivo"
+			app:title="@string/color_tipo_objetivo"
+			app:defaultValue="azul"
+			app:dependency="colores_lista"
+			app:iconSpaceReserved="false" />
+		<com.xebolax.nomesubaslosprecios.ui.PreferenciaColor
+			app:key="color_problema"
+			app:title="@string/color_tipo_problema"
+			app:defaultValue="gris"
+			app:dependency="colores_lista"
+			app:iconSpaceReserved="false" />
+		<com.xebolax.nomesubaslosprecios.ui.VistaPreviaColores
+			app:key="colores_vista_previa"
+			app:iconSpaceReserved="false" />
+	</PreferenceCategory>
+
 	<PreferenceCategory app:title="@string/ajustes_accesibilidad" app:iconSpaceReserved="false">
 		<Preference
 			app:key="acciones_talkback"

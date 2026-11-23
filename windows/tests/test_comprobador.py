@@ -152,6 +152,35 @@ def test_navegador_para_tiendas_marcadas_y_en_auto(nucleo):
 	assert visitas == ["https://nav.es/p", "https://otra.es/p", "https://otra.es/b"]
 
 
+def test_descarga_colgada_prueba_el_navegador(nucleo):
+	"""1.1.0: Akamai (G2A) deja la descarga sin respuesta; en auto se repite con el navegador."""
+	visitas = []
+	falla_navegador = {"si": False}
+
+	def navegador(url, cancelado=None, tiene_precio=None):
+		visitas.append(url)
+		if falla_navegador["si"]:
+			raise ErrorComprobacion(errores.ERROR, "El navegador integrado no pudo leer la página.")
+		return JSONLD.format(nombre="Clave", precio=12.55)
+
+	nucleo.comprobador.navegador = navegador
+	nucleo.comprobador.descargador = DescargadorFalso({
+		"https://lenta.es/p": ErrorComprobacion(errores.SIN_CONEXION, errores.MENSAJE_TIEMPO),
+		"https://sinred.es/p": ErrorComprobacion(errores.SIN_CONEXION, errores.MENSAJE_SIN_CONEXION),
+	})
+	assert nucleo.comprobador.analizar("https://lenta.es/p", "lenta.es").precio == 12.55
+	with pytest.raises(ErrorComprobacion) as sin_red:
+		nucleo.comprobador.analizar("https://sinred.es/p", "sinred.es")
+	assert sin_red.value.mensaje == errores.MENSAJE_SIN_CONEXION, "sin conexión no prueba el navegador"
+	with pytest.raises(ErrorComprobacion):
+		nucleo.comprobador.analizar("https://lenta.es/p", "lenta.es", modo_descarga="directo")
+	falla_navegador["si"] = True
+	with pytest.raises(ErrorComprobacion) as error:
+		nucleo.comprobador.analizar("https://lenta.es/p", "lenta.es")
+	assert error.value.mensaje == errores.MENSAJE_TIEMPO, "si el navegador tampoco puede, el error de la descarga"
+	assert visitas == ["https://lenta.es/p", "https://lenta.es/p"]
+
+
 def test_sin_navegador_se_explica(nucleo):
 	nucleo.comprobador.navegador = None
 	with pytest.raises(ErrorComprobacion, match="WebView2"):

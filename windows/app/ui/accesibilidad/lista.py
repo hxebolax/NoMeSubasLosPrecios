@@ -21,6 +21,8 @@
 - Casillas opcionales (``EnableCheckBoxes``) con anuncio del estado.
 - Intro activa el elemento (``EVT_LIST_ITEM_ACTIVATED``), también en diálogos.
 - Barra espaciadora: comportamiento nativo salvo que se indique otra acción.
+- Colores por fila (``colorear_filas``), solo visuales: el lector no los
+  anuncia, así que la fila debe decir su estado con palabras.
 
 PLANTILLA del agente «accesibilidad-wx».
 """
@@ -85,6 +87,9 @@ class ListaAccesible(wx.ListCtrl):
 			estilo |= wx.LC_VIRTUAL
 		super().__init__(padre, style=estilo, name=nombre)
 		self._celdas: dict[int, dict[int, str]] = {}
+		# Colores de fila: fila → (fondo, texto) en hexadecimal; atributos de wx reutilizados (modo virtual).
+		self._pinturas: dict[int, tuple[str | None, str | None]] = {}
+		self._atributos: dict[tuple[str | None, str | None], wx.ItemAttr] = {}
 		self._num_filas = 0
 		self._columna = 0
 		self._leer_preferencias = leer_preferencias or PreferenciasLectura
@@ -117,6 +122,43 @@ class ListaAccesible(wx.ListCtrl):
 	def OnGetItemColumnImage(self, item: int, column: int) -> int:  # noqa: N802 - API de wx
 		return -1
 
+	def OnGetItemAttr(self, item: int) -> wx.ItemAttr | None:  # noqa: N802 - API de wx
+		pintura = self._pinturas.get(item)
+		if not pintura:
+			return None
+		atributo = self._atributos.get(pintura)
+		if atributo is None:
+			fondo, texto = pintura
+			atributo = wx.ItemAttr()
+			if fondo:
+				atributo.SetBackgroundColour(wx.Colour(fondo))
+			if texto:
+				atributo.SetTextColour(wx.Colour(texto))
+			self._atributos[pintura] = atributo
+		return atributo
+
+	# ── Colores de fila (solo visuales) ─────────────────────────────────────────
+
+	def colorear_filas(self, pinturas: Sequence[tuple[str | None, str | None]]) -> None:
+		"""Pinta cada fila con ``(fondo, texto)`` en hexadecimal; ``None`` = color normal.
+
+		Solo visual: el lector no anuncia colores. Llamar después de
+		``reemplazar_filas`` (que los borra) con una pintura por fila.
+		"""
+		self._pinturas = {i: (f, t) for i, (f, t) in enumerate(pinturas) if f or t}
+		if self._virtual:
+			self.Refresh()
+			return
+		fondo_normal, texto_normal = self.GetBackgroundColour(), self.GetForegroundColour()
+		for fila in range(self.GetItemCount()):
+			fondo, texto = self._pinturas.get(fila, (None, None))
+			self.SetItemBackgroundColour(fila, wx.Colour(fondo) if fondo else fondo_normal)
+			self.SetItemTextColour(fila, wx.Colour(texto) if texto else texto_normal)
+
+	def pintura_fila(self, fila: int) -> tuple[str | None, str | None]:
+		"""Colores ``(fondo, texto)`` de una fila (para pruebas)."""
+		return self._pinturas.get(fila, (None, None))
+
 	# ── Datos ───────────────────────────────────────────────────────────────────
 
 	def numero_filas(self) -> int:
@@ -143,6 +185,7 @@ class ListaAccesible(wx.ListCtrl):
 	def limpiar(self) -> None:
 		"""Vacía la lista."""
 		self._celdas.clear()
+		self._pinturas.clear()
 		if self._virtual:
 			self._num_filas = 0
 			self.SetItemCount(0)
@@ -168,6 +211,7 @@ class ListaAccesible(wx.ListCtrl):
 		foco = self.GetFocusedItem() if conservar_foco else wx.NOT_FOUND
 		self.Freeze()
 		try:
+			self._pinturas = {}
 			self._celdas = {i: {c: v or "" for c, v in enumerate(fila)} for i, fila in enumerate(filas)}
 			if self._virtual:
 				self._num_filas = len(filas)
@@ -188,6 +232,7 @@ class ListaAccesible(wx.ListCtrl):
 		"""Inserta una fila en ``posicion`` sin que el usuario pierda su elemento."""
 		posicion = max(0, min(posicion, self.numero_filas()))
 		self._celdas = {(k + 1 if k >= posicion else k): v for k, v in self._celdas.items()}
+		self._pinturas = {(k + 1 if k >= posicion else k): v for k, v in self._pinturas.items()}
 		self._celdas[posicion] = {c: v or "" for c, v in enumerate(valores)}
 		if self._virtual:
 			foco = self.GetFocusedItem()
@@ -235,6 +280,7 @@ class ListaAccesible(wx.ListCtrl):
 			return
 		foco = self.GetFocusedItem()
 		self._celdas = {(k - 1 if k > fila else k): v for k, v in self._celdas.items() if k != fila}
+		self._pinturas = {(k - 1 if k > fila else k): v for k, v in self._pinturas.items() if k != fila}
 		if self._virtual:
 			self._num_filas -= 1
 			self.SetItemCount(self._num_filas)

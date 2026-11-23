@@ -1,5 +1,15 @@
 # Novedades
 
+## 1.1.0
+
+Windows y Android.
+
+- **Colores en la lista**, para quien ve la pantalla: en verde lo que ha bajado o está en oferta, en rojo lo que ha subido, en azul lo que ha llegado a tu precio deseado y en gris lo agotado o con problemas. Cada color se cambia en Preferencias, pestaña Colores (Windows) o en Ajustes, Colores de la lista (Android): doce colores o ninguno, cada uno con su muestra y su nombre, el fondo de la fila o el texto, y una vista previa. Se aplica al momento, sin reiniciar. Con lector de pantalla no cambia nada: cada fila ya decía su estado.
+- **G2A ya funciona.** Su protección dejaba la descarga sin respuesta y la app lo daba como «sin conexión»; ahora va con el navegador integrado y sigue el precio normal de la oferta que G2A pone para comprar (no el de G2A Plus).
+- **Más tiendas de videojuegos**: Steam, GOG, Epic Games Store, PlayStation Store, Microsoft Store (Xbox), Nintendo eShop, Humble Bundle, Fanatical, Green Man Gaming y GAMIVO, además de las que ya estaban (GAME, xtralife, Instant Gaming, Eneba y Kinguin).
+- **Mejor lectura del precio en tiendas que la app no conoce**: un precio en negrita ya no se toma por un precio tachado (pasaba en muchas webs modernas) y sí se reconocen los tachados de esas webs. Si una tienda deja la descarga sin responder, se prueba con el navegador integrado antes de dar el error.
+- Al pegar un enlace de G2A se quita el parámetro de seguimiento `suid`, para no guardar el mismo producto dos veces.
+
 ## 1.0.3
 
 Solo Windows: actualizaciones más seguras.

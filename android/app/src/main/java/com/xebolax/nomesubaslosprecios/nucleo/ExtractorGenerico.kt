@@ -77,7 +77,7 @@ object ExtractorGenerico {
 	val RE_PRECIO_TEXTO = r("(?:$MONEDA\\s*(?:$NUM)|(?:$NUM)\\s*,?-?\\s*$MONEDA)", ic = false)
 	val RE_CLASE_PRECIO = r("price|precio|prezzo|preco|preis|prix|amount|importe|pvp|cost|tarifa|money")
 	private val RE_CLASE_ACTUAL = r("current|final|sale|special|actual|now|offer|oferta|promo|selling|our[-_]?price|regular-price__current|price--main|main-price|product-price")
-	val RE_CLASE_TACHADO = r("old|was|before|regular(?!-price__current)|compare|tachad|anterior|strike|crossed|rrp|pvpr|list-?price|original|antes|precio-?base|price-?before|discount-from")
+	val RE_CLASE_TACHADO = r("(?<![bfghst])old|was|before|(?<!font-)regular(?!-price__current)|compare|tachad|anterior|strike|line-through|crossed|rrp|pvpr|list-?price|original|antes|precio-?base|price-?before|discount-from")
 	private val RE_ZONA_AJENA = r("related|relacionad|recommend|recomend|upsell|up-sell|cross-?sell|carousel|carrusel|slider|swiper|similar|recent|viewed|vistos|also|tambien|bundle|accesor|complement|footer|header|navbar|menu|minicart|mini-cart|cart-drawer|widget_shopping_cart|sidebar|newsletter|popup|modal|banner|product-tile|product-item(?!-info)|product-card|miniature|grid-product|product-list|productos-|products-grid|tile|frequently|compra-junto|pack")
 	private val RE_DESDE = r("\\b(desde|a partir de|from|ab|starting at)\\b")
 	private val RE_CUOTA = r("/\\s*mes|al mes|mensual|cuotas?|financ|plazos|meses|month|/mo\\b|aplazame|sequra|klarna|pagantis|paypal en 3|en \\d+ pagos")
@@ -128,10 +128,14 @@ object ExtractorGenerico {
 		return partes.joinToString(" ")
 	}
 
+	/** Clases del elemento sin las variantes de Tailwind (con «:» o «[»), que describen a otros elementos (1.1.0). */
+	fun clasesSinVariantes(e: Element): String =
+		e.classNames().filter { ':' !in it && '[' !in it }.joinToString(" ")
+
 	fun tachado(e: Element): Boolean {
 		for (a in listOf(e) + ancestros(e, 4)) {
 			if (a.tagName() in setOf("del", "s", "strike")) return true
-			if (RE_CLASE_TACHADO.containsMatchIn(clases(a) + " " + a.id())) return true
+			if (RE_CLASE_TACHADO.containsMatchIn(clasesSinVariantes(a) + " " + a.id())) return true
 			if (a.attr("style").contains("line-through")) return true
 			if (a.attr("data-price-type") in setOf("oldPrice", "basePrice")) return true
 		}

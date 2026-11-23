@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Muestra del color elegido al final de la fila de Ajustes: decorativa (TalkBack lee el título y el nombre del color) -->
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/muestra"
+	android:layout_width="24dp"
+	android:layout_height="24dp"
+	android:importantForAccessibility="no" />

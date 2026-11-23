@@ -148,12 +148,25 @@ En la lista y en los detalles, el estado de la última comprobación se distingu
 Solo Windows: `iniciar_con_windows` (false), `minimizar_a_bandeja` (true), `sonidos` (true).
 Solo Android: `solo_wifi` (false).
 
+Colores de la lista (1.1.0, ver «Colores de la lista»):
+
+| Clave | Tipo | Por defecto | Qué hace |
+|---|---|---|---|
+| colores_lista | booleano | true | Colorear las filas según su estado |
+| colores_modo | texto | `fondo` | `fondo`: se colorea el fondo de la fila; `texto`: las letras |
+| color_bajada | texto | `verde` | En oferta: bajó en los últimos 7 días o está en su mínimo |
+| color_subida | texto | `rojo` | Subió en los últimos 7 días |
+| color_objetivo | texto | `azul` | Precio deseado alcanzado |
+| color_problema | texto | `gris` | Agotado, bloqueado, sin precio, sin conexión o con error |
+
+Los `color_*` valen uno de los identificadores de la paleta o `ninguno`. Un valor desconocido se lee como el de por defecto.
+
 ## Direcciones
 
 Antes de guardar una URL:
 
 1. Se quitan espacios y se añade `https://` si no tiene esquema.
-2. Se quitan los parámetros de seguimiento: `utm_*`, `gclid`, `fbclid`, `ref`, `ref_`, `tag`, `psc`, `smid`, `spLa`, `th`, `_encoding`, `pd_rd_*`, `pf_rd_*`, `qid`, `sr`, `keywords`, `crid`, `sprefix`, `dib`, `dib_tag`, `linkCode`, `linkId`, `srsltid`.
+2. Se quitan los parámetros de seguimiento: `utm_*`, `gclid`, `fbclid`, `ref`, `ref_`, `tag`, `psc`, `smid`, `spLa`, `th`, `_encoding`, `pd_rd_*`, `pf_rd_*`, `qid`, `sr`, `keywords`, `crid`, `sprefix`, `dib`, `dib_tag`, `linkCode`, `linkId`, `srsltid`, `suid` (1.1.0: lo añade G2A a los enlaces de su portada).
 3. Amazon: se reduce a `https://www.amazon.<tld>/dp/<ASIN>` (el ASIN sale de `/dp/`, `/gp/product/` o `/gp/aw/d/`).
 4. Se quita el fragmento `#...`.
 5. Dominio de la tienda: el host en minúsculas sin `www.` ni `m.`.
@@ -204,6 +217,7 @@ Resultado de probar 166 tiendas españolas reales y un extractor genérico con f
 7. **Disponibilidad también por microdatos**: `[itemprop=availability]` con `href` o `content` (`InStock`… igual que en JSON-LD), comparando por el final del texto y sin distinguir mayúsculas.
 8. **Precios partidos**: al leer un importe del **texto** de un elemento (reglas CSS, microdatos, heurística), se unen sus partes sin separador y se normaliza `(\d)\s*([.,])\s*(\d{2})(?!\d)` → `\1\2\3` antes de `analizar_importe` («74 , 99 €», «109€ 95» → 74,99 y 109,95). Al leer un **atributo**, no hace falta.
 9. **`numero_de_maquina`** (`numeroDeMaquina` en Android) para campos de máquina de plataformas y estados incrustados, con la regla del apartado 8.1 de [EXTRACTOR_GENERICO.md](EXTRACTOR_GENERICO.md). Los campos en **céntimos** (Shopify `price`, VTEX `skuJson`) se dividen entre 100 solo donde ese documento lo dice. El `centAmount` de la API de Consum y BM ya viene en euros, pese a su nombre: no se divide.
+10. **Clases de tachado (1.1.0)**: al buscar en las clases si un precio está tachado (aquí y en el `RE_CLASE_TACHADO` del extractor genérico), primero se quitan las clases con `:` o `[` (variantes de Tailwind como `before:absolute` o `[&_.precio:not(.line-through)]:font-bold`, que describen a otros elementos), y «old» no cuenta detrás de `b`, `f`, `g`, `h`, `s` o `t` (`font-bold`, `font-semibold`, `gold`, `sold-out`…). La clase `line-through` sí es tachado. Antes, cualquier precio en negrita de una web hecha con Tailwind (G2A, Humble) se tomaba por tachado.
 
 **Pasos nuevos después del 6:** los pasos 7 a 12 de [EXTRACTOR_GENERICO.md](EXTRACTOR_GENERICO.md) (plataforma, estado incrustado, analítica, heurística visible con puntuación, decisión y pregunta al usuario), con sus firmas de plataforma, expresiones regulares, pesos y umbrales **exactos**: `UMBRAL = 8`, `MARGEN = 3`, `UMBRAL_UNICO = 5`. El prototipo de referencia en Python está en `compartido/referencia_extractor/` (Windows puede partir de él; Android lo traduce). Los vectores sintéticos de `referencia_extractor/pruebas_sinteticas.py` se pasan a `compartido/pruebas/extractor_generico.json` (HTML pequeño + resultado esperado) y los pasan las dos apps.
 
@@ -254,6 +268,7 @@ Muchas tiendas grandes (Inditex, Amazon a veces, Notino, Sephora, Carrefour, Wor
 - Mismo User-Agent del motor (no se cambia) y sus propias cookies, que se conservan entre comprobaciones (así, si la tienda pidió una verificación y se superó una vez, las siguientes suelen pasar).
 - **Nada para engañar a la tienda**: ni cambiar huellas, ni ocultar que es un navegador automatizado, ni resolver verificaciones automáticamente.
 - Columna nueva de la tienda `modo_descarga`: `auto` (por defecto), `directo` o `navegador`. En `auto`: si `tiendas.json` marca la tienda con `"navegador": true`, va directamente con el navegador; si no, descarga normal y, si da bloqueo o no hay precio y la página parece montada con JavaScript (muy poco texto visible, o `__NEXT_DATA__`/`app-root`/`id="root"` vacío), se repite con el navegador.
+- **1.1.0**: en `auto`, si la descarga normal falla porque **se agota el tiempo de espera** (no por falta de conexión: un error de DNS o de red sigue siendo «sin conexión»), también se repite con el navegador. Hay protecciones (Akamai en G2A) que no rechazan la descarga: la dejan colgada sin responder. Si el navegador tampoco puede, se da el error de la descarga normal.
 - **«Abrir la tienda en la app»** (en Gestionar tiendas y en los detalles de un producto bloqueado): muestra la página en el navegador integrado, visible, para que el usuario resuelva una verificación o acepte cookies; se cierra con Escape (Windows) o Atrás (Android) y las cookies se quedan.
 - Si el motor no está disponible (Windows sin WebView2), se dice en el error y se ofrece la página de descarga del runtime WebView2 de Microsoft.
 
@@ -338,6 +353,44 @@ Acciones generales (en Android, tras el divisor del menú lateral; en Windows, e
 - Orden elegible: nombre, precio, mayor bajada, último cambio, fecha de alta, tienda. Se recuerda.
 - Búsqueda por texto (nombre, tienda, categoría, notas, grupo).
 - Filtros rápidos: solo activos, solo con error, solo agotados.
+
+### Colores de la lista (1.1.0)
+
+Para quien ve la pantalla, las filas se colorean según su estado, como hacen los comparadores de precios (verde para lo que baja, rojo para lo que sube). El color **nunca es la única pista**: la fila ya empieza por su estado («En oferta», «Agotado»…) y dice «bajó» o «subió», así que con lector de pantalla no se pierde nada.
+
+**Tipo de color de un producto** (`tipo_color` en Windows, `tipoColor` en Android), el primero que se cumpla:
+
+1. En pausa → ninguno.
+2. La última comprobación fue mal (bloqueada, sin precio, sin conexión o error), o está agotado → `problema`.
+3. Pendiente (nunca comprobado) → ninguno.
+4. Precio deseado alcanzado → `objetivo`.
+5. En oferta (la misma regla que la sección Ofertas: bajó en los últimos 7 días, o está en su mínimo y el precio ha variado alguna vez) → `bajada`.
+6. Subió (`precio_actual` > `precio_anterior`) y `fecha_cambio` está en los últimos 7 días → `subida`.
+7. Si no → ninguno.
+
+En la sección **Avisos**, cada aviso usa el color de su tipo: `objetivo` → objetivo; `minimo` y `bajada` → bajada; `subida` → subida; `agotado` y `error` → problema; `disponible` → ninguno.
+
+**Paleta** (mismos identificadores y colores en las dos apps). «Fondo» es un tono claro sobre el que el texto normal se lee bien; «Texto» es un tono oscuro que se lee sobre blanco (contraste de 4,5:1 o más). Android, con el tema oscuro, usa «Fondo oscuro» y «Texto claro».
+
+| Id | Nombre | Fondo | Texto | Fondo oscuro | Texto claro |
+|---|---|---|---|---|---|
+| `ninguno` | Sin color | — | — | — | — |
+| `verde` | Verde | `#C8E6C9` | `#1B5E20` | `#1E4620` | `#A5D6A7` |
+| `azul` | Azul | `#BBDEFB` | `#0D47A1` | `#0D3260` | `#90CAF9` |
+| `celeste` | Celeste | `#B3E5FC` | `#01579B` | `#0A3D5C` | `#81D4FA` |
+| `turquesa` | Turquesa | `#B2DFDB` | `#004D40` | `#0B3D38` | `#80CBC4` |
+| `morado` | Morado | `#E1BEE7` | `#4A148C` | `#3B1D4A` | `#CE93D8` |
+| `rosa` | Rosa | `#F8BBD0` | `#880E4F` | `#4A1830` | `#F48FB1` |
+| `rojo` | Rojo | `#FFCDD2` | `#B71C1C` | `#5C1A1A` | `#EF9A9A` |
+| `naranja` | Naranja | `#FFE0B2` | `#BF360C` | `#5A3210` | `#FFCC80` |
+| `amarillo` | Amarillo | `#FFF9C4` | `#7A5C00` | `#4D4410` | `#FFF59D` |
+| `marron` | Marrón | `#D7CCC8` | `#4E342E` | `#3E2C26` | `#BCAAA4` |
+| `gris` | Gris | `#E0E0E0` | `#424242` | `#3A3A3A` | `#BDBDBD` |
+
+**Dónde se elige**: Windows, Preferencias, pestaña «Colores»; Android, Ajustes, apartado «Colores de la lista». Una casilla «Colorear la lista según el estado», una lista «Qué se colorea» (Fondo de la fila / Texto) y una lista por estado (Bajada u oferta, Subida, Precio deseado alcanzado, Agotado o con problemas): en Windows, lista desplegable nativa de solo lectura (`BitmapComboBox`); en Android, una fila «Subida, Rojo» con la muestra que abre un diálogo con un botón de opción por color, como las demás listas de Ajustes. Cada elemento de esas listas muestra **una muestra del color y su nombre** (el lector lee el nombre), y debajo hay una **vista previa** con una fila de ejemplo por estado, decorativa para el lector. Los cambios se aplican **sin reiniciar**: Windows repinta la lista abierta al Aceptar o Aplicar; Android, al volver de Ajustes (la vista previa y las muestras cambian al momento). En modo texto, Android colorea las dos líneas de la fila.
+
+- La fila seleccionada se pinta con el color de selección del sistema, como siempre.
+- Windows: con el **contraste alto** de Windows activado no se colorea nada (mandan los colores que eligió el usuario en el sistema).
 
 ### Acciones sobre un producto
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vista previa de los colores de la lista: decorativa para TalkBack (las listas de colores ya dicen lo elegido) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:importantForAccessibility="noHideDescendants"
+	android:orientation="vertical"
+	android:paddingHorizontal="16dp"
+	android:paddingVertical="8dp">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingBottom="4dp"
+		android:text="@string/colores_vista_previa"
+		android:textAppearance="?attr/textAppearanceLabelLarge"
+		android:textColor="?attr/colorOnSurfaceVariant" />
+
+	<LinearLayout
+		android:id="@+id/vista_previa_filas"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="?android:attr/colorBackground"
+		android:orientation="vertical" />
+</LinearLayout>

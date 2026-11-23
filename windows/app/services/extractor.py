@@ -74,7 +74,8 @@ _AGOTADO_USUARIO = (
 _SIMBOLOS = (("€", "EUR"), ("£", "GBP"), ("$", "USD"))
 _SEPARADORES_TITULO = (" | ", " - ", " – ", " — ", " · ")
 _RE_PRECIO_PARTIDO = re.compile(r"(\d)\s*([.,])\s*(\d{2})(?!\d)")
-_RE_TACHADO_CLASE = re.compile(r"strike|old|was|before|antes", re.IGNORECASE)
+# 1.1.0: «old» no cuenta en font-bold, semibold, gold, sold...; line-through (Tailwind) sí es tachado.
+_RE_TACHADO_CLASE = re.compile(r"strike|line-through|(?<![bfghst])old|was|before|antes", re.IGNORECASE)
 _ATRIBUTOS_VALOR = ("content", "data-price-amount", "data-price", "data-product-price", "data-price-value", "value")
 MAX_CANDIDATOS = 8
 
@@ -344,7 +345,8 @@ def _tachado(elemento) -> bool:
 			return False
 		if actual.name in ("del", "s", "strike"):
 			return True
-		clases = " ".join(actual.get("class") or [])
+		# Sin las variantes de Tailwind («before:...», «[&_.x:not(.line-through)]:...»): describen a otros elementos.
+		clases = " ".join(c for c in (actual.get("class") or []) if ":" not in c and "[" not in c)
 		if clases and _RE_TACHADO_CLASE.search(clases):
 			return True
 		actual = actual.parent

@@ -30,8 +30,16 @@ import kotlin.coroutines.resumeWithException
 /** Una página descargada: el HTML ya decodificado, la dirección final y el código HTTP. */
 data class Pagina(val html: String, val urlFinal: String, val codigo: Int)
 
-/** Fallo de descarga con el mensaje en español para el usuario. bloqueo: la tienda pidió verificación. */
-class ErrorDescarga(mensaje: String, val bloqueo: Boolean = false, causa: Throwable? = null) : Exception(mensaje, causa)
+/**
+ * Fallo de descarga con el mensaje en español para el usuario. bloqueo: la tienda pidió verificación.
+ * tiempoAgotado: la tienda no respondió a tiempo (no es falta de conexión ni un error de DNS).
+ */
+class ErrorDescarga(
+	mensaje: String,
+	val bloqueo: Boolean = false,
+	causa: Throwable? = null,
+	val tiempoAgotado: Boolean = false,
+) : Exception(mensaje, causa)
 
 /**
  * Descarga de páginas como un navegador de escritorio (ESPECIFICACION.md,
@@ -151,12 +159,12 @@ object Descargador {
 		val e = ultimo
 		throw when (e) {
 			is UnknownHostException, is ConnectException -> ErrorDescarga(MensajesError.SIN_CONEXION, causa = e)
-			is SocketTimeoutException -> ErrorDescarga(MensajesError.TIEMPO_AGOTADO, causa = e)
+			is SocketTimeoutException -> ErrorDescarga(MensajesError.TIEMPO_AGOTADO, causa = e, tiempoAgotado = true)
 			is SSLException -> ErrorDescarga("No se pudo establecer una conexión segura con la tienda.", causa = e)
 			else -> {
 				val codigo = e?.message?.let { Regex("respondió (\\d{3})").find(it)?.groupValues?.get(1)?.toIntOrNull() }
 				if (codigo != null) ErrorDescarga(MensajesError.codigo(codigo), causa = e)
-				else if (e is java.io.InterruptedIOException) ErrorDescarga(MensajesError.TIEMPO_AGOTADO, causa = e)
+				else if (e is java.io.InterruptedIOException) ErrorDescarga(MensajesError.TIEMPO_AGOTADO, causa = e, tiempoAgotado = true)
 				else ErrorDescarga(MensajesError.SIN_CONEXION, causa = e)
 			}
 		}

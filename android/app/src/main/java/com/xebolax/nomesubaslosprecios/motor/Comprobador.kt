@@ -154,6 +154,22 @@ object Comprobador {
 			if (modo == ModoDescarga.AUTO && e.bloqueo && !navegadorPrimero) {
 				conNavegador(contexto, url, selectores, nombreTienda)?.let { return it }
 			}
+			// 1.1.0: algunas protecciones (Akamai en G2A) dejan la descarga colgada en vez de rechazarla.
+			// Un fallo de DNS o de red no llega aquí (es «sin conexión»). Si el navegador tampoco puede,
+			// se da el error de la descarga normal (una cancelación sí se propaga).
+			if (modo == ModoDescarga.AUTO && e.tiempoAgotado && !navegadorPrimero) {
+				Log.i(ETIQUETA, "La descarga normal de $url no respondió; se prueba con el navegador integrado")
+				val n = try {
+					conNavegador(contexto, url, selectores, nombreTienda)
+				} catch (c: CancellationException) {
+					throw c
+				} catch (otro: Exception) {
+					Log.w(ETIQUETA, "El navegador integrado tampoco pudo con $url", otro)
+					null
+				}
+				if (n != null) return n
+				Log.i(ETIQUETA, "El navegador integrado tampoco pudo con $url")
+			}
 			throw e
 		}
 		val (resultado, html) = r

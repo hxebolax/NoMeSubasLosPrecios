@@ -262,6 +262,30 @@
       "origen": "microdatos",
       "decision": "acepta",
       "bloqueo": false
+    },
+    {
+      "nombre": "Tailwind: el precio en negrita (font-bold) no es un tachado; line-through sí",
+      "url": "https://tiendaejemplo.es/p/1",
+      "html": "<h1>Juego de ejemplo (PC) - Clave Steam</h1><div class=\"product-price\"><span class=\"price font-semibold\">12,55 €</span> <span class=\"price line-through\">29,99 €</span></div><form><button type=\"submit\" name=\"add\">Añadir al carrito</button></form>",
+      "precio": 12.55,
+      "origen": "análisis de la página",
+      "decision": "acepta"
+    },
+    {
+      "nombre": "Tailwind: las variantes «[&_.x:not(.line-through)]» y «before:» del contenedor no tachan",
+      "url": "https://tiendaejemplo.es/p/1",
+      "html": "<h1>Mando inalámbrico</h1><div class=\"inline-flex gap-1 before:content-[''] [&_.full-price:not(.line-through)]:font-extrabold\"><span class=\"full-price font-semibold\">34,90 €</span></div><form><button type=\"submit\" name=\"add\">Añadir al carrito</button></form>",
+      "precio": 34.9,
+      "origen": "análisis de la página",
+      "decision": "acepta"
+    },
+    {
+      "nombre": "Meta itemprop=price en un contenedor font-bold se lee (no es «old»)",
+      "url": "https://tiendaejemplo.es/p/1",
+      "html": "<h1>Altavoz</h1><div class=\"product font-bold\"><meta itemprop=\"price\" content=\"45.00\"></div>",
+      "precio": 45.0,
+      "origen": "metadatos",
+      "decision": "acepta"
     }
   ]
 }

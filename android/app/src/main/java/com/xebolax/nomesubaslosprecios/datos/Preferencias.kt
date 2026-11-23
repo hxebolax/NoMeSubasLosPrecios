@@ -4,7 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.xebolax.nomesubaslosprecios.nucleo.AjustesAvisos
+import com.xebolax.nomesubaslosprecios.nucleo.AjustesColores
+import com.xebolax.nomesubaslosprecios.nucleo.Colores
 import com.xebolax.nomesubaslosprecios.nucleo.Intercambio
+import com.xebolax.nomesubaslosprecios.nucleo.ModoColores
+import com.xebolax.nomesubaslosprecios.nucleo.TipoColor
 
 /**
  * Ajustes de la app con las claves de la especificación (y solo_wifi, propio
@@ -31,6 +35,17 @@ class Preferencias(contexto: Context) {
 		const val CONSERVAR_AVISOS_DIAS = "conservar_avisos_dias"
 		const val BUSCAR_ACTUALIZACIONES = "buscar_actualizaciones"
 		const val SOLO_WIFI = "solo_wifi"
+
+		// Colores de la lista (1.1.0)
+		const val COLORES_LISTA = "colores_lista"
+		const val COLORES_MODO = "colores_modo"
+		const val COLOR_BAJADA = "color_bajada"
+		const val COLOR_SUBIDA = "color_subida"
+		const val COLOR_OBJETIVO = "color_objetivo"
+		const val COLOR_PROBLEMA = "color_problema"
+
+		/** Claves que, si cambian, obligan a repintar las listas. */
+		val CLAVES_COLORES = setOf(COLORES_LISTA, COLORES_MODO, COLOR_BAJADA, COLOR_SUBIDA, COLOR_OBJETIVO, COLOR_PROBLEMA)
 
 		/** Claves que se guardan como texto (ListPreference y EditTextPreference). */
 		private val COMO_TEXTO = setOf(INTERVALO_HORAS, CONSERVAR_AVISOS_DIAS, CAMBIO_MINIMO_PORCENTAJE)
@@ -70,6 +85,19 @@ class Preferencias(contexto: Context) {
 	val conservarAvisosDias: Int get() = entero(CONSERVAR_AVISOS_DIAS, 90).coerceAtLeast(0)
 	val buscarActualizaciones: Boolean get() = booleano(BUSCAR_ACTUALIZACIONES, true)
 	val soloWifi: Boolean get() = booleano(SOLO_WIFI, false)
+
+	/** Identificador de la paleta para un tipo; uno desconocido se lee como el de por defecto. */
+	fun color(tipo: TipoColor): String {
+		val v = p.all[tipo.clave] as? String
+		return if (v != null && v in Colores.IDS) v else tipo.porDefecto
+	}
+
+	val coloresLista: Boolean get() = booleano(COLORES_LISTA, true)
+	val coloresModo: ModoColores get() = ModoColores.de(p.all[COLORES_MODO] as? String)
+
+	/** Los ajustes de colores de la lista, ya comprobados. */
+	val ajustesColores: AjustesColores
+		get() = AjustesColores(coloresLista, coloresModo, TipoColor.entries.associateWith { color(it) })
 
 	val ajustesAvisos: AjustesAvisos
 		get() = AjustesAvisos(
@@ -119,6 +147,12 @@ class Preferencias(contexto: Context) {
 		CONSERVAR_AVISOS_DIAS to conservarAvisosDias,
 		BUSCAR_ACTUALIZACIONES to buscarActualizaciones,
 		SOLO_WIFI to soloWifi,
+		COLORES_LISTA to coloresLista,
+		COLORES_MODO to coloresModo.id,
+		COLOR_BAJADA to color(TipoColor.BAJADA),
+		COLOR_SUBIDA to color(TipoColor.SUBIDA),
+		COLOR_OBJETIVO to color(TipoColor.OBJETIVO),
+		COLOR_PROBLEMA to color(TipoColor.PROBLEMA),
 	)
 
 	/** Aplica los ajustes de un archivo importado (solo las claves conocidas y con el tipo que espera cada control). */
@@ -132,6 +166,11 @@ class Preferencias(contexto: Context) {
 					is String -> e.putString(clave, valor)
 				}
 				clave in COMO_ENTERO -> (valor as? Number)?.let { e.putInt(clave, it.toInt()) }
+				// Colores (1.1.0): un valor desconocido se guarda como el de por defecto
+				clave == COLORES_MODO -> e.putString(clave, ModoColores.de(valor as? String).id)
+				clave.startsWith("color_") -> TipoColor.entries.firstOrNull { it.clave == clave }?.let { t ->
+					e.putString(clave, (valor as? String)?.takeIf { it in Colores.IDS } ?: t.porDefecto)
+				}
 				valor is Boolean -> e.putBoolean(clave, valor)
 			}
 		}

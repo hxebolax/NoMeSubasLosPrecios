@@ -29,6 +29,7 @@ import com.xebolax.nomesubaslosprecios.databinding.ActivityAjustesBinding
 import com.xebolax.nomesubaslosprecios.datos.Preferencias
 import com.xebolax.nomesubaslosprecios.motor.Notificaciones
 import com.xebolax.nomesubaslosprecios.motor.TrabajoComprobacion
+import com.xebolax.nomesubaslosprecios.nucleo.TipoColor
 import com.xebolax.nomesubaslosprecios.nucleo.formatearPorcentaje
 
 /** Ajustes. Se abre solo desde el menú lateral (una sola puerta). */
@@ -108,6 +109,14 @@ class AjustesFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 	override fun onSharedPreferenceChanged(p: SharedPreferences?, clave: String?) {
 		// Al cambiar el intervalo o la red se reprograma (ExistingPeriodicWorkPolicy.UPDATE)
 		if (clave == Preferencias.INTERVALO_HORAS || clave == Preferencias.SOLO_WIFI) TrabajoComprobacion.programar(requireContext())
+		// Colores de la lista: las muestras dependen de «Qué se colorea» y la vista previa, de todo.
+		// La lista principal se repinta sola al volver (PrincipalActivity.onResume).
+		if (clave in Preferencias.CLAVES_COLORES) {
+			if (clave == Preferencias.COLORES_MODO) {
+				for (t in TipoColor.entries) findPreference<PreferenciaColor>(t.clave)?.refrescar()
+			}
+			findPreference<VistaPreviaColores>("colores_vista_previa")?.refrescar()
+		}
 	}
 
 	private fun permisoConcedido() = Build.VERSION.SDK_INT < 33 ||

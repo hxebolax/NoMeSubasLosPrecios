@@ -17,6 +17,7 @@ import com.google.android.apps.common.testing.accessibility.framework.uielement.
 import com.google.android.apps.common.testing.accessibility.framework.utils.contrast.BitmapImage
 import com.xebolax.nomesubaslosprecios.datos.BaseDatos
 import com.xebolax.nomesubaslosprecios.nucleo.AjustesAvisos
+import com.xebolax.nomesubaslosprecios.nucleo.Colores
 import com.xebolax.nomesubaslosprecios.nucleo.Lectura
 import com.xebolax.nomesubaslosprecios.nucleo.LogicaAvisos
 import com.xebolax.nomesubaslosprecios.nucleo.Producto
@@ -262,6 +263,52 @@ class AccesibilidadTest {
 		for ((titulo, abrirla) in pantallas) {
 			abrir(abrirla(app))
 			revisar(titulo)
+		}
+		comprobarEstricto()
+	}
+
+	/**
+	 * Ajustes, «Colores de la lista» (1.1.0): las filas de colores dicen su título y
+	 * el color elegido, la vista previa no la visita TalkBack y la lista de colores
+	 * lee el nombre de cada color con «marcado» en el elegido.
+	 */
+	@Test
+	fun coloresDeLaLista() {
+		abrir(Intent(app, AjustesActivity::class.java))
+		val titulo = app.getString(R.string.ajustes_colores)
+		val ultimo = app.getString(R.string.color_tipo_problema)
+		repeat(8) {
+			if (elemento(ultimo) != null) return@repeat
+			val lista = mutableListOf<AccessibilityNodeInfo>()
+			fun buscar(n: AccessibilityNodeInfo) {
+				if (n.isScrollable) lista += n
+				for (i in 0 until n.childCount) n.getChild(i)?.let { buscar(it) }
+			}
+			raiz()?.let { buscar(it) }
+			lista.firstOrNull()?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+			esperar(800)
+		}
+		assertTrue("No se llega a «$titulo»", elemento(titulo) != null || elemento(ultimo) != null)
+		revisar("Ajustes: colores de la lista")
+		val nodos = mutableListOf<AccessibilityNodeInfo>()
+		raiz()?.let { recoger(it, nodos) }
+		val nombres = nodos.map { nombre(it) }
+		val ejemplo = app.getString(R.string.colores_ejemplo_subida)
+		assertTrue("La vista previa no debe leerse: $nombres", nombres.none { ejemplo in it })
+		val bajada = app.getString(R.string.color_tipo_bajada)
+		val filaBajada = nombres.firstOrNull { it.startsWith(bajada) }
+		assertTrue("La fila «$bajada» debe decir también el color: $filaBajada", filaBajada != null && filaBajada.length > bajada.length + 2)
+		if (tocar(bajada)) {
+			revisar("Lista de colores")
+			// Las opciones que se ven (la lista se desplaza hasta la elegida): cada una con el nombre del color
+			val opciones = Colores.PALETA.mapNotNull { c ->
+				raiz()?.findAccessibilityNodeInfosByText(c.nombre)?.firstOrNull { it.text?.toString() == c.nombre && it.isCheckable }
+			}
+			val marcadas = opciones.filter { it.isChecked }.map { it.text.toString() }
+			Log.i("Recorrido", "Lista de colores | ${opciones.size} opciones a la vista | marcadas: $marcadas")
+			assertTrue("La lista de colores no muestra opciones marcables", opciones.isNotEmpty())
+			assertTrue("Debe haber un color marcado: $marcadas", marcadas.size == 1)
+			atras()
 		}
 		comprobarEstricto()
 	}

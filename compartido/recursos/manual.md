@@ -106,6 +106,28 @@ Cada producto se lee de una vez, empezando por su estado si tiene alguno: «En p
 - **Ordenar**: por nombre, precio, mayor bajada, último cambio, fecha de alta o tienda. Se recuerda.
 - **Filtrar**: solo activos, solo con error, solo agotados.
 
+### Colores de la lista
+
+Para quien ve la pantalla, las filas se colorean según su estado, como en los comparadores de precios. El color es solo una ayuda visual: con lector de pantalla no se pierde nada, porque cada fila ya empieza por su estado y dice si «bajó» o «subió».
+
+| Color por defecto | Cuándo |
+|---|---|
+| Verde | En oferta: bajó en los últimos 7 días o está en su precio mínimo |
+| Rojo | Subió en los últimos 7 días |
+| Azul | Llegó a tu precio deseado o lo bajó |
+| Gris | Agotado, bloqueado por la tienda, sin precio, sin conexión o con error |
+
+Los productos en pausa o sin comprobar todavía no llevan color. En la sección Avisos, cada aviso lleva el color de su tipo (bajada y mínimo histórico, subida, precio deseado, agotado y errores).
+
+Todo se cambia en **Preferencias, pestaña Colores** (Windows) o en **Ajustes, Colores de la lista** (Android):
+
+- **Colorear la lista según el estado**: quítala si no quieres colores.
+- **Qué se colorea**: el **fondo de la fila** (un tono claro detrás del texto, se ve más) o el **texto** (las letras en un tono oscuro del color).
+- Un **color para cada estado**: Sin color, Verde, Azul, Celeste, Turquesa, Morado, Rosa, Rojo, Naranja, Amarillo, Marrón o Gris. Cada color se ve con una muestra a su lado, y el lector dice su nombre. En Windows son listas desplegables; en Android, cada estado es una fila que dice su color y, al tocarla, abre la lista de colores con un botón de opción por color. Si confundes el rojo y el verde, prueba por ejemplo con Azul para las bajadas y Naranja para las subidas.
+- Debajo hay una **vista previa** con una fila de ejemplo por estado.
+
+Los cambios se ven en la lista sin reiniciar: en Windows, en cuanto pulsas Aceptar o Aplicar; en Android, al volver de Ajustes (la vista previa cambia en cuanto eliges). La fila seleccionada se ve con el color de selección del sistema, como siempre. En Windows, con el **contraste alto** activado no se colorea nada, para respetar los colores que elegiste en Windows. En Android, con el tema oscuro se usan tonos oscuros del mismo color.
+
 ### Acciones de un producto
 
 - Abrir en el navegador.
@@ -147,13 +169,15 @@ Cada comprobación da como mucho un aviso por producto, el más importante. En A
 
 ## Las tiendas
 
-La app trae reglas comprobadas para **más de 160 tiendas** españolas: perfumerías (Primor, Druni, Arenal, Perfumes Club...), farmacias (PromoFarma, Farmacia Barata...), animales (Tiendanimal, Kiwoko, zooplus, Miscota...), supermercados (Mercadona, Alcampo, Eroski, Consum...), moda, deporte, hogar, electrónica (Amazon, PcComponentes, MediaMarkt, Coolmod...), libros y juguetes.
+La app trae reglas comprobadas para **más de 170 tiendas**: perfumerías (Primor, Druni, Arenal, Perfumes Club...), farmacias (PromoFarma, Farmacia Barata...), animales (Tiendanimal, Kiwoko, zooplus, Miscota...), supermercados (Mercadona, Alcampo, Eroski, Consum...), moda, deporte, hogar, electrónica (Amazon, PcComponentes, MediaMarkt, Coolmod...), libros, juguetes y **videojuegos**: GAME, xtralife, Steam, GOG, Epic Games Store, PlayStation Store, Microsoft Store (Xbox), Nintendo eShop, Humble Bundle, Fanatical, Green Man Gaming, Instant Gaming y los mercados de claves G2A, Eneba, Kinguin y GAMIVO.
 
 Con cualquier otra tienda también funciona: la app reconoce las plataformas de tienda más usadas (Shopify, WooCommerce, PrestaShop, Magento y otras) y los datos que las tiendas publican para los buscadores. Si aun así no está segura, te pregunta (ver «Si no encuentra el precio con seguridad»).
 
 ### Tiendas que bloquean o que necesitan el navegador
 
-Algunas tiendas grandes (las del grupo Inditex, a veces Amazon, Notino, Sephora, Carrefour, Worten, Decathlon, El Corte Inglés...) no dejan descargar sus páginas a un programa, y otras montan el precio con JavaScript (AliExpress, Temu, Xiaomi...). Para ellas la app usa un **navegador integrado**: carga la página con el motor web del sistema, como si la abrieras tú, y lee el precio de la página ya cargada.
+Algunas tiendas grandes (las del grupo Inditex, a veces Amazon, Notino, Sephora, Carrefour, Worten, Decathlon, El Corte Inglés, y entre las de juegos G2A, Kinguin, GAMIVO, Green Man Gaming y Epic Games Store...) no dejan descargar sus páginas a un programa, y otras montan el precio con JavaScript (AliExpress, Temu, Xiaomi, Fanatical, Nintendo eShop...). Para ellas la app usa un **navegador integrado**: carga la página con el motor web del sistema, como si la abrieras tú, y lee el precio de la página ya cargada.
+
+Si una tienda que la app no conoce deja la descarga sin responder (algunas protecciones lo hacen en vez de rechazarla), la app también lo intenta con el navegador integrado antes de dar el error.
 
 - Si aun así la tienda pide verificar que no eres un robot, el producto aparece como **«Bloqueado por la tienda»** (nunca como agotado) y se vuelve a intentar en la siguiente comprobación.
 - Puedes usar **«Abrir la tienda en la app»** (en los detalles del producto o en Gestionar tiendas): se abre la página dentro de la app para que aceptes las cookies o pases la verificación. Ciérrala con Escape en Windows o con Atrás en Android. Lo que aceptes ahí se recuerda para las comprobaciones siguientes.
@@ -202,6 +226,7 @@ Antes de cambiar nada se muestra un resumen («El archivo tiene 42 productos... 
 - **Cuántos días guardar los avisos.**
 - **Buscar actualizaciones** al abrir.
 - **Enviar una notificación de prueba**: para comprobar que los avisos te llegan.
+- **Colores de la lista**: si se colorea, qué se colorea y el color de cada estado (ver «Colores de la lista»).
 - Solo en Windows: **minimizar a la bandeja** al cerrar, **iniciar con Windows** (en la bandeja) y **sonidos**.
 - Solo en Android: **comprobar solo con wifi** y el botón para la **optimización de batería**.
 
@@ -268,6 +293,10 @@ Abre el producto y usa **Elegir el precio en la página**. Si el producto tiene 
 ### «No se encontró el precio en la página»
 
 Puede que la tienda haya cambiado su diseño o que la dirección ya no sea de un producto (por ejemplo, si lo han retirado y la página lleva a una categoría). Abre la dirección en el navegador para comprobarlo y, si el producto sigue ahí, usa Elegir el precio en la página.
+
+### ¿Qué precio sigue en G2A, Eneba, Kinguin o GAMIVO?
+
+En los mercados de claves venden muchos vendedores el mismo juego. En G2A se sigue el **precio normal de la oferta que la tienda te pone para comprar** (la del botón Añadir al carrito), no el de G2A Plus, que necesita suscripción. En Eneba, Kinguin y GAMIVO se sigue el de la oferta más barata disponible que publica la tienda. Si quieres otro precio de la página, usa «Elegir el precio en la página» en Editar.
 
 ### ¿Por qué Amazon a veces funciona y a veces no?
 

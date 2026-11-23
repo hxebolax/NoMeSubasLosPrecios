@@ -50,6 +50,8 @@ CLAVES_AJUSTES = (
 	"avisar_minimo", "avisar_disponible", "avisar_agotado", "avisar_errores", "cambio_minimo_porcentaje",
 	"pausa_entre_peticiones", "tiempo_espera", "conservar_avisos_dias", "buscar_actualizaciones",
 	"iniciar_con_windows", "minimizar_a_bandeja", "sonidos",
+	# 1.1.0: colores de la lista.
+	"colores_lista", "colores_modo", "color_bajada", "color_subida", "color_objetivo", "color_problema",
 )
 
 _PRECIOS = ("precio_actual", "precio_inicial", "precio_minimo", "precio_maximo", "precio_anterior", "precio_objetivo")

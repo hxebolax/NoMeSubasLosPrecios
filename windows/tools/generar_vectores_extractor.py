@@ -75,6 +75,18 @@ CASOS_JSONLD = [
 	("La palabra suelta «captcha» no es un bloqueo", None,
 	 '<h1>Libro</h1><span itemprop="price" content="15.00">15,00 €</span><script src="https://www.google.com/recaptcha/api.js"></script>',
 	 15.0, "microdatos", {"bloqueo": False}),
+	# 1.1.0: clases de tachado (punto 10 de la extracción ampliada).
+	("Tailwind: el precio en negrita (font-bold) no es un tachado; line-through sí", None,
+	 '<h1>Juego de ejemplo (PC) - Clave Steam</h1><div class="product-price">'
+	 '<span class="price font-semibold">12,55 €</span> <span class="price line-through">29,99 €</span></div>' + BOTON,
+	 12.55, "análisis de la página", {}),
+	("Tailwind: las variantes «[&_.x:not(.line-through)]» y «before:» del contenedor no tachan", None,
+	 '<h1>Mando inalámbrico</h1><div class="inline-flex gap-1 before:content-[\'\'] [&_.full-price:not(.line-through)]:font-extrabold">'
+	 '<span class="full-price font-semibold">34,90 €</span></div>' + BOTON,
+	 34.9, "análisis de la página", {}),
+	("Meta itemprop=price en un contenedor font-bold se lee (no es «old»)", None,
+	 '<h1>Altavoz</h1><div class="product font-bold"><meta itemprop="price" content="45.00"></div>',
+	 45.0, "metadatos", {}),
 ]
 
 
